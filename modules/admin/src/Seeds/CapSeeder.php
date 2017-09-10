@@ -19,7 +19,8 @@ class CapSeeder extends BaseSeeder
         }
         // name => [[role_ids]]
         $caps = [
-            'view_posts' => [[1, 2, 3]],
+            'view_my_post' => [[1, 2, 3]],
+            'view_other_posts' => [[1, 2, 3]],
             'publish_posts' => [[1, 2, 3]], 
             'edit_my_post' => [[1, 2, 3]],  
             'edit_other_posts' => [[1, 2]], 
@@ -30,7 +31,8 @@ class CapSeeder extends BaseSeeder
             
             'manage_caps' => [[1]], 
             
-            'view_users' => [[1]],
+            'view_my_user' => [[1]],
+            'view_other_users' => [[1]],
             'publish_users' => [[1]], 
             'edit_my_user' => [[1, 2, 3]], 
             'edit_other_users' => [[1]], 
@@ -45,7 +47,8 @@ class CapSeeder extends BaseSeeder
             
             'manage_tags' => [[1, 2]], 
              
-            'view_comments' => [[1, 2, 3]],
+            'view_my_comment' => [[1, 2, 3]],
+            'view_other_comments' => [[1, 2, 3]],
             'publish_comments' => [[1, 2, 3]], 
             'edit_my_comment' => [[1, 2, 3]], 
             'edit_other_comments' => [[1, 2]], 
@@ -54,7 +57,8 @@ class CapSeeder extends BaseSeeder
             
             'manage_menus' => [[1]], 
             
-            'view_files' => [[1, 2, 3]], 
+            'view_my_file' => [[1, 2, 3]], 
+            'view_other_files' => [[1, 2]], 
             'publish_files' => [[1, 2, 3]], 
             'edit_my_file' => [[1, 2, 3]],  
             'edit_other_files' => [[1, 2]],

@@ -27,7 +27,7 @@ class User extends Authenticatable
         $caps = [];
         if (!$roles->isEmpty()) {
             foreach ($roles as $role) {
-                $caps = array_merge($caps, $role->caps->lists('name')->toArray());
+                $caps = array_unique(array_merge($caps, $role->caps->pluck('name')->toArray()));
             }
         }
         return $caps;
@@ -37,11 +37,11 @@ class User extends Authenticatable
         if (!is_array($caps)) {
             $caps = [$caps];
         }
-        $user_caps = $this->caps();
-        if (!$caps) {
+        $userCaps = $this->caps();
+        if (!$userCaps) {
             return false;
         }
-        return !array_diff($caps, $user_caps);
+        return !array_diff($caps, $userCaps);
     }
     
     public function avatar() {

@@ -3,9 +3,9 @@
 namespace Admin\Providers;
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use App\Providers\BaseRouteServiceProvider;
 
-class RouteServiceProvider extends ServiceProvider
+class RouteServiceProvider extends BaseRouteServiceProvider
 {
     /**
      * This namespace is applied to your controller routes.
@@ -57,7 +57,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
-        Route::prefix($this->prefix)
+        Route::prefix($this->locale . '/' . $this->prefix)
              ->middleware('web')
              ->namespace($this->namespace)
              ->name('admin::')
@@ -73,7 +73,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
-        Route::prefix($this->prefix . '\api')
+        Route::prefix($this->locale . '/'. $this->prefix . '/api')
              ->middleware('api')
              ->namespace($this->namespace)
              ->name('admin::api')

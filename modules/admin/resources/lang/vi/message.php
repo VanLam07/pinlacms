@@ -20,5 +20,13 @@ return [
     'reset_pass_subject' => 'Yêu cầu đặt lại mật khẩu trên :host',
     'reset_pass_success' => 'Đặt lại mật khẩu thành công!',
     'failure_send_mail' =>  'Có lỗi khi gửi mail, vui lòng thử lại sau!',
+    'updated_pass' =>       'Cập nhật mật khẩu thành công!',
+    'updated_profile' =>    'Cập nhật thông tin thành công!',
+    
+    'no_item' =>                    'Không có dữ liệu!',
+    'store_success' =>              'Thêm mới thành công!',
+    'update_success' =>             'Cập nhật thành công!',
+    'destroy_success' =>            'Xóa thành công!',
+    'do_success' =>                 'Thực hiện thành công!',
 ];
 

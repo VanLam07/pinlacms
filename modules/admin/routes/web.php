@@ -17,5 +17,11 @@ Route::group(['middleware' => 'auth'], function () {
     
     Route::get('/', ['as' => 'index', 'uses' => 'AdminController@index']);
     Route::get('/auth/logout', ['as' => 'auth.logout', 'uses' => 'AuthController@logout']);
+    Route::get('/account/profile/{account?}', ['as' => 'account.profile', 'uses' => 'AuthController@getProfile']);
+    Route::post('/account/profile/update', ['as' => 'account.update_profile', 'uses' => 'AuthController@updateProfile']);
+    Route::get('/account/change-password', ['as' => 'account.change_pass', 'uses' => 'AuthController@getChangePass']);
+    
+    //file
+    Route::get('/files/dialog', ['as' => 'file.dialog', 'uses' => 'FileController@dialog']);
     
 });

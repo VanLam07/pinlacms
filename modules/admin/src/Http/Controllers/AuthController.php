@@ -9,6 +9,7 @@ use App\Models\Role;
 use Validator;
 use Mail;
 use DB;
+use Carbon\Carbon;
 
 class AuthController extends Controller {
     
@@ -160,31 +161,42 @@ class AuthController extends Controller {
     }
 
     public function getProfile() {
-        $roles = $this->role->all()->lists('label', 'id')->toArray();
-        return view('manage.account.profile', compact('roles'));
+        $roles = $this->role->all(['id', 'label']);
+        return view('admin::account.profile', compact('roles'));
     }
 
     public function updateProfile(Request $request) {
         $valid = Validator::make($request->all(), [
-                    'name' => 'required'
+            'name' => 'required'
         ]);
         if ($valid->fails()) {
             return redirect()->back()->withInput()->withErrors($valid->errors());
         }
         $data = $request->all();
-        $birth = $data['birth'];
-        $data['birth'] = date('Y-m-d H:i:s', strtotime($birth['year'] . '-' . $birth['month'] . '-' . $birth['day']));
+        if (isset($data['birth'])) {
+            $birth = $data['birth'];
+            $parseBirth = Carbon::parse($birth['year'] . '-' . $birth['month'] . '-' . $birth['day']);
+            if ($parseBirth->lte(Carbon::parse('1970-01-01 00:00:00'))) {
+                $data['birth'] = '1972-01-01 00:00:00';
+            } else {
+                $data['birth'] = $parseBirth->format('Y-m-d H:i:s');
+            }
+        }
         if (isset($data['file_ids']) && $data['file_ids']) {
             $data['image_id'] = $data['file_ids'][0];
         }
         $fillable = $this->user->getFillable();
         $fill_data = array_only($data, $fillable);
-        $this->user->where('id', auth()->id())->update($fill_data);
-        return redirect()->back()->with('succ_mess', trans('auth.updated_profile'));
+        $user = $this->user->findOrFail(auth()->id());
+        $user->update($fill_data);
+        if (isset($data['role_ids'])) {
+            $user->roles()->sync($data['role_ids']);
+        }
+        return redirect()->back()->with('succ_mess', trans('admin::message.updated_profile'));
     }
 
     public function getChangePass() {
-        return view('manage.account.change_password');
+        return view('admin::account.change_password');
     }
 
     public function updatePassword(Request $request) {

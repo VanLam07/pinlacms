@@ -27,6 +27,8 @@ class AdminServiceProvider extends ServiceProvider {
         
         $this->app->register(\Admin\Providers\RouteServiceProvider::class);
         
+        $this->app->bind('admin-view-function', '\Admin\Facades\AdView\Adview');
+        
     }
     
 }

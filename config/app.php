@@ -236,6 +236,15 @@ return [
          * My custom 
          */
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'Access' => App\Facades\Access\AccessFacade::class,
+        'PlLocale' => App\Facades\Lang\LocaleFacade::class,
+        'Option' => App\Facades\Option\OptionFacade::class,
+        'Post' => App\Facades\Post\PostFacade::class,
+        'Tax' => App\Facades\Tax\TaxFacade::class,
+        /*
+         * Modules
+         */
+        'AdView' => Admin\Facades\AdView\AdViewFacade::class,
 
     ],
 

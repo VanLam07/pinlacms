@@ -221,13 +221,14 @@ function makeRandDir($length = 16, $model) {
     return $dir;
 }
 
-function rangeOptions($min, $max, $selected = 0) {
-    $html = '';
-    for ($i = $min; $i <= $max; $i++) {
-        $select = ($i == $selected) ? 'selected' : '';
-        $html .= '<option value="' . $i . '" ' . $select . '>' . $i . '</option>';
+if (!function_exists('rangeOptions')) {
+    function rangeOptions($min, $max, $selected = 0) {
+        $html = '';
+        for ($i = $min; $i <= $max; $i++) {
+            $html .= '<option value="' . $i . '" ' . (($i == $selected) ? 'selected' : '') . '>' . $i . '</option>';
+        }
+        return $html;
     }
-    return $html;
 }
 
 function catCheckLists($items, $checked = [], $parent = 0, $depth = 0) {

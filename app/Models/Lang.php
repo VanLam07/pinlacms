@@ -2,11 +2,34 @@
 
 namespace App\Models;
 
+//use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+
 class Lang extends BaseModel {
 
     protected $table = 'langs';
     protected $fillable = ['name', 'code', 'icon', 'folder', 'unit', 'ratio_currency', 'order', 'status', 'default'];
+    protected $primaryKey  = 'code';
     public $timestamps = false;
+    public $incrementing  = false;
+    
+    const KC_CODES = 'all_key_codes';
+    
+    public function getAllCodes() {
+        
+//        if (($allCodes = Cache::get(self::KC_CODES)) !== null) {
+//            return $allCodes;
+//        }
+        
+        $allCodes = DB::table($this->table)
+                ->select('code')
+                ->pluck('code')
+                ->toArray();
+        
+//        Cache::put(self::KC_CODES, $allCodes);
+        
+        return $allCodes;
+    }
 
     public function switch_url() {
         $request = request();
@@ -85,12 +108,9 @@ class Lang extends BaseModel {
         }
         
         if($opts['per_page'] == -1){
-            $results = $results->get();
-        }else{
-            $results = $results->paginate($opts['per_page']);
+            return $results->get();
         }
-        
-        return $results;
+        return $results->paginate($opts['per_page']);
     }
 
     function findByName($name, $fields = ['*']) {
