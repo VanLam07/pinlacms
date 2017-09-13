@@ -12,6 +12,9 @@ class CreateMenusTbl extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('menus')) {
+            return;
+        }
         Schema::create('menus', function(Blueprint $table){
             $table->increments('id');
             $table->integer('group_id')->unsigned()->nullable();

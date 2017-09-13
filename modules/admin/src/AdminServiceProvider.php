@@ -26,6 +26,7 @@ class AdminServiceProvider extends ServiceProvider {
         $this->mergeConfigFrom(__DIR__.'/../config/admin.php', 'admin');
         
         $this->app->register(\Admin\Providers\RouteServiceProvider::class);
+        $this->app->register(\Admin\Providers\AdminComposerProvider::class);
         
         $this->app->bind('admin-view-function', '\Admin\Facades\AdView\Adview');
         

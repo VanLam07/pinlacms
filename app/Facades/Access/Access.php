@@ -3,6 +3,7 @@
 namespace App\Facades\Access;
 
 use App\Models\Cap;
+use Admin\Facades\AdView\AdView;
 
 class Access {
 
@@ -17,19 +18,21 @@ class Access {
             return false;
         }
         $user = auth()->user();
-        $user_id = $user->id;
+        $userId = $user->id;
 
         //switch caps
         
         $args = array_slice(func_get_args(), 1);
         $author = $args ? $args[0] : null;
-        if ($user->hasCaps($cap)) {
-            if ($author && $user_id == $author) { 
-                return true;
-            }
-            return true;
+        $userCaps = $user->caps();
+        if (!array_key_exists($cap, $userCaps)) {
+            return false;
         }
-        return $user->hasCaps(str_replace('_my_', '_other_', $cap.'s'));
+        $level = $userCaps[$cap];
+        if ($author && $level == AdView::CAP_SELF) {
+            return $userId == $author;
+        }
+        return true;
     }
 
     public function check() {

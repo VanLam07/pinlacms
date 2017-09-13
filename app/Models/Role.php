@@ -54,7 +54,37 @@ class Role extends BaseModel {
     }
 
     public function caps() {
-        return $this->belongsToMany('\App\Models\Cap', 'role_cap', 'role_id', 'cap_name');
+        return $this->belongsToMany('\App\Models\Cap', 'role_cap', 'role_id', 'cap_name')
+                ->withPivot('level');
+    }
+    
+    public function updateListCaps() {
+        $roleCaps = [];
+        $caps = $this->caps;
+        if ($caps->isEmpty()) {
+            return;
+        }
+        foreach ($caps as $cap) {
+            if (isset($roleCaps[$cap->name])) {
+                if ($roleCaps[$cap->name] < $cap->pivot->level) {
+                    $roleCaps[$cap->name] = $cap->pivot->level;
+                }
+            } else {
+                $roleCaps[$cap->name] = $cap->pivot->level;
+            }
+        }
+        if (!$roleCaps) {
+            return;
+        }
+        $this->list_caps = serialize($roleCaps);
+        $this->save();
+    }
+    
+    public function getListCaps() {
+        if (!$this->list_caps) {
+            return [];
+        }
+        return unserialize($this->list_caps);
     }
 
     public function str_default() {

@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             $this->call(Admin\Seeds\UserSeeder::class);
             $this->call(Admin\Seeds\CapSeeder::class);
             $this->call(Admin\Seeds\OptionSeeder::class);
+            $this->call(Admin\Seeds\RoleCapsSeeder::class);
             
             DB::commit();
         } catch (\Exception $ex) {

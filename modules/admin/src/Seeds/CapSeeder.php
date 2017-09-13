@@ -4,6 +4,7 @@ namespace Admin\Seeds;
 
 use Admin\Seeds\BaseSeeder;
 use App\Models\Cap;
+use Admin\Facades\AdView\AdView;
 
 class CapSeeder extends BaseSeeder
 {
@@ -18,62 +19,58 @@ class CapSeeder extends BaseSeeder
             return;
         }
         // name => [[role_ids]]
+        $capOther = AdView::CAP_OTHER;
+        $capSelf = AdView::CAP_SELF;
         $caps = [
-            'view_my_post' => [[1, 2, 3]],
-            'view_other_posts' => [[1, 2, 3]],
-            'publish_posts' => [[1, 2, 3]], 
-            'edit_my_post' => [[1, 2, 3]],  
-            'edit_other_posts' => [[1, 2]], 
-            'remove_my_post' => [[1, 2, 3]],
-            'remove_other_posts' => [[1, 2]], 
+            'view_post' => [1 => $capOther, 2 => $capOther, 3 => $capOther],
+            'publish_post' => [1 => $capOther, 2 => $capOther, 3 => $capOther],
+            'edit_post' => [1 => $capOther, 2 => $capOther, 3 => $capSelf],
+            'remove_post' => [1 => $capOther, 2 => $capOther, 3 => $capSelf],
             
-            'manage_roles' => [[1]], 
+            'view_user' => [1 => $capOther, 2 => $capSelf, 3 => $capSelf],
+            'publish_user' => [1 => $capOther],
+            'edit_user' => [1 => $capOther, 2 => $capSelf, 3 => $capSelf],
+            'remove_user' => [1 => $capOther],
             
-            'manage_caps' => [[1]], 
+            'view_comment' => [1 => $capOther, 2 => $capOther, 3 => $capOther],
+            'publish_comment' => [1 => $capOther, 2 => $capOther, 3 => $capOther],
+            'edit_comment' => [1 => $capOther, 2 => $capOther, 3 => $capSelf],
+            'remove_comment' => [1 => $capOther, 2 => $capOther, 3 => $capSelf],
             
-            'view_my_user' => [[1]],
-            'view_other_users' => [[1]],
-            'publish_users' => [[1]], 
-            'edit_my_user' => [[1, 2, 3]], 
-            'edit_other_users' => [[1]], 
-            'remove_my_user' => [[1, 2, 3]], 
-            'remove_other_users' => [[1]], 
+            'view_file' => [1 => $capOther, 2 => $capOther, 3 => $capSelf],
+            'publish_file' => [1 => $capOther, 2 => $capOther, 3 => $capOther],
+            'edit_file' => [1 => $capOther, 2 => $capOther, 3 => $capSelf],
+            'remove_file' => [1 => $capOther, 2 => $capOther, 3 => $capSelf],
             
-            'accept_manage' => [[1]],
-            
-            'manage_langs' => [[1]], 
-            
-            'manage_cats' => [[1]], 
-            
-            'manage_tags' => [[1, 2]], 
-             
-            'view_my_comment' => [[1, 2, 3]],
-            'view_other_comments' => [[1, 2, 3]],
-            'publish_comments' => [[1, 2, 3]], 
-            'edit_my_comment' => [[1, 2, 3]], 
-            'edit_other_comments' => [[1, 2]], 
-            'remove_my_comment' => [[1, 2, 3]],
-            'remove_other_comments' => [[1, 2]], 
-            
-            'manage_menus' => [[1]], 
-            
-            'view_my_file' => [[1, 2, 3]], 
-            'view_other_files' => [[1, 2]], 
-            'publish_files' => [[1, 2, 3]], 
-            'edit_my_file' => [[1, 2, 3]],  
-            'edit_other_files' => [[1, 2]],
-            'remove_my_file' => [[1, 2, 3]],
-            'remove_other_files' => [[1, 2]], 
-            
-            'manage_options' => [[1]]
+            'manage_roles' => [1 => $capOther],
+            'manage_cap' => [1 => $capOther],
+            'accept_manage' => [1 => $capOther, 2 => $capOther],
+            'manage_langs' => [1 => $capOther], 
+            'manage_cats' => [1 => $capOther],
+            'manage_tags' => [1 => $capOther, 2 => $capOther],
+            'manage_menus' => [1 => $capOther],
+            'manage_options' => [1 => $capOther]
         ];
         
-        foreach ($caps as $cap => $attrs) {
-            $data = ['name' => $cap, 'label' => $cap];
-            $cap_item = Cap::create($data);
-            $cap_item->roles()->attach($attrs[0]);
+        foreach ($caps as $cap => $arrLevel) {
+            $data = ['name' => $cap, 'label' => $this->toLabel($cap)];
+            $capItem = Cap::create($data);
+            $roleAttrs = [];
+            foreach ($arrLevel as $roleId => $level) {
+                $roleAttrs[$roleId] = ['level' => $level];
+            }
+            $capItem->roles()->attach($roleAttrs);
         }
         
         $this->insertSeeder();
+    }
+    
+    public function toLabel($cap) {
+        $arrWords = explode('_', $cap);
+        $arrLabel = [];
+        foreach ($arrWords as $word) {
+            array_push($arrLabel, ucfirst($word));
+        }
+        return implode(' ', $arrLabel);
     }
 }

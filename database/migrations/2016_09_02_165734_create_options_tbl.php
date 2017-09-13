@@ -12,6 +12,9 @@ class CreateOptionsTbl extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('options')) {
+            return;
+        }
         Schema::create('options', function (Blueprint $table) {
             $table->increments('option_id');
             $table->string('option_key');

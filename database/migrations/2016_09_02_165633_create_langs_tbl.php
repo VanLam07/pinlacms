@@ -12,6 +12,9 @@ class CreateLangsTbl extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('langs')) {
+            return;
+        }
         Schema::create('langs', function(Blueprint $table){
            $table->string('name');
            $table->string('code', 3)->unique();

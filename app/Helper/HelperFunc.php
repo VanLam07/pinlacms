@@ -34,6 +34,22 @@ if (!function_exists('checkAuth')) {
 
 }
 
+if (!function_exists('rsNames')) {
+    function rsNames($name) {
+        return [
+            'names' => [
+                'index' => $name . ".index",
+                'create' => $name . ".create",
+                'store' => $name . ".store",
+                'show' => $name . ".show",
+                'edit' => $name . ".edit",
+                'update' => $name . ".update",
+                'destroy' => $name . ".destroy"
+            ]
+        ];
+    }
+}
+
 if (!function_exists('showMessage')) {
 
     function showMessage($txt_class = null, $box_class = null) {

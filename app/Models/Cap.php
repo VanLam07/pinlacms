@@ -18,36 +18,16 @@ class Cap extends BaseModel
 
     public function getData($args = []) {
         $opts = [
-            'fields' => ['*'],
             'orderby' => 'name',
             'order' => 'asc',
-            'per_page' => -1,
-            'exclude' => [],
-            'key' => '',
-            'page' => 1
         ];
-        
         $opts = array_merge($opts, $args);
-        
-        $result = self::whereNotIn('name', $opts['exclude'])
-                ->search($opts['key'])
-                ->orderby($opts['orderby'], $opts['order'])
-                ->select($opts['fields']);
-        
-        if($opts['per_page'] == -1){
-            $result = $result->get();
-        }else{
-            $result = $result->paginate($opts['per_page']);
-        }
-        return $result;
-    }
-    
-    public function scopeSearch($query, $key){
-        return $query->where('name', 'like', "%$key%");
+        return parent::getData($opts);
     }
     
     public function roles() {
-        return $this->belongsToMany('\App\Models\Role', 'role_cap', 'cap_name', 'role_id');
+        return $this->belongsToMany('\App\Models\Role', 'role_cap', 'cap_name', 'role_id')
+                ->withPivot('level');
     }
     
     public function updateData($id, $data) {

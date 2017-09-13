@@ -12,6 +12,9 @@ class CreateMediasTbl extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('medias')) {
+            return;
+        }
         Schema::create('medias', function(Blueprint $table){
             $table->increments('id');
             $table->integer('thumb_id')->unsigned()->nullable();

@@ -25,9 +25,22 @@ class User extends Authenticatable
     public function caps(){
         $roles = $this->roles;
         $caps = [];
-        if (!$roles->isEmpty()) {
-            foreach ($roles as $role) {
-                $caps = array_unique(array_merge($caps, $role->caps->pluck('name')->toArray()));
+        if ($roles->isEmpty()) {
+            return $caps;
+        }
+        foreach ($roles as $role) {
+            $listCaps = $role->getListCaps();
+            if (!$listCaps) {
+                continue;
+            }
+            foreach ($listCaps as $key => $level) {
+                if (isset($caps[$key])) {
+                    if ($caps[$key] < $level) {
+                        $caps[$key] = $level;
+                    }
+                } else {
+                    $caps[$key] = $level;
+                }
             }
         }
         return $caps;
@@ -41,7 +54,12 @@ class User extends Authenticatable
         if (!$userCaps) {
             return false;
         }
-        return !array_diff($caps, $userCaps);
+        foreach ($caps as $cap) {
+            if (array_key_exists($cap, $userCaps)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public function avatar() {

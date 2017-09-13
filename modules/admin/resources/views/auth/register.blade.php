@@ -6,7 +6,7 @@
 
 <div class="row">
     
-    <div class="col-sm-6 ml-auto mr-auto">
+    <div class="col-sm-6 col-sm-offset-3">
         <h1 class="page-header">@lang('admin::view.register')</h1>
         <br />
         

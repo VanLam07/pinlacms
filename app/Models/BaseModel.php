@@ -9,11 +9,12 @@ use Validator;
 class BaseModel extends Model {
     
     protected $error;
-    
+
     const STT_ACTIVE = 1;
     const STT_DISABLE = 2;
     const STT_BANNED = 3;
     const STT_TRASH = 0;
+    const PER_PAGE = 20;
 
     public function validator(array $attrs, array $rule = [], array $message = []) {
         $valid = Validator::make($attrs, ($rule) ? $rule : $this->rules(), $message);
@@ -26,6 +27,48 @@ class BaseModel extends Model {
     
     public function getError() {
         return $this->error;
+    }
+  
+    
+    public function getData($data) {
+        $opts = [
+            'fields' => ['*'],
+            'orderby' => 'created_at',
+            'order' => 'desc',
+            'per_page' => self::PER_PAGE,
+            'exclude_key' => 'id',
+            'exclude' => [],
+            'page' => 1,
+            'filters' => []
+        ];
+        
+        $opts = array_merge($opts, $data);
+        
+        $result = self::select($opts['fields']);
+        if ($opts['exclude']) {
+            $result->whereNotIn($opts['exclude_key'], $opts['exclude']);
+        }
+        if ($opts['filters']) {
+            $this->filterData($result, $opts['filters']);
+        }
+        $result->orderby($opts['orderby'], $opts['order']);
+        
+        if($opts['per_page'] == -1){
+            return $result->get();
+        }
+        return $result->paginate($opts['per_page']);
+    }
+    
+    public function filterData(&$collection, $filters) {
+        if ($filters && is_array($filters)) {
+            foreach ($filters as $key => $value) {
+                if (is_array($value)) {
+                    $collection->whereIn($key, $value);
+                } else {
+                    $collection->where($key, 'like', "%$value%");
+                }
+            }
+        }
     }
 
     public function get_author_id($id, $author_field = 'author_id') {

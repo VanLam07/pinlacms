@@ -12,6 +12,9 @@ class CreateFilesTbl extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('files')) {
+            return;
+        }
         Schema::create('files', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');

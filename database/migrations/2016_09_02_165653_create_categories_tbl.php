@@ -12,6 +12,9 @@ class CreateCategoriesTbl extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('taxs')) {
+            return;
+        }
         Schema::create('taxs', function(Blueprint $table){
            $table->increments('id');
            $table->integer('image_id')->unsigned()->nullable();

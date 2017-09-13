@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-sm-6 mr-auto ml-auto">
+    <div class="col-sm-6 col-sm-offset-3">
         <br />
         <br />
         <h1 class="page-header">{{trans('admin::view.forget_password')}}</h1>

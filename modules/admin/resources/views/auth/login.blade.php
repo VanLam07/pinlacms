@@ -6,7 +6,7 @@
 
 <div class="row">
     
-    <div class="col-sm-6 mr-auto ml-auto">
+    <div class="col-sm-6 col-sm-offset-3">
         <h1 class="page-header">{{trans('admin::view.login')}}</h1>
         <br />
         

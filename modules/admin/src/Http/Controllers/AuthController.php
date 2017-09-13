@@ -201,8 +201,8 @@ class AuthController extends Controller {
 
     public function updatePassword(Request $request) {
         $valid = Validator::make($request->all(), [
-                    'old_password' => 'required',
-                    'new_password' => 'required|confirmed'
+            'old_password' => 'required',
+            'new_password' => 'required|confirmed'
         ]);
         if ($valid->fails()) {
             return redirect()->back()->withInput()->withErrors($valid->errors());
@@ -210,75 +210,12 @@ class AuthController extends Controller {
         $user = auth()->user();
         $check = \Hash::check($request->input('old_password'), $user->password);
         if (!$check) {
-            return redirect()->back()->withInput()->with('error_mess', trans('auth.invalid_pass'));
+            return redirect()->back()->withInput()->with('error_mess', trans('admin::message.invalid_pass'));
         }
-        if (!$this->user->find($user->id)->update(['password' => bcrypt($request->input('new_password'))])) {
-            return redirect()->back()->withInput()->with('error_mess', trans('auth.error_database'));
-        }
-        return redirect()->back()->with('error_mess', trans('auth.updated_pass'));
+        $this->user->find($user->id)->update(['password' => bcrypt($request->input('new_password'))]);
+        
+        return redirect()->back()->with('succ_mess', trans('admin::message.updated_pass'));
     }
 
-    public function redirectFacebook() {
-        return Socialite::driver('facebook')->redirect();
-    }
-
-    public function handleFacebook() {
-        $fb_user = Socialite::driver('facebook')->user();
-        $email = $fb_user->getEmail();
-        $user = $this->user->where('email', $email)->first();
-        if ($user) {
-            if ($user->type == 'facebook') {
-                auth()->login($user);
-                return redirect()->intended(route('home'));
-            }
-            return redirect()->back()->with('error_mess', trans('auth.exists'));
-        } else {
-            $user = $this->user->create([
-                'name' => $fb_user->getName(),
-                'slug' => str_slug($fb_user->getName()),
-                'type' => 'facebook',
-                'email' => $fb_user->getEmail(),
-                'password' => $fb_user->getId(),
-                'role_id' => 3,
-                'image_url' => $fb_user->getAvatar()
-            ]);
-            $user->remember_token = $fb_user->token;
-            $user->save();
-            auth()->login($user);
-            return redirect()->intended(route('home'));
-        }
-    }
-    
-    public function redirectGoogle() {
-        return Socialite::driver('google')->redirect();
-    }
-    
-    public function handleGoogle() {
-        $gg_user = Socialite::driver('google')->user();
-        $email = $gg_user->email;
-        $user = $this->user->where('email', $email)->first();
-        if ($user) {
-            if ($user->type == 'google') {
-                auth()->login($user);
-                return redirect()->intended(route('home'));
-            }
-            return redirect()->back()->with('error_mess', trans('auth.exists'));
-        } else {
-            $user = $this->user->create([
-                'name' => $gg_user->getName(),
-                'slug' => str_slug($gg_user->getName()),
-                'type' => 'google',
-                'email' => $gg_user->getEmail(),
-                'password' => $gg_user->getId(),
-                'role_id' => 3,
-                'image_url' => $gg_user->getAvatar()
-            ]);
-            $user->remember_token = $gg_user->token;
-            $user->save();
-            auth()->login($user);
-            return redirect()->intended(route('home'));
-        }
-    }
-    
 }
 
