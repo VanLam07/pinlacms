@@ -3,48 +3,53 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Admin\Facades\AdConst;
+use Illuminate\Validation\ValidationException;
 use Exception;
 use Validator;
 
 class BaseModel extends Model {
     
-    protected $error;
-
-    const STT_ACTIVE = 1;
-    const STT_DISABLE = 2;
-    const STT_BANNED = 3;
-    const STT_TRASH = 0;
-    const PER_PAGE = 20;
-
+    public function isUseSoftDelete() {
+        return false;
+    }
+    
     public function validator(array $attrs, array $rule = [], array $message = []) {
-        $valid = Validator::make($attrs, ($rule) ? $rule : $this->rules(), $message);
+        $valid = Validator::make($attrs, 
+                $rule ? $rule : $this->rules(), 
+                $message);
         if ($valid->fails()) {
-            $this->error = $valid->errors();
-            throw new Exception($this->error, 422);
+            throw new ValidationException($valid, 422);
         }
         return true;
     }
-    
-    public function getError() {
-        return $this->error;
-    }
-  
     
     public function getData($data) {
         $opts = [
             'fields' => ['*'],
             'orderby' => 'created_at',
             'order' => 'desc',
-            'per_page' => self::PER_PAGE,
+            'per_page' => AdConst::PER_PAGE,
+            'status' => [],
             'exclude_key' => 'id',
             'exclude' => [],
             'page' => 1,
-            'filters' => []
+            'filters' => [],
         ];
         
         $opts = array_merge($opts, $data);
         
         $result = self::select($opts['fields']);
+        if ($opts['status']) {
+            if (!is_array($opts['status'])) {
+                $opts['status'] = [$opts['status']];
+            }
+            if ($opts['status'][0] == AdConst::STT_TRASH) {
+                $result->onlyTrashed();
+            } else {
+                $result->whereIn('status', $opts['status']);
+            }
+        }
         if ($opts['exclude']) {
             $result->whereNotIn($opts['exclude_key'], $opts['exclude']);
         }
@@ -65,7 +70,9 @@ class BaseModel extends Model {
                 if (is_array($value)) {
                     $collection->whereIn($key, $value);
                 } else {
-                    $collection->where($key, 'like', "%$value%");
+                    if ($value) {
+                        $collection->where($key, 'like', "%$value%");
+                    }
                 }
             }
         }
@@ -108,6 +115,27 @@ class BaseModel extends Model {
     public function destroyData($ids) {
         return self::destroy($ids);
     }
+    
+    public function forceDeleteData($ids) {
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        $items = self::withTrashed()
+                ->whereIn('id', $ids)->get();
+        if (!$items->isEmpty()) {
+            foreach ($items as $item) {
+                $item->forceDelete();
+            }
+        }
+    }
+    
+    public function restoreData($ids) {
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        return self::whereIn('id', $ids)
+                ->restore();
+    }
 
     public function actions($request) {
         $valid = Validator::make($request->all(), [
@@ -115,32 +143,35 @@ class BaseModel extends Model {
             'item_ids.*' => 'required' 
         ]);
         if ($valid->fails()) {
-            $this->error = $valid->errors();
-            throw new Exception($this->error, 422);
+            throw new ValidationException($valid, 422);
         }
 
         $item_ids = $request->input('item_ids');
         if (!$item_ids) {
-            $this->error = trans('message.no_item');
-            throw new Exception($this->error);
+            throw new Exception(trans('admin::message.no_item'));
         }
         $action = $request->input('action');
         switch ($action) {
             case 'restore':
-                $this->changeStatus($item_ids, STT_ACTIVE);
+                $this->restoreData($item_ids);
+            case 'publish':
+                $this->changeStatus($item_ids, AdConst::STT_PUBLISH);
                 break;
-            case 'ban':
-                $this->changeStatus($item_ids, STT_BANNED);
+            case 'draft': 
+                $this->changeStatus($item_ids, AdConst::STT_DRAFT);
                 break;
             case 'trash':
-            case 'delete':
-                $this->changeStatus($item_ids, STT_TRASH);
-                break;
-            case 'disable':
-                $this->changeStatus($item_ids, STT_DISABLE);
-                break;
-            case 'remove':
                 $this->destroyData($item_ids);
+                break;
+                break;
+            case 'delete':
+                if ($this->isUseSoftDelete()) {
+                    $this->forceDeleteData($item_ids);
+                } else {
+                    $this->destroyData($item_ids);
+                }
+                break;
+            case defalt:
                 break;
         }
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Facades\AdView;
+namespace Admin\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

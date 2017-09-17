@@ -5,7 +5,7 @@ namespace App\Models;
 class Role extends BaseModel {
 
     protected $table = 'roles';
-    protected $fillable = ['label', 'name', 'default'];
+    protected $fillable = ['label', 'name', 'default', 'list_caps'];
     public $timestamps = false;
 
     public function rules($id = null) {
@@ -17,19 +17,10 @@ class Role extends BaseModel {
 
     public function getData($args = []) {
         $opts = [
-            'field' => ['*'],
-            'orderby' => 'id',
+            'orderby' => 'name',
             'order' => 'asc',
-            'per_page' => 20,
-            'key' => '',
-            'page' => 1
         ];
-
-        $opts = array_merge($opts, $args);
-
-        return self::where('name', 'like', '%' . $opts['key'] . '%')
-                        ->orderby($opts['orderby'], $opts['order'])
-                        ->paginate($opts['per_page']);
+        return parent::getData(array_merge($opts, $args));
     }
 
     public function getDefaultId() {
@@ -43,10 +34,19 @@ class Role extends BaseModel {
     public function updateData($id, $data) {
         $this->validator($data, $this->rules($id));
 
-        $item = self::find($id);
-        if (isset($data['caps']) && $data['caps']) {
-            $item->caps()->sync($data['caps']);
+        $item = self::findOrFail($id);
+        if (isset($data['caps_level']) && $data['caps_level']) {
+            $dataCaps = [];
+            foreach ($data['caps_level'] as $capName => $level) {
+                if ($level) {
+                    $dataCaps[$capName] = ['level' => $level];
+                }
+            }
+            $item->caps()->sync($dataCaps);
+        } else {
+            $item->caps()->sync([]);
         }
+        $item->updateListCaps();
         
         $fillable = self::getFillable();
         $data = array_only($data, $fillable);
@@ -58,26 +58,29 @@ class Role extends BaseModel {
                 ->withPivot('level');
     }
     
-    public function updateListCaps() {
+    public function updateListCaps($save = true) {
         $roleCaps = [];
         $caps = $this->caps;
-        if ($caps->isEmpty()) {
-            return;
-        }
-        foreach ($caps as $cap) {
-            if (isset($roleCaps[$cap->name])) {
-                if ($roleCaps[$cap->name] < $cap->pivot->level) {
+        if (!$caps->isEmpty()) {
+            foreach ($caps as $cap) {
+                if (isset($roleCaps[$cap->name])) {
+                    if ($roleCaps[$cap->name] < $cap->pivot->level) {
+                        $roleCaps[$cap->name] = $cap->pivot->level;
+                    }
+                } else {
                     $roleCaps[$cap->name] = $cap->pivot->level;
                 }
-            } else {
-                $roleCaps[$cap->name] = $cap->pivot->level;
             }
         }
-        if (!$roleCaps) {
-            return;
+        if ($roleCaps) {
+            $this->list_caps = serialize($roleCaps);
+        } else {
+            $this->list_caps = null;
         }
-        $this->list_caps = serialize($roleCaps);
-        $this->save();
+        if ($save) {
+            $this->save();
+        }
+        return $this;
     }
     
     public function getListCaps() {
@@ -86,12 +89,24 @@ class Role extends BaseModel {
         }
         return unserialize($this->list_caps);
     }
-
-    public function str_default() {
-        if ($this->default == 0) {
-            return trans('manage.no');
+    
+    public function listCapsLevel() {
+        $caps = $this->caps;
+        if ($caps->isEmpty()) {
+            return [];
         }
-        return trans('manage.yes');
+        $list = [];
+        foreach ($caps as $cap) {
+            $list[$cap->name] = $cap->pivot->level;
+        }
+        return $list;
+    }
+
+    public function strDefault() {
+        if ($this->default == 0) {
+            return trans('admin::view.no');
+        }
+        return trans('admin::view.yes');
     }
 
 }

@@ -1,82 +1,111 @@
-@extends('layouts.manage')
+@extends('admin::layouts.manage')
 
-@section('title', trans('manage.man_roles'))
-
-@section('page_title', trans('manage.edit'))
+@section('title', trans('admin::view.man_roles'))
 
 @section('content')
 
+    {!! showMessage() !!}
 
-        
-        {!! show_messes() !!}
-        
-        @if($item)
-        {!! Form::open(['method' => 'put', 'route' => ['role.update', $item->id]]) !!}
-        
-        <div class="form-group">
-            <label>{{trans('manage.name')}} (*)</label>
-            {!! Form::text('name', $item->name, ['class' => 'form-control', 'placeholder' => trans('manage.name')]) !!}
-            {!! error_field('name') !!}
-        </div>
-        
-        <div class="form-group">
-            <label>{{trans('manage.description')}}</label>
-            {!! Form::text('label', $item->label, ['class' => 'form-control', 'placeholder' => trans('manage.description')]) !!}
-            {!! error_field('label') !!}
-        </div>
-        
-        <div class="form-group">
-            <label>{{trans('manage.default')}}</label>
-            {!! Form::select('default', [0 => 'No', 1 => 'Yes'], $item->default, ['class' => 'form-control']) !!}
-        </div>
-        
+    {!! Form::open(['method' => 'put', 'route' => ['admin::role.update', $item->id]]) !!}
+
         <div class="form-group row">
-            <label class="col-sm-2">Danh sách quyền</label>
-            <div class="col-sm-10">
-                <div class="box-head">
-                    <div class="head-bar">
-                        <label><input type="checkbox" class="item-all"> Chọn tất cả</label>
-                    </div>
-                </div>
-                <div class="role-box">
+            <label class="col-sm-2">{{ trans('admin::view.name') }} (*)</label>
+            <div class="col-sm-6">
+                {!! Form::text('name', $item->name, ['class' => 'form-control', 'placeholder' => trans('admin::view.name')]) !!}
+                {!! errorField('name') !!}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2">{{ trans('admin::view.description') }}</label>
+            <div class="col-sm-6">
+                {!! Form::text('label', $item->label, ['class' => 'form-control', 'placeholder' => trans('admin::view.description')]) !!}
+                {!! errorField('label') !!}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2">{{ trans('admin::view.default') }}</label>
+            <div class="col-sm-6">
+                {!! Form::select('default', [0 => 'No', 1 => 'Yes'], $item->default, ['class' => 'form-control']) !!}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-2">
+                <h4>@lang('admin::view.list_caps')</h4>
+            </div>
+            <div class="col-sm-6">
+                <div class="table-responsive">
                     @if(!$caps->isEmpty())
-                    <ul class="list-unstyled row">
-                        <?php $user_caps = $item->caps->lists('name')->toArray(); ?>
-                        @foreach($caps as $cap)
-                        <li class="col-sm-4"><label><input type="checkbox" class="item-role"  name="caps[]" value="{{ $cap->name }}" <?php echo in_array($cap->name, $user_caps) ? 'checked' : ''; ?>> {{ $cap->name }}</label></li>
-                        @endforeach
-                    </ul>
+                    <?php 
+                    $userCaps = $item->listCapsLevel();
+                    $levelCaps = AdView::getCapsLevel();
+                    ?>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>@lang('admin::view.permission')</th>
+                                @foreach($levelCaps as $key => $label)
+                                <th>
+                                    <label><input type="checkbox" class="item-all" data-level="{{ $key }}"> {{ $label }}</label>
+                                </th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($caps as $cap)
+                            <tr>
+                                <td>
+                                    <label title="{{ $cap->label }}">
+                                        {{ $cap->name }}
+                                    </label>
+                                </td>
+                                @foreach(array_keys($levelCaps) as $keyCap)
+                                <td>
+                                    <?php 
+                                    $capChecked = ''; 
+                                    if (isset($userCaps[$cap->name]) && $userCaps[$cap->name] == $keyCap) {
+                                        $capChecked = 'checked';
+                                    }
+                                    ?>
+                                    <label class="display_block">
+                                        <input type="radio" name="caps_level[{{ $cap->name }}]" 
+                                               value="{{ $keyCap }}" {{ $capChecked }} 
+                                               class="item-role" data-level="{{ $keyCap }}">
+                                    </label>
+                                </td>
+                                @endforeach
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                     @endif
                 </div>
             </div>
         </div>
-        
-        <a href="{{route('role.index')}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('manage.back')}}</a>
-        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('manage.update')}}</button>
-        
-        {!! Form::close() !!}
-        @else
-        <p class="alert alert-danger">{{trans('manage.no_item')}}</p>
-        @endif
 
+        <div class="text-center">
+            <a href="{{ route('admin::role.index') }}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{ trans('admin::view.back') }}</a>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('admin::view.update') }}</button>
+        </div>
+
+    {!! Form::close() !!}
 
 @stop
 
 @section('foot')
 <script>
+    var MAX_LEVEL = <?php echo Admin\Facades\AdView\AdView::CAP_OTHER; ?>;
     (function ($) {
         $('.item-all').click(function () {
-            if ($(this).is(':checked')) {
-                $('.item-role').prop('checked', true);
-            } else {
-                $('.item-role').prop('checked', false);
-            }
+            var level = $(this).data('level');
+            $('.item-role[data-level="'+ level +'"]').prop('checked', $(this).is(':checked'));
         });
         $('.item-role').change(function () {
-            if ($('.item-role:checked').length === $('.item-role').length) {
-                $('.item-all').prop('checked', true);
-            } else {
-                $('.item-all').prop('checked', false);
+            for (var level = 0; level <= MAX_LEVEL; level++) {
+                $('.item-all[data-level="'+ level +'"]').prop('checked', 
+                        $('.item-role[data-level="'+ level +'"]:checked').length === $('.item-role[data-level="'+ level +'"]').length);
             }
         }).change();
     })(jQuery);

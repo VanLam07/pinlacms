@@ -6,10 +6,14 @@
         <title>Pinla CMS - @yield('title', 'Pinla CMS')</title>
         
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        
         <link rel="stylesheet" href="/public/css/bootstrap.min.css">
         <link rel="stylesheet" href="/public/css/font-awesome.min.css">
         <link rel="stylesheet" href="/public/plugins/adminlte/css/AdminLTE.css">
         <link rel="stylesheet" href="/public/plugins/adminlte/css/skins/_all-skins.css">
+        
+        <link rel="stylesheet" href="/public/modules/admin/css/main.css">
+        <link rel="stylesheet" href="/public/modules/admin/css/screen.css">
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -43,6 +47,8 @@
                 <!-- Main content -->
                 <section class="content">
                     
+                    @yield('nav_status')
+                    
                     @yield('content')
                     
                 </section>
@@ -60,9 +66,15 @@
         <!-- ./wrapper -->
 
         <script src="/public/js/jquery.min.js"></script>
+        <script src="/public/js/jquery-ui.min.js"></script>
         <script src="/public/js/popper.min.js"></script>
         <script src="/public/js/bootstrap.min.js"></script>
         <script src="/public/plugins/adminlte/js/adminlte.min.js"></script>
+        <script src="/public/js/bootbox.min.js"></script>
+        
+        <script src="/public/modules/admin/js/script.js"></script>
+        
+        @yield('foot')
         
     </body>
 </html>

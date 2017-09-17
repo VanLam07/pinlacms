@@ -2,6 +2,11 @@
 
 return [
     'action_success' =>     'Thực hiện thành công',
+    'are_you_sure_delete' => 'Bạn chắc chắn muốn xóa?',
+    'are_you_sure_trash' => 'Bạn chắc chắn muốn xóa?',
+    'are_you_sure_delete_forever' => 'Bạn chắc chắn muốn xóa vĩnh viễn?',
+    'are_you_sure_restore' => 'Bạn chắc chắn muốn phục hồi?',
+    'are_you_sure_draft' => 'Bạn chắc chắn muốn chuyển thành bản nháp?',
     'create_success' =>     'Thêm mới thành công',
     'destroy_success' =>    'Xóa thành công!',
     'do_success' =>         'Thực hiện thành công!',
