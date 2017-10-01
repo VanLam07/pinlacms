@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 use Exception;
+use DB;
 
 class BaseController extends Controller {
     
@@ -20,8 +21,34 @@ class BaseController extends Controller {
         }
     }
     
-    public function navParams() {
-        return view()->composer('somePram', 'oke');
+    public function store(Request $request) {
+        DB::beginTransaction();
+        try {
+            $this->model->insertData($request->all());
+            DB::commit();
+            return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
+        } catch (ValidationException $ex) {
+            DB::rollback();
+            return redirect()->back()->withInput()->withErrors($ex->errors());
+        } catch (Exception $ex) {
+            DB::rollback();
+            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
+        }
+    }
+    
+    public function update($id, Request $request) {
+        DB::beginTransaction();
+        try {
+            $this->model->updateData($id, $request->all());
+            DB::commit();
+            return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
+        } catch (ValidationException $ex) {
+            DB::rollback();
+            return redirect()->back()->withInput()->withErrors($ex->errors());
+        } catch (Exception $ex) {
+            DB::rollback();
+            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
+        }
     }
     
 }

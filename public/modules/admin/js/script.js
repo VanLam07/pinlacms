@@ -68,10 +68,10 @@
     });
     
     
-//    $('.new_tags').select2({
-//        tags: true
-//    });
-//    $('.av_tags').select2();
+    $('.new_tags').select2({
+        tags: true
+    });
+    $('.av_tags').select2();
 
     $('.lang-tabs li a').click(function (e) {
         var mce_iframe = $('.mce-edit-area iframe');
@@ -105,7 +105,7 @@
         for (var i in files) {
             var file = files[i];
             preview_html += '<p class="file_item">' +
-                    '<img src="' + file.url + '" class="img-fluid" alt="" title="">' +
+                    '<img src="' + file.url + '" class="img-responsive" alt="" title="">' +
                     '<a class="f_close"></a>' +
                     '<input type="hidden" name="file_ids[]" value="' + file.id + '">' +
                     '</p>';

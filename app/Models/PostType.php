@@ -3,17 +3,30 @@
 namespace App\Models;
 
 use App\Models\Tax;
+use App\Models\BaseModel;
+use Admin\Facades\AdConst;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PostType extends BaseModel
 {
     protected $table = 'posts';
+    protected $tblDesc = 'post_desc';
     public $dates = ['trashed_at'];
-    protected $fillable = ['thumb_id', 'thumb_ids', 'author_id', 'status', 'comment_status', 'comment_count', 'post_type', 'views', 'template', 'trased_at', 'created_at', 'updated_at'];
+    protected $fillable = ['thumb_id', 'thumb_ids', 'author_id', 'status', 'comment_status', 
+        'comment_count', 'post_type', 'views', 'template', 'trased_at', 'created_at', 'updated_at'];
+    
+    use SoftDeletes;
+    
+    public function isUseSoftDelete() {
+        return true;
+    }
 
     public function joinLang($lang = null) {
-        $locale = ($lang) ? $lang : current_locale();
-        return $this->join('post_desc as pd', 'posts.id', '=', 'pd.post_id')
-                        ->where('pd.lang_code', '=', $locale);
+        if (!$lang) {
+            $lang = currentLocale();
+        }
+        return $this->join($this->tblDesc.' as pd', 'posts.id', '=', 'pd.post_id')
+                        ->where('pd.lang_code', '=', $lang);
     }
 
     public function joinCats($ids = []) {
@@ -24,8 +37,10 @@ class PostType extends BaseModel
                 });
     }
 
-    public function getCats($lang=null) {
-        $lang = $lang ? $lang : current_locale();
+    public function getCats($lang = null) {
+        if (!$lang) {
+            $lang = currentLocale();
+        }
         return $this->belongsToMany('\App\Models\Tax', 'post_tax', 'post_id', 'tax_id')
                         ->join('tax_desc as td', 'taxs.id', '=', 'td.tax_id')
                         ->where('td.lang_code', '=', $lang)
@@ -76,17 +91,10 @@ class PostType extends BaseModel
         }
         return null;
     }
-
-    public function str_status() {
-        if ($this->status == 0) {
-            return trans('manage.trash');
-        }
-        return trans('manage.active');
-    }
     
     public function rules($update = false) {
         if (!$update) {
-            $code = current_locale();
+            $code = currentLocale();
             return [
                 $code . '.title' => 'required'
             ];
@@ -97,15 +105,16 @@ class PostType extends BaseModel
         ];
     }
 
-    public function getData($type='post', $args = []) {
+    public function getData($type = 'post', $args = []) {
         $opts = [
             'fields' => ['posts.*', 'pd.*'],
-            'status' => 1,
+            'status' => [AdConst::STT_PUBLISH],
             'orderby' => 'posts.created_at',
             'order' => 'desc',
-            'per_page' => 20,
+            'per_page' => AdConst::PER_PAGE,
+            'exclude_key' => 'posts.id',
             'exclude' => [],
-            'key' => '',
+            'filters' => [],
             'cats' => [],
             'tags' => [],
             'with_cats' => false,
@@ -113,31 +122,44 @@ class PostType extends BaseModel
         ];
 
         $opts = array_merge($opts, $args);
-
+        
         $result = $this->joinLang();
 
         if ($opts['cats']) {
             $cat_ids = $this->inCats($opts['cats']);
-            $result = $result->join('post_tax as pt', function($join) use ($cat_ids) {
+            $result->join('post_tax as pt', function($join) use ($cat_ids) {
                 $join->on('posts.id', '=', 'pt.post_id')
                         ->whereIn('tax_id', $cat_ids);
             });
         }
         if ($opts['tags']) {
             $tag_ids = $opts['tags'];
-            $result = $result->join('post_tax as pt', function($join) use ($tag_ids) {
+            $result->join('post_tax as pt', function($join) use ($tag_ids) {
                 $join->on('posts.id', '=', 'pt.post_id')
                         ->whereIn('tax_id', $tag_ids);
             });
         }
 
-        $result = $result->where('post_type', $type)
-                ->whereNotNull('pd.title')
-                ->where('posts.status', $opts['status'])
-                ->where('pd.title', 'like', '%' . $opts['key'] . '%')
-                ->whereNotIn('posts.id', $opts['exclude'])
-                ->select($opts['fields'])
-                ->groupBy('posts.id')
+        $result->where('post_type', $type)
+                ->whereNotNull('pd.title');
+        
+        if ($opts['status']) {
+            if (!is_array($opts['status'])) {
+                $opts['status'] = [$opts['status']];
+            }
+            if ($opts['status'][0] == AdConst::STT_TRASH) {
+                $result->onlyTrashed();
+            } else {
+                $result->whereIn('status', $opts['status']);
+            }
+        }
+        if ($opts['exclude']) {
+            $result->whereNotIn('posts.id', $opts['exclude']);
+        }
+        if ($opts['filters']) {
+            $this->filterData($result, $opts['filters']);
+        }
+        $result->select($opts['fields'])
                 ->orderBy($opts['orderby'], $opts['order']);
 
         if ($opts['with_cats']) {
@@ -147,15 +169,13 @@ class PostType extends BaseModel
             $result->with('tags');
         }
 
-        if ($opts['per_page'] == -1) {
-            $result = $result->get();
-        } else {
-            $result = $result->paginate($opts['per_page']);
+        if ($opts['per_page'] > -1) {
+            return $result->paginate($opts['per_page']);
         }
-        return $result;
+        return $result->get();
     }
 
-    public function insertData($data, $type='post') {
+    public function insertData($data, $type = 'post') {
         $this->validator($data, $this->rules());
 
         $data['author_id'] = auth()->id();
@@ -169,10 +189,13 @@ class PostType extends BaseModel
         if (isset($data['gallery_ids']) && $data['gallery_ids']) {
             $data['thumb_ids'] = json_encode($data['gallery_ids']);
         }
+        if (!isset($data['views']) || !$data['views']) {
+            $data['views'] = 0;
+        }
         $data['post_type'] = $type;
         $item = self::create($data);
 
-        $langs = get_langs(['fields' => ['id', 'code']]);
+        $langs = getLangs(['fields' => ['code']]);
 
         if (isset($data['cat_ids'])) {
             $item->cats()->attach($data['cat_ids']);
@@ -216,7 +239,7 @@ class PostType extends BaseModel
         if ($item) {
             return $item;
         }
-        return self::find($id);
+        return self::findOrFail($id);
     }
 
     public function updateData($id, $data) {
@@ -232,13 +255,18 @@ class PostType extends BaseModel
             $time = $data['time'];
             $data['created_at'] = date('Y-m-d H:i:s', strtotime($time['year'] . '-' . $time['month'] . '-' . $time['day'] . ' ' . date('H:i:s')));
         }
+        $hasDel = false;
+        if (isset($data['status']) && $data['status'] == AdConst::STT_TRASH) {
+            $hasDel = true;
+            unset($data['status']);
+        }
         $fillable = $this->getFillable();
         $fill_data = array_only($data, $fillable);
-        $item = self::find($id);
+        $item = self::findOrFail($id);
         $item->update($fill_data);
 
-        $old_tags = $item->tags()->lists('id')->toArray();
-        $old_cats = $item->cats()->lists('id')->toArray();
+        $old_tags = $item->tags()->pluck('id')->toArray();
+        $old_cats = $item->cats()->pluck('id')->toArray();
 
         $item->cats()->detach();
 
@@ -258,7 +286,7 @@ class PostType extends BaseModel
             $item->cats()->attach($old_cats);
         }
 
-        $langs = get_langs(['fields' => ['id', 'code']]);
+        $langs = getLangs(['fields' => ['code']]);
         if (isset($data['new_tags'])) {
             foreach ($data['new_tags'] as $tag) {
                 $newtag = Tax::create(['type' => 'tag', 'count' => 1]);
@@ -279,6 +307,11 @@ class PostType extends BaseModel
         $lang_data['slug'] = (trim($slug) == '') ? str_slug($name) : str_slug($slug);
 
         $item->langs()->sync([$data['lang'] => $lang_data], false);
+        
+        if ($hasDel) {
+            $item->delete();
+        }
+        return $item;
     }
 
     public function destroyData($ids) {

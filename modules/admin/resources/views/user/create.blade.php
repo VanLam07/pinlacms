@@ -1,3 +1,7 @@
+<?php
+use Admin\Facades\AdConst;
+?>
+
 @extends('admin::layouts.manage')
 
 @section('title', trans('admin::view.man_users'))
@@ -45,7 +49,7 @@
         </div>
         
         <div class="text-center">
-            <a href="{{route('admin::user.index', ['status' => 1])}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
+            <a href="{{route('admin::user.index', ['status' => AdConst::STT_PUBLISH])}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
             <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('admin::view.create')}}</button>
         </div>
         

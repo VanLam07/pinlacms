@@ -1,76 +1,70 @@
-@extends('layouts.manage')
+@extends('admin::layouts.manage')
 
-@section('title', trans('manage.man_medias'))
-
-@section('page_title', trans('manage.edit'))
-
-@section('bodyAttrs', 'ng-app="ngFile" ng-controller="FileCtrl"')
+@section('title', trans('admin::view.man_medias'))
 
 @section('content')
 
-{!! show_messes() !!}
+{!! showMessage() !!}
 
-@if($item)
-
-{!! Form::open(['method' => 'put', 'route' => ['media.update', $item->id]]) !!}
+{!! Form::open(['method' => 'put', 'route' => ['admin::media.update', $item->id]]) !!}
 
 <div class="row">
     <div class="col-sm-8">
 
-        @include('manage.parts.lang_edit_tabs', ['route' => 'media.edit'])
+        @include('admin::parts.lang_edit_tabs', ['route' => 'admin::media.edit'])
 
         <div class="form-group">
-            <label>{{trans('manage.name')}} (*)</label>
-            {!! Form::text('locale[name]', $item->name, ['class' => 'form-control', 'placeholder' => trans('manage.name')]) !!}
-            {!! error_field('locale.name') !!}
+            <label>{{trans('admin::view.name')}} (*)</label>
+            {!! Form::text('locale[name]', $item->name, ['class' => 'form-control', 'placeholder' => trans('admin::view.name')]) !!}
+            {!! errorField('locale.name') !!}
         </div>
 
         <div class="form-group">
-            <label>{{trans('manage.slug')}}</label>
-            {!! Form::text('locale[slug]', $item->slug, ['class' => 'form-control', 'placeholder' => trans('manage.slug')]) !!}
+            <label>{{trans('admin::view.slug')}}</label>
+            {!! Form::text('locale[slug]', $item->slug, ['class' => 'form-control', 'placeholder' => trans('admin::view.slug')]) !!}
         </div>
 
         <div class="form-group">
-            <label>{{trans('manage.content')}}</label>
-            {!! Form::textarea('locale[description]', $item->description, ['class' => 'form-control editor_content', 'rows' => 15, 'placeholder' => trans('manage.content')]) !!}
+            <label>{{trans('admin::view.content')}}</label>
+            {!! Form::textarea('locale[description]', $item->description, ['class' => 'form-control', 'rows' => 15, 'placeholder' => trans('admin::view.content')]) !!}
         </div>
         
-        @if(cando('edit_other_posts'))
+
         <div class="form-group">
-            <label>{{trans('manage.created_at')}}</label>
+            <label>{{trans('admin::view.created_at')}}</label>
             <div class="time_group">
                 <div class="t_field">
-                    <span>{{trans('manage.day')}}</span>
+                    <span>{{trans('admin::view.day')}}</span>
                     <select name="time[day]">
-                        {!! range_options(1, 31, $item->created_at->format('d')) !!}
+                        {!! rangeOptions(1, 31, $item->created_at->format('d')) !!}
                     </select>
                 </div>
                 <div class="t_field">
-                    <span>{{trans('manage.month')}}</span>
+                    <span>{{trans('admin::view.month')}}</span>
                     <select name="time[month]">
-                        {!! range_options(1, 12, $item->created_at->format('m')) !!}
+                        {!! rangeOptions(1, 12, $item->created_at->format('m')) !!}
                     </select>
                 </div>
                 <div class="t_field">
-                    <span>{{trans('manage.year')}}</span>
+                    <span>{{trans('admin::view.year')}}</span>
                     <select name="time[year]">
-                        {!! range_options(2010, 2030, $item->created_at->format('Y')) !!}
+                        {!! rangeOptions(2010, 2030, $item->created_at->format('Y')) !!}
                     </select>
                 </div>
             </div>
         </div>
         
         <div class="form-group">
-            <label>{{trans('manage.author')}}</label>
+            <label>{{trans('admin::view.author')}}</label>
             {!! Form::select('author_id', $users, $item->author_id, ['class' => 'form-control']) !!}
         </div>
-        @endif
+
 
     </div>
     <div class="col-sm-4">
 
         <div class="form-group thumb_box" >
-            <label>{{trans('manage.thumbnail')}}</label>
+            <label>{{trans('admin::view.thumbnail')}}</label>
             <div class="thumb_group">
                 <div class="thumb_item">
                     @if ($item->thumbnail)
@@ -82,53 +76,49 @@
                     @endif
                 </div>
             </div>
-            {!! error_field('file_ids') !!}
-            <div><button type="button" class="btn btn-default btn-files-modal" data-href="{{route('file.dialog')}}">{{trans('manage.add_image')}}</button></div>
+            {!! errorField('file_ids') !!}
+            <div><button type="button" class="btn btn-default btn-files-modal" data-href="{{route('admin::file.dialog')}}">{{trans('admin::view.add_image')}}</button></div>
         </div>
         
         <div class="form-group">
-            <label>{{trans('manage.status')}}</label>
-            {!! Form::select('status', [1 => trans('manage.enable'), 0 => trans('manage.disable')], $item->status, ['class' => 'form-control']) !!}
+            <label>{{trans('admin::view.status')}}</label>
+            {!! Form::select('status', AdView::getStatusLabel(false), $item->status, ['class' => 'form-control']) !!}
         </div>
 
         <div class="form-group">
-            <label>{{trans('manage.categories')}}</label>
+            <label>{{trans('admin::view.categories')}}</label>
             <ul class="cat-check-lists">
                 @if($albums)
                 @foreach($albums as $al)
-                <li><label>{!! Form::checkbox('cat_ids[]', $al->id, in_array($al->id, $curr_albums)) !!} {{$al->name}}</label></li>
+                <li><label>{!! Form::checkbox('cat_ids[]', $al->id, in_array($al->id, $currAlbums)) !!} {{$al->name}}</label></li>
                 @endforeach
                 @endif
             </ul>
         </div>
 
         <div class="form-group">
-            <label>{{trans('manage.views')}}</label>
+            <label>{{trans('admin::view.views')}}</label>
             {!! Form::number('views', $item->views, ['class' => 'form-control']) !!}
         </div>
         
         <input type="hidden" name="lang" value="{{$lang}}">
-        {!! error_field('lang') !!}
+        {!! errorField('lang') !!}
 
-        <a href="{{route('media.index', ['status' => 1])}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('manage.back')}}</a>
-        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('manage.update')}}</button>
+        <a href="{{route('admin::media.index', ['status' => 1])}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('admin::view.update')}}</button>
 
     </div>
 </div>
 
 {!! Form::close() !!}
 
-@else
-<p>{{trans('manage.no_item')}}</p>
-@endif
-
 @stop
 
 @section('foot')
-<script src="/plugins/tinymce/tinymce.min.js"></script>
-<script src="/admin_src/js/tinymce_script.js"></script>
+<script src="/public/plugins/tinymce/tinymce.min.js"></script>
+<script src="/public/modules/admin/js/tinymce_script.js"></script>
 
-@include('files.manager')
+@include('admin::file.manager')
 
 @stop
 

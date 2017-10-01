@@ -1,93 +1,62 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Admin\Http\Controllers\BaseController;
 use App\Models\Tax;
-use Illuminate\Validation\ValidationException;
-use App\Exceptions\DbException;
-use DB;
 
-class CatController extends Controller {
+class CatController extends BaseController {
 
-    protected $cat;
+    protected $model;
     protected $locale;
 
     public function __construct(Tax $cat) {
-        canAccess('manage_cats');
+//        canAccess('manage_cats');
         
-        $this->cat = $cat;
-        $this->locale = current_locale();
+        $this->model = $cat;
+        $this->locale = currentLocale();
     }
 
     public function index(Request $request) {
-        $cats = $this->cat->getData('cat', $request->all()); 
-        $tableCats = $this->cat->tableCats($cats); 
-        return view('manage.cat.index', ['items' => $cats, 'tableCats' => $tableCats]);
+        $data = $request->all();
+        $data['fields'] = ['taxs.id', 'taxs.image_id', 'taxs.parent_id', 'taxs.order', 'td.name', 'td.slug'];
+        $items = $this->model->getData('cat', $data);
+        $parent = $items->isEmpty() ? 0 : $items->first()->parent_id;
+        $tableCats = $this->model->tableCats($items, $parent);
+        return view('admin::cat.index', compact('items', 'tableCats'));
     }
 
     public function create() {
-        $parents = $this->cat->getData('cat', [
+        $parents = $this->model->getData('cat', [
             'fields' => ['taxs.id', 'taxs.parent_id', 'td.name'],
             'per_page' => -1,
             'orderby' => 'td.name'
         ]);
-        return view('manage.cat.create', ['parents' => $parents, 'lang' => $this->locale]);
-    }
-
-    public function store(Request $request) {
-        DB::beginTransaction();
-        try {
-            $this->cat->insertData($request->all(), 'cat');
-            DB::commit();
-            return redirect()->back()->with('succ_mess', trans('manage.store_success'));
-        } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        } catch (DbException $ex) {
-            DB::rollBack();
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMess());
-        }
+        return view('admin::cat.create', ['parents' => $parents, 'lang' => $this->locale]);
     }
 
     public function edit($id, Request $request) {
-        $lang = current_locale();
-        if($request->has('lang')){
-            $lang = $request->get('lang');
+        $lang = $request->get('lang');
+        if (!$lang) {
+            $lang = currentLocale();
         }
-        $item = $this->cat->findByLang($id, ['taxs.*', 'td.*'], $lang);
-        $parents = $this->cat->getData('cat', [
+        $item = $this->model->findByLang($id, ['taxs.*', 'td.*'], $lang);
+        $parents = $this->model->getData('cat', [
             'fields' => ['taxs.id', 'taxs.parent_id', 'td.name'],
             'exclude' => [$id],
             'per_page' => -1,
             'orderby' => 'td.name'
         ]);
-        return view('manage.cat.edit', compact('lang', 'item', 'parents'));
-    }
-
-    public function update($id, Request $request) {
-        try {
-            $this->cat->updateData($id, $request->all());
-            return redirect()->back()->with('succ_mess', trans('manage.update_success'));
-        } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        }
+        return view('admin::cat.edit', compact('lang', 'item', 'parents'));
     }
 
     public function destroy($id) {
-        if (!$this->cat->destroy($id)) {
-            return redirect()->back()->with('error_mess', trans('manage.no_item'));
+        if (!$this->model->destroy($id)) {
+            return redirect()->back()->with('error_mess', trans('admin::message.no_item'));
         }
-        return redirect()->back()->with('succ_mess', trans('manage.destroy_success'));
+        return redirect()->back()->with('succ_mess', trans('admin::message.destroy_success'));
     }
 
-    public function multiAction(Request $request) {
-        try {
-            $this->cat->actions($request);
-            return redirect()->back()->withInput()->with('succ_mess', trans('message.action_success'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
-        }
-    }
 
 }

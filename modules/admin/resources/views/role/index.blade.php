@@ -68,5 +68,7 @@ $statuses = [];
     </table>
 </div>
 
+@include('admin::parts.paginate')
+
 @stop
 

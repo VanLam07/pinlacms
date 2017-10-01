@@ -18,7 +18,7 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
     protected $fillable = [
-        'type', 'name', 'slug', 'email', 'password', 'birth', 'gender', 'status', 'image_id', 'image_url', 'role_id'
+        'type', 'name', 'slug', 'email', 'password', 'birth', 'gender', 'status', 'image_id', 'image_url', 'role_id', 'remember_token'
     ];
 
     protected $dates = ['birth'];

@@ -10,11 +10,10 @@
             image_advtab: true,
             relative_urls: false,
             toolbar: "insertfile undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | forecolor backcolor | ex_loadfile",
-            ex_file_title: "Danh sách tệp tin",
-            ex_filepath: file_dialog_url,
-            external_filemanager_path: "/plugins/filemanager/",
-            filemanager_title: filemanager_title,
-            external_plugins: {"filemanager": "/plugins/filemanager/plugin.min.js"}
+            ex_loadfile: {
+                title: "Danh sách tệp tin",
+                filepath: file_dialog_url
+            }
         });
     }
     
@@ -30,14 +29,5 @@
     });
 
 })(jQuery);
-
-function responsive_filemanager_callback(field_id){
-    var field = $('#'+field_id);
-    var url = field.val();
-    var img_box = field.parent().find('.img_box');
-    var btn_box = field.parent().find('.btn_box');
-    img_box.html('<img src="'+url+'" class="img-fluid" alt="thumbnail">');
-    btn_box.html('<button type="button" class="close btn-remove-file"><i class="fa fa-close"></i></button>');
-}
 
 

@@ -114,10 +114,7 @@
 
 @section('foot')
 
-<script src="/plugins/tinymce/tinymce.min.js"></script>
-<script src="/admin_src/js/tinymce_script.js"></script>
-
-@include('files.manager')
+@include('admin::file.manager')
 
 @stop
 

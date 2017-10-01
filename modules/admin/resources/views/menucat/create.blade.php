@@ -1,34 +1,32 @@
-@extends('layouts.manage')
+@extends('admin::layouts.manage')
 
-@section('title', trans('manage.man_menucats'))
-
-@section('page_title', trans('manage.create'))
+@section('title', trans('admin::view.man_menucats'))
 
 @section('content')
 
 <div class="row">
     <div class="col-sm-6">
 
-        {!! show_messes() !!}
+        {!! showMessage() !!}
 
-        {!! Form::open(['method' => 'post', 'route' => 'menucat.store']) !!}
+        {!! Form::open(['method' => 'post', 'route' => 'admin::menucat.store']) !!}
 
-        @include('manage.parts.lang_tabs')
+        @include('admin::parts.lang_tabs')
 
         <div class="tab-content">
             @foreach($langs as $lang)
             <?php $code = $lang->code; ?>
-            <div class="tab-pane fade in {{ locale_active($code) }}" id="tab-{{$lang->code}}">
+            <div class="tab-pane fade in {{ localeActive($code) }}" id="tab-{{$lang->code}}">
 
                 <div class="form-group">
-                    <label>{{trans('manage.name')}} (*)</label>
-                    {!! Form::text($code.'[name]', old($code.'.name'), ['class' => 'form-control', 'placeholder' => trans('manage.name')]) !!}
-                    {!! error_field($code.'.name') !!}
+                    <label>{{trans('admin::view.name')}} (*)</label>
+                    {!! Form::text($code.'[name]', old($code.'.name'), ['class' => 'form-control', 'placeholder' => trans('admin::view.name')]) !!}
+                    {!! errorField($code.'.name') !!}
                 </div>
 
                 <div class="form-group">
-                    <label>{{trans('manage.slug')}}</label>
-                    {!! Form::text($code.'[slug]', old($code.'.slug'), ['class' => 'form-control', 'placeholder' => trans('manage.slug')]) !!}
+                    <label>{{trans('admin::view.slug')}}</label>
+                    {!! Form::text($code.'[slug]', old($code.'.slug'), ['class' => 'form-control', 'placeholder' => trans('admin::view.slug')]) !!}
                 </div>
 
             </div>
@@ -36,8 +34,8 @@
         </div>
 
         <div class="form-group">
-            <a href="{{route('menucat.index')}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('manage.back')}}</a>
-            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('manage.create')}}</button>
+            <a href="{{route('admin::menucat.index')}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('admin::view.create')}}</button>
         </div>
 
         {!! Form::close() !!}

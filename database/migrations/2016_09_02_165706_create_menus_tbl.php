@@ -32,8 +32,8 @@ class CreateMenusTbl extends Migration
         Schema::create('menu_desc', function(Blueprint $table){
             $table->integer('menu_id')->unsigned();
             $table->string('lang_code', 3);
-            $table->string('title');
-            $table->string('slug');
+            $table->string('title')->nullable();
+            $table->string('slug')->nullable();
             $table->string('link')->nullable();
             $table->primary(['menu_id', 'lang_code']);
             $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');

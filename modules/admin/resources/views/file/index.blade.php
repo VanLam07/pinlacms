@@ -1,57 +1,82 @@
-@extends('layouts.manage')
+@extends('admin::layouts.manage')
 
-@section('title', trans('manage.man_files'))
+@section('title', trans('admin::view.man_files'))
 
-@section('page_title', trans('manage.man_files'))
+<?php 
+use Admin\Facades\AdConst;
 
-@section('table_nav')
-@include('manage.parts.table_nav', ['action_btns' => ['remove'], 'one_status' => true])
+$multiActions = ['trash', 'delete'];
+$statuses = [AdConst::STT_PUBLISH, AdConst::STT_TRASH];
+?>
+
+@section('nav_status')
+    @include('admin::parts.actions-nav')
 @stop
 
 @section('content')
 
-{!! show_messes() !!}
-@if(!$items->isEmpty())
+{!! showMessage() !!}
+
 <div class="table-responsive">
     <table class="table table-hover table-striped">
         <thead>
             <tr>
                 <th width="30"><input type="checkbox" name="massdel" class="check_all"/></th>
-                <th>ID {!! link_order('id') !!}</th>
-                <th width="80">{{trans('manage.thumbnail')}}</th>
-                <th>{{trans('manage.name')}} {!! link_order('title') !!}</th>
-                <th>{{trans('manage.url')}}</th>
-                <th>{{trans('manage.type')}}</th>
-                <th>{{trans('manage.mimetype')}}</th>
-                <th>{{trans('manage.author')}} {!! link_order('author_id') !!}</th>
-                <th>{{trans('manage.created_at')}} {!! link_order('created_at') !!}</th>
+                <th>ID {!! linkOrder('id') !!}</th>
+                <th width="80">{{trans('admin::view.thumbnail')}}</th>
+                <th>{{trans('admin::view.name')}} {!! linkOrder('title') !!}</th>
+                <th>{{trans('admin::view.url')}}</th>
+                <th>{{trans('admin::view.type')}}</th>
+                <th>{{trans('admin::view.mimetype')}}</th>
+                <th>{{trans('admin::view.author')}} {!! linkOrder('author_id') !!}</th>
+                <th>{{trans('admin::view.created_at')}} {!! linkOrder('created_at') !!}</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($items as $item)
             <tr>
-                <td><input type="checkbox" name="check_items[]" class="check_item" value="{{ $item->id }}" /></td>
-                <td>{{ $item->id }}</td>
-                <td>{!! $item->getImage('thumbnail') !!}</td>
-                <td>{{ $item->title }}</td>
-                <td>{{ $item->url }}</td>
-                <td>{{ $item->type }}</td>
-                <td>{{ $item->mimetype }}</td>
-                <td>{{ $item->author->name }}</td>
-                <td>{{ $item->created_at }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td>
-                    @if(cando('edit_my_file', $item->author_id))
-                    <a href="{{route('file.edit', ['id' => $item->id])}}" class="btn btn-sm btn-info" title="{{trans('manage.edit')}}"><i class="fa fa-edit"></i></a>
-                    @endif
+                    <input type="text" name="filters[title]" value="{{ getRequestParam('filters', 'title') }}" 
+                           placeholder="{{ trans('admin::view.search') }}"
+                           class="form-control filter-data">
                 </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
-            @endforeach
+            @if (!$items->isEmpty())
+                @foreach($items as $item)
+                <tr>
+                    <td><input type="checkbox" name="check_items[]" class="check_item" value="{{ $item->id }}" /></td>
+                    <td>{{ $item->id }}</td>
+                    <td>{!! $item->getImage('thumbnail') !!}</td>
+                    <td>{{ $item->title }}</td>
+                    <td>{{ $item->url }}</td>
+                    <td>{{ $item->type }}</td>
+                    <td>{{ $item->mimetype }}</td>
+                    <td>{{ $item->author->name }}</td>
+                    <td>{{ $item->created_at }}</td>
+                    <td>
+                        <a href="{{route('admin::file.edit', ['id' => $item->id])}}" 
+                           class="btn btn-sm btn-info" 
+                           title="{{trans('admin::view.edit')}}"><i class="fa fa-edit"></i></a>
+                    </td>
+                </tr>
+                @endforeach
+            @else
+            <tr>
+                <td colspan="10" class="text-center"><h4>{{ trans('admin::message.not_found_items') }}</h4></td>
+            </tr>
+            @endif
         </tbody>
     </table>
 </div>
-@else
-<p>{{trans('manage.no_item')}}</p>
-@endif
+
+@include('admin::parts.paginate')
 
 @stop
 

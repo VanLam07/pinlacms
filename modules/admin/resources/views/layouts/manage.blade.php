@@ -7,6 +7,7 @@
         
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         
+        <link rel="stylesheet" href="/public/css/select2.min.css">
         <link rel="stylesheet" href="/public/css/bootstrap.min.css">
         <link rel="stylesheet" href="/public/css/font-awesome.min.css">
         <link rel="stylesheet" href="/public/plugins/adminlte/css/AdminLTE.css">
@@ -23,11 +24,15 @@
         <![endif]-->
         
         @yield('head')
+        
+        <script>
+            var _token = '{{ csrf_token() }}';
+        </script>
 
         <!-- Google Font -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     </head>
-    <body class="hold-transition skin-blue sidebar-mini">
+    <body class="hold-transition skin-blue sidebar-mini @yield('body_class')" @yield('body_attrs')>
         
         <div class="wrapper">
 
@@ -65,8 +70,13 @@
         </div>
         <!-- ./wrapper -->
 
+        <script>
+            var file_dialog_url = '{{ route("admin::file.dialog") }}';
+            var filemanager_title  = '{{ trans("admin::view.filemanager_title") }}';
+        </script>
         <script src="/public/js/jquery.min.js"></script>
         <script src="/public/js/jquery-ui.min.js"></script>
+        <script src="/public/js/select2.min.js" ></script>
         <script src="/public/js/popper.min.js"></script>
         <script src="/public/js/bootstrap.min.js"></script>
         <script src="/public/plugins/adminlte/js/adminlte.min.js"></script>

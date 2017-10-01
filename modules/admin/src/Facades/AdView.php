@@ -33,6 +33,24 @@ class AdView {
         ];
     }
     
+    public function commentStatusLabel() {
+        return [
+            AdConst::CM_STT_OPEN => 'Open',
+            AdConst::CM_STT_CLOSE => 'Close'
+        ];
+    }
+    
+    function listMenuTypes() {
+        return [
+            0 => trans('admin::view.custom'),
+            1 => trans('admin::view.post'),
+            2 => trans('admin::view.page'),
+            3 => trans('admin::view.cat'),
+            4 => trans('admin::view.tag'),
+            5 => trans('admin::view.service')
+        ];
+    }
+    
     public function nestedAdminMenus($items, $depth = 0) {
         $html = '<ul '. ($depth == 0 ? 'class="sidebar-menu" data-widget="tree"' : 'class="treeview-menu"') .'>';
         foreach ($items as $item) {

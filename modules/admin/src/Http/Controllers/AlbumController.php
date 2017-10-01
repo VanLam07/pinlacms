@@ -1,74 +1,62 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Admin\Http\Controllers\BaseController;
 use Illuminate\Validation\ValidationException;
 use App\Models\Tax;
+use Exception;
 
-class AlbumController extends Controller
+class AlbumController extends BaseController
 {
-    protected $album;
+    protected $model;
 
     public function __construct(Tax $album) {
-        canAccess('manage_cats');
+//        canAccess('manage_cats');
 
-        $this->album = $album;
+        $this->model = $album;
     }
 
     public function index(Request $request) {
         $data = $request->all();
-        $albums = $this->album->getData('album', $data);
-        return view('manage.album.index', ['items' => $albums]);
+        $albums = $this->model->getData('album', $data);
+        return view('admin::album.index', ['items' => $albums]);
     }
 
     public function create() {
-        return view('manage.album.create');
+        return view('admin::album.create');
     }
 
     public function store(Request $request) {
         try {
-            $this->album->insertData($request->all(), 'album');
-            return redirect()->back()->with('succ_mess', trans('manage.store_success'));
+            $this->model->insertData($request->all(), 'album');
+            return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        } catch (DbException $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMess());
+            return redirect()->back()->withInput()->withErrors($ex->errors());
+        } catch (Exception $ex) {
+            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
         }
     }
 
     public function edit($id, Request $request) {
-        $lang = current_locale();
-        if($request->has('lang')){
-            $lang = $request->get('lang');
+        $lang = $request->get('lang');
+        if(!$lang){
+            $lang = currentLocale();
         }
-        $item = $this->album->findByLang($id, ['taxs.*', 'td.*'], $lang);
-        return view('manage.album.edit', compact('item', 'lang'));
+        $item = $this->model->findByLang($id, ['taxs.*', 'td.*'], $lang);
+        return view('admin::album.edit', compact('item', 'lang'));
     }
 
     public function update($id, Request $request) {
         try {
-            $this->album->updateData($id, $request->all());
-            return redirect()->back()->with('succ_mess', trans('manage.update_success'));
+            $this->model->updateData($id, $request->all());
+            return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
         } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        }
-    }
-
-    public function destroy($id) {
-        if (!$this->album->destroy($id)) {
-            return redirect()->back()->with('error_mess', trans('manage.no_item'));
-        }
-        return redirect()->back()->with('succ_mess', trans('manage.destroy_success'));
-    }
-
-    public function multiAction(Request $request) {
-        try {
-            $this->album->actions($request);
-            return redirect()->back()->withInput()->with('succ_mess', trans('message.action_success'));
-        } catch (\Exception $ex) {
+            return redirect()->back()->withInput()->withErrors($ex->errors());
+        } catch (Exception $ex) {
             return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
         }
     }
+    
 }

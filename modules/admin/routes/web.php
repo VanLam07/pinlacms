@@ -32,53 +32,53 @@ Route::group(['middleware' => 'auth'], function () {
     //    Users
     Route::post('/users/actions', ['as' => 'user.actions', 'uses' => 'UserController@multiActions']);
     Route::resource('users', 'UserController', rsNames('user'));
-//    //    Languages
-//    Route::resource('languages', 'LangController', rsNames('lang'));
-//    Route::post('/languages/actions', ['as' => 'lang.actions', 'uses' => 'LangController@multiActions']);
-//    //    Categories
-//    Route::resource('categories', 'CatController', rsNames('cat'));
-//    Route::post('/categories/actions', ['as' => 'cat.actions', 'uses' => 'CatController@multiActions']);
-//    //    Tags
-//    Route::resource('tags', 'TagController', rsNames('tag'));
-//    Route::post('/tags/actions', ['as' => 'tag.actions', 'uses' => 'TagController@multiActions']);
-//    //    Albums
-//    Route::resource('albums', 'AlbumController', rsNames('album'));
-//    Route::post('/albums/actions', ['as' => 'album.actions', 'uses' => 'AlbumController@multiActions']);
-//    //    Menu cats
-//    Route::get('/menu-groups/to-nested', ['as' => 'menucat.to_nested', 'uses' => 'MenuCatController@getNestedMenus']);
-//    Route::post('/menu-groups/store-items', ['as' => 'menucat.store_items', 'uses' => 'MenuCatController@storeItems']);
-//    Route::post('/menu-groups/update-order-items', ['as' => 'menucat.update_order_items', 'uses' => 'MenuCatController@updateOrderItems']);
-//    Route::resource('menu-groups', 'MenuCatController', rsNames('menucat'));
-//    Route::post('/menu-groups/actions', ['as' => 'menucat.actions', 'uses' => 'MenuCatController@multiActions']);
-//    //    Menu
-//    Route::delete('/menus/asyn-destroy', ['as' => 'menu.asyn_destroy', 'uses' => 'MenuController@asynDestroy']);
-//    Route::get('/menus/get-menu-type', ['as' => 'menu.get_type', 'uses' => 'MenuController@getType']);
-//    Route::resource('menus', 'MenuController', rsNames('menu'));
-//    Route::post('/menus/actions', ['as' => 'menu.actions', 'uses' => 'MenuController@multiActions']);
-//    //    Post
-//    Route::resource('posts', 'PostController', rsNames('post'));
-//    Route::post('/posts/actions', ['as' => 'post.actions', 'uses' => 'PostController@multiActions']);
-//    //    Page
-//    Route::resource('pages', 'PageController', rsNames('page'));
-//    Route::post('/pages/actions', ['as' => 'page.actions', 'uses' => 'PageController@multiActions']);
-//    //    Files
-//    Route::get('/files/manage', ['as' => 'file.manage', 'uses' => 'FileController@manage']);
-//    Route::get('/files/dialog', ['as' => 'file.dialog', 'uses' => 'FileController@dialog']);
-//    Route::resource('files', 'FileController', rsNames('file'));
-//    Route::post('/files/actions', ['as' => 'file.actions', 'uses' => 'FileController@multiActions']);
-//    //    Medias
-//    Route::resource('medias', 'MediaController', rsNames('media'));
-//    Route::post('/medias/actions', ['as' => 'media.actions', 'uses' => 'MediaController@multiActions']);
-//    //    Slider & slide
-//    Route::resource('sliders', 'SliderController', rsNames('slider'));
-//    Route::post('/sliders/actions', ['as' => 'slider.actions', 'uses' => 'SliderController@multiActions']);
-//    Route::get('sliders/{slider_id}/index', ['as' => 'slide.index', 'uses' => 'SlideController@index']);
-//    Route::get('sliders/{slider_id}/create', ['as' => 'slide.create', 'uses' => 'SlideController@create']);
-//    Route::post('sliders/slides/store', ['as' => 'slide.store', 'uses' => 'SlideController@store']);
-//    Route::get('sliders/slides/{id}/edit', ['as' => 'slide.edit', 'uses' => 'SlideController@edit']);
-//    Route::put('sliders/slides/{id}/update', ['as' => 'slide.update', 'uses' => 'SlideController@update']);
-//    Route::delete('sliders/slides/{id}/delete', ['as' => 'slide.destroy', 'uses' => 'SlideController@destroy']);
-//    Route::post('sliders/{slider_id}/slides/actions', ['as' => 'slide.actions', 'uses' => 'SlideController@multiAction']);
+    //    Languages
+    Route::resource('languages', 'LangController', rsNames('lang'));
+    Route::post('/languages/actions', ['as' => 'lang.actions', 'uses' => 'LangController@multiActions']);
+    //    Categories
+    Route::resource('categories', 'CatController', rsNames('cat'));
+    Route::post('/categories/actions', ['as' => 'cat.actions', 'uses' => 'CatController@multiActions']);
+    //    Tags
+    Route::resource('tags', 'TagController', rsNames('tag'));
+    Route::post('/tags/actions', ['as' => 'tag.actions', 'uses' => 'TagController@multiActions']);
+    //    Albums
+    Route::resource('albums', 'AlbumController', rsNames('album'));
+    Route::post('/albums/actions', ['as' => 'album.actions', 'uses' => 'AlbumController@multiActions']);
+    //    Menu cats
+    Route::get('/menu-groups/to-nested', ['as' => 'menucat.to_nested', 'uses' => 'MenuCatController@getNestedMenus']);
+    Route::post('/menu-groups/store-items', ['as' => 'menucat.store_items', 'uses' => 'MenuCatController@storeItems']);
+    Route::post('/menu-groups/update-order-items', ['as' => 'menucat.update_order_items', 'uses' => 'MenuCatController@updateOrderItems']);
+    Route::resource('menu-groups', 'MenuCatController', rsNames('menucat'));
+    Route::post('/menu-groups/actions', ['as' => 'menucat.actions', 'uses' => 'MenuCatController@multiActions']);
+    //    Menu
+    Route::delete('/menus/asyn-destroy', ['as' => 'menu.asyn_destroy', 'uses' => 'MenuController@asynDestroy']);
+    Route::get('/menus/get-menu-type', ['as' => 'menu.get_type', 'uses' => 'MenuController@getType']);
+    Route::resource('menus', 'MenuController', rsNames('menu'));
+    Route::post('/menus/actions', ['as' => 'menu.actions', 'uses' => 'MenuController@multiActions']);
+    //    Post
+    Route::resource('posts', 'PostController', rsNames('post'));
+    Route::post('/posts/actions', ['as' => 'post.actions', 'uses' => 'PostController@multiActions']);
+    //    Page
+    Route::resource('pages', 'PageController', rsNames('page'));
+    Route::post('/pages/actions', ['as' => 'page.actions', 'uses' => 'PageController@multiActions']);
+    //    Files
+    Route::get('/files/manage', ['as' => 'file.manage', 'uses' => 'FileController@manage']);
+    Route::get('/files/dialog', ['as' => 'file.dialog', 'uses' => 'FileController@dialog']);
+    Route::resource('files', 'FileController', rsNames('file'));
+    Route::post('/files/actions', ['as' => 'file.actions', 'uses' => 'FileController@multiActions']);
+    //    Medias
+    Route::resource('medias', 'MediaController', rsNames('media'));
+    Route::post('/medias/actions', ['as' => 'media.actions', 'uses' => 'MediaController@multiActions']);
+    //    Slider & slide
+    Route::resource('sliders', 'SliderController', rsNames('slider'));
+    Route::post('/sliders/actions', ['as' => 'slider.actions', 'uses' => 'SliderController@multiActions']);
+    Route::get('sliders/slides/index', ['as' => 'slide.index', 'uses' => 'SlideController@index']);
+    Route::get('sliders/slides/create', ['as' => 'slide.create', 'uses' => 'SlideController@create']);
+    Route::post('sliders/slides/store', ['as' => 'slide.store', 'uses' => 'SlideController@store']);
+    Route::get('sliders/slides/{id}/edit', ['as' => 'slide.edit', 'uses' => 'SlideController@edit']);
+    Route::put('sliders/slides/{id}/update', ['as' => 'slide.update', 'uses' => 'SlideController@update']);
+    Route::delete('sliders/slides/{id}/delete', ['as' => 'slide.destroy', 'uses' => 'SlideController@destroy']);
+    Route::post('sliders/slides/actions', ['as' => 'slide.actions', 'uses' => 'SlideController@multiActions']);
 //    //    Options
 //    Route::get('/options/{id}/delete', ['as' => 'option.delete', 'uses' => 'OptionController@destroy'])->where('id', '[0-9]+');
 //    Route::post('/options/update-all', ['as' => 'option.update_all', 'uses' => 'OptionController@updateAll']);

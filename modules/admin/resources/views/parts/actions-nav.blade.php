@@ -45,7 +45,7 @@ if (!isset($statuses)) {
         <div class="btn-actions col-sm-6 col-md-4">
 
             @if ($hasAddNew)
-                <a href="{{ route($routePrefix.'.create') }}" class="create-btn btn btn-sm btn-success m-b-1" 
+                <a href="{{ route($routePrefix.'.create', request()->all()) }}" class="create-btn btn btn-sm btn-success m-b-1" 
                    data-toggle="tooltip" title="{{ trans('admin::view.create') }}">
                     <i class="fa fa-plus"></i> <span class="">{{ trans('admin::view.create') }}</span>
                 </a>

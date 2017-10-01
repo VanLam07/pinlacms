@@ -36,8 +36,8 @@ class CreatePostsTbl extends Migration
         Schema::create('post_desc', function(Blueprint $table){
             $table->integer('post_id')->unsigned();
             $table->string('lang_code', 3);
-            $table->string('title');
-            $table->string('slug');
+            $table->string('title')->nullable();
+            $table->string('slug')->nullable();
             $table->text('excerpt')->nullable();
             $table->longText('content')->nullable();
             $table->text('custom')->nullable();

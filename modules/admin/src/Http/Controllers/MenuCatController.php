@@ -1,43 +1,44 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Admin\Http\Controllers\BaseController;
 use App\Models\Menu;
 use App\Models\Tax;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
-class MenuCatController extends Controller {
+class MenuCatController extends BaseController {
 
-    protected $tax;
+    protected $model;
     protected $menu;
 
     public function __construct(Tax $tax, Menu $menu) {
-        canAccess('manage_menus');
+//        canAccess('manage_menus');
 
-        $this->tax = $tax;
+        $this->model = $tax;
         $this->menu = $menu;
     }
 
     public function index(Request $request) {
         $data = $request->all();
-        $menucats = $this->tax->getData('menucat', $data);
-        return view('manage.menucat.index', ['items' => $menucats]);
+        $menucats = $this->model->getData('menucat', $data);
+        return view('admin::menucat.index', ['items' => $menucats]);
     }
 
     public function create() {
-        return view('manage.menucat.create');
+        return view('admin::menucat.create');
     }
 
     public function store(Request $request) {
         try {
-            $this->tax->insertData($request->all(), 'menucat');
-            return redirect()->back()->with('succ_mess', trans('manage.store_success'));
+            $this->model->insertData($request->all(), 'menucat');
+            return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        } catch (DbException $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMess());
+            return redirect()->back()->withInput()->withErrors($ex->errors());
+        } catch (\Exception $ex) {
+            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
         }
     }
     
@@ -48,7 +49,7 @@ class MenuCatController extends Controller {
                 $item = (array) $item;
                 $item['group_id'] = $request->get('group_id');
                 $item['type_id'] = isset($item['id']) ? $item['id'] : 0;
-                $item['lang'] = $request->has('lang') ? $request->get('lang') : current_locale();
+                $item['lang'] = $request->has('lang') ? $request->get('lang') : currentLocale();
                 $this->menu->insertData($item);
             }
         }
@@ -59,18 +60,18 @@ class MenuCatController extends Controller {
     }
 
     public function edit($id, Request $request) {
-        
-        $lang = current_locale();
-        if ($request->has('lang')) {
-            $lang = $request->get('lang');
+        $lang = $request->get('lang');
+        if (!$lang) {
+            $lang = currentLocale();
         }
-        $item = $this->tax->findByLang($id, ['taxs.id', 'td.slug', 'td.name'], $lang);
-        return view('manage.menucat.edit', compact('item', 'lang'));
+        $item = $this->model->findByLang($id, ['taxs.id', 'td.slug', 'td.name'], $lang);
+        return view('admin::menucat.edit', compact('item', 'lang'));
     }
 
     public function update($id, Request $request) {     
+        DB::beginTransaction();
         try {
-            $this->tax->updateData($id, $request->all());
+            $this->model->updateData($id, $request->all());
             
             $menus = $request->get('menus');
             if($menus){
@@ -80,10 +81,14 @@ class MenuCatController extends Controller {
                     $this->menu->updateData($menu_id, $menu);
                 }
             }
-            
-            return redirect()->back()->with('succ_mess', trans('manage.update_success'));
+            DB::commit();
+            return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
         } catch (ValidationException $ex) {
+            DB::rollback();
             return redirect()->back()->withInput()->withErrors($ex->validator);
+        } catch (\Exception $ex) {
+            DB::rollback();
+            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
         }
     }
     
@@ -92,7 +97,7 @@ class MenuCatController extends Controller {
         if($menus){
             $this->nestedOrderUpdate($menus);
         }
-        return response()->json(trans('manage.update_success'));
+        return response()->json(trans('admin::message.update_success'));
     }
     
     public function nestedOrderUpdate($items, $parent=null){
@@ -105,24 +110,15 @@ class MenuCatController extends Controller {
     }
     
     public function destroy($id) {
-        if (!$this->tax->destroyData($id)) {
-            return redirect()->back()->with('error_mess', trans('manage.no_item'));
+        if (!$this->model->destroyData($id)) {
+            return redirect()->back()->with('error_mess', trans('admin::message.no_item'));
         }
-        return redirect()->back()->with('succ_mess', trans('manage.destroy_success'));
-    }
-
-    public function multiAction(Request $request) {
-        try {
-            $this->tax->actions($request);
-            return redirect()->back()->withInput()->with('succ_mess', trans('message.action_success'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
-        }
+        return redirect()->back()->with('succ_mess', trans('admin::message.destroy_success'));
     }
 
     public function getNestedMenus(Request $request) {
         $menus = $this->menu->getData($request->all());
-        $nested = $this->tax->toNested($menus);
+        $nested = $this->model->toNested($menus);
         return $nested;
     }
 

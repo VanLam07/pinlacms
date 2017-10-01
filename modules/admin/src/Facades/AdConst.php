@@ -27,4 +27,18 @@ class AdConst {
     
     const PER_PAGE = 20;
     
+    /*
+     * comment status
+     */
+    const CM_STT_OPEN = 1;
+    const CM_STT_CLOSE = 0;
+    
+    /*
+     * menu type 
+     */
+    const MENU_TYPE_TAX = 4;
+    const MENU_TYPE_CAT = 3;
+    const MENU_TYPE_POST = 2;
+    const MENU_TYPE_PAGE = 1;
+    
 }

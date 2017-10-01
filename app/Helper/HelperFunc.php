@@ -153,7 +153,7 @@ if (!function_exists('linkOrder')) {
             $order = ($request->get('order') == 'asc') ? 'desc' : 'asc';
         }
         $args = array_merge($request->all(), ['orderby' => $orderby, 'order' => $order]);
-        echo '<a href="' . route($route, $args) . '" class="pull-right"><i class="fa fa-sort"></i></a>';
+        echo '<a href="' . route($route, $args) . '"><i class="fa fa-sort"></i></a>';
     }
 }
 
@@ -210,33 +210,24 @@ if (!function_exists('subLinkClassActive')) {
     }
 }
 
-function nestedOption($items, $selected = 0, $parent = 0, $depth = 0) {
-    $html = '';
-    $intent = str_repeat('-- ', $depth);
-    if (!is_array($selected)) {
-        $selected = [$selected];
-    }
-    if ($items) {
-        foreach ($items as $item) {
-            if ($item->parent_id == $parent) {
-                $select = in_array($item->id, $selected) ? 'selected' : '';
-                $html .= '<option value="' . $item->id . '" ' . $select . '>' . $intent . $item->name . '</option>';
-                $html .= nested_option($items, $selected, $item->id, $depth + 1);
+if (!function_exists('nestedOption')) {
+    function nestedOption($items, $selected = 0, $parent = 0, $depth = 0) {
+        $html = '';
+        $intent = str_repeat('-- ', $depth);
+        if (!is_array($selected)) {
+            $selected = [$selected];
+        }
+        if ($items) {
+            foreach ($items as $item) {
+                if ($item->parent_id == $parent) {
+                    $select = in_array($item->id, $selected) ? 'selected' : '';
+                    $html .= '<option value="' . $item->id . '" ' . $select . '>' . $intent . $item->name . '</option>';
+                    $html .= nestedOption($items, $selected, $item->id, $depth + 1);
+                }
             }
         }
+        return $html;
     }
-    return $html;
-}
-
-function list_menu_types() {
-    return [
-        0 => trans('menu.custom'),
-        1 => trans('menu.post'),
-        2 => trans('menu.page'),
-        3 => trans('menu.cat'),
-        4 => trans('menu.tag'),
-        5 => trans('menu.service')
-    ];
 }
 
 function makeRandDir($length = 16, $model) {
@@ -258,17 +249,19 @@ if (!function_exists('rangeOptions')) {
     }
 }
 
-function catCheckLists($items, $checked = [], $parent = 0, $depth = 0) {
-    $html = '';
-    $intent = str_repeat("--- ", $depth);
-    foreach ($items as $item) {
-        if ($item->parent_id == $parent) {
-            $check = in_array($item->id, $checked) ? 'checked' : '';
-            $html .= '<li>' . $intent . '<label><input type="checkbox" name="cat_ids[]" ' . $check . ' value="' . $item->id . '"> ' . $item->name . '</label></li>';
-            $html .= cat_check_lists($items, $checked, $item->id, $depth + 1);
+if (!function_exists('catCheckLists')) {
+    function catCheckLists($items, $checked = [], $parent = 0, $depth = 0) {
+        $html = '';
+        $intent = str_repeat("--- ", $depth);
+        foreach ($items as $item) {
+            if ($item->parent_id == $parent) {
+                $check = in_array($item->id, $checked) ? 'checked' : '';
+                $html .= '<li>' . $intent . '<label><input type="checkbox" name="cat_ids[]" ' . $check . ' value="' . $item->id . '"> ' . $item->name . '</label></li>';
+                $html .= catCheckLists($items, $checked, $item->id, $depth + 1);
+            }
         }
+        return $html;
     }
-    return $html;
 }
 
 function cutImgPath($full_url) {

@@ -76,5 +76,7 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT, AdConst::STT_TRASH];
     </table>
 </div>
 
+@include('admin::parts.link')
+
 @stop
 

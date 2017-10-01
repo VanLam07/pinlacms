@@ -21,7 +21,7 @@ class Locale{
     }
     
     public function getCurrent(){
-        return $this->lang->getCurrent(['id', 'name', 'code', 'icon']);
+        return $this->lang->getCurrent(['name', 'code', 'icon']);
     }
     
     public function findByCode($code, $fields=['*']){

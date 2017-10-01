@@ -1,74 +1,56 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use App\Http\Controllers\Controller;
+use Admin\Http\Controllers\BaseController;
 use App\Models\Tax;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Exception;
 
-class TagController extends Controller
+class TagController extends BaseController
 {
-    protected $tag;
+    protected $model;
 
     public function __construct(Tax $tag) {
-        canAccess('manage_tags');
+//        canAccess('manage_tags');
 
-        $this->tag = $tag;
+        $this->model = $tag;
     }
 
     public function index(Request $request) {
         $data = $request->all();
-        $tags = $this->tag->getData('tag', $data);
-        return view('manage.tag.index', ['items' => $tags]);
+        $tags = $this->model->getData('tag', $data);
+        return view('admin::tag.index', ['items' => $tags]);
     }
 
     public function create() {
-        return view('manage.tag.create');
+        return view('admin::tag.create');
     }
-
+    
     public function store(Request $request) {
+        DB::beginTransaction();
         try {
-            $this->tag->insertData($request->all(), 'tag');
-            return redirect()->back()->with('succ_mess', trans('manage.store_success'));
+            $this->model->insertData($request->all(), 'tag');
+            DB::commit();
+            return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        } catch (DbException $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMess());
+            DB::rollback();
+            return redirect()->back()->withInput()->withErrors($ex->errors());
+        } catch (Exception $ex) {
+            DB::rollback();
+            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
         }
     }
 
     public function edit($id, Request $request) {
-        $lang = current_locale();
-        if($request->has('lang')){
-            $lang = $request->get('lang');
+        $lang = $request->get('lang');
+        if(!$lang){
+            $lang = currentLocale();
         }
-        $item = $this->tag->findByLang($id, ['taxs.*', 'td.*'], $lang);
-        return view('manage.tag.edit', compact('item', 'lang'));
+        $item = $this->model->findByLang($id, ['taxs.*', 'td.*'], $lang);
+        return view('admin::tag.edit', compact('item', 'lang'));
     }
 
-    public function update($id, Request $request) {
-        try {
-            $this->tag->updateData($id, $request->all());
-            return redirect()->back()->with('succ_mess', trans('manage.update_success'));
-        } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        }
-    }
-
-    public function destroy($id) {
-        if (!$this->tag->destroy($id)) {
-            return redirect()->back()->with('error_mess', trans('manage.no_item'));
-        }
-        return redirect()->back()->with('succ_mess', trans('manage.destroy_success'));
-    }
-
-    public function multiAction(Request $request) {
-        try {
-            $this->tag->actions($request);
-            return redirect()->back()->withInput()->with('succ_mess', trans('message.action_success'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
-        }
-    }
 }

@@ -1,9 +1,11 @@
 (function ($) {
 
     angular.module('ngMenu', ['ui.nestedSortable'])
-            .config(function ($interpolateProvider) {
+            .config(function ($interpolateProvider, $qProvider) {
                 $interpolateProvider.startSymbol('{%');
                 $interpolateProvider.endSymbol('%}');
+                
+                $qProvider.errorOnUnhandledRejections(false);
             })
             .controller('MenuCtrl', function ($scope, $http) {
                 $scope.menus = [];
@@ -15,9 +17,9 @@
                             group_id: group_id,
                             per_page: -1
                         }
-                    }).success(function (data) {
-                        $scope.menus = data;
-                    }).error(function (err) {
+                    }).then(function (result) {
+                        $scope.menus = result.data;
+                    }).catch(function (err) {
                         console.log(err);
                     });
                 }
@@ -30,7 +32,8 @@
                 $scope.posts_params = {'fields[]': ['pd.title', 'posts.id']};
                 $http.get(api_url + 'posts', {
                     params: $scope.posts_params
-                }).success(function (data) {
+                }).then(function (result) {
+                    var data = result.data;
                     $scope.post_total = data.total;
                     $scope.post_per_page = data.per_page;
                     $scope.post_next_page_url = data.next_page_url;
@@ -40,7 +43,9 @@
 
                 $scope.postGoUrl = function (url) {
                     if (url) {
-                        $http.get(url, {params: $scope.posts_params}).success(function (data) {
+                        $http.get(url, {
+                            params: $scope.posts_params
+                        }).then(function (data) {
                             $scope.posts = data.data;
                             $scope.post_next_page_url = data.next_page_url;
                             $scope.post_prev_page_url = data.prev_page_url;
@@ -51,8 +56,8 @@
                 $scope.pages = [];
                 $http.get(api_url + 'pages', {
                     params: {'fields[]': ['pd.title', 'posts.id'], per_page: -1}
-                }).success(function (data) {
-                    $scope.pages = data;
+                }).then(function (results) {
+                    $scope.pages = results.data;
                 });
 
                 $scope.cats = [];
@@ -61,8 +66,8 @@
                         'fields[]': ['td.name', 'taxs.id'],
                         per_page: -1
                     }
-                }).success(function (data) {
-                    $scope.cats = data;
+                }).then(function (results) {
+                    $scope.cats = results.data;
                 });
 
                 $scope.newMenus = [];
@@ -87,13 +92,13 @@
                             group_id: group_id,
                             _token: _token,
                             lang: _lang
-                        }).success(function (data) {
+                        }).then(function (data) {
                             $scope.newcustom = {};
                             $scope.newMenus = [];
                             reloadMenus();
                             $('.list_types input[type="checkbox"]').prop('checked', false);
                             console.log(data);
-                        }).error(function (err) {
+                        }).catch(function (err) {
                             console.log(err);
                         });
                     }
@@ -102,15 +107,18 @@
                 $scope.removeMenu = function (item) {
                     $http.delete(remove_item_url, {
                         params: {id: item.id}
-                    }).success(function (data) {
+                    }).then(function (data) {
                         reloadMenus();
                     });
                 };
 
                 $scope.updateOrder = function (e) {
-                    $http.post(order_items_url, {menus: $scope.menus, _token: _token}).success(function (data) {
+                    $http.post(order_items_url, {
+                        menus: $scope.menus, 
+                        _token: _token
+                    }).then(function (data) {
                         console.log(data);
-                    }).error(function (err) {
+                    }).catch(function (err) {
                         e.preventDefault();
                     });
                 };
@@ -121,7 +129,8 @@
                         attrs.$observe('ngMenuTarget', function (id) {
                             $http.get(menu_type_url, {
                                 params: {menu_id: id, lang: _lang}
-                            }).success(function (data) {
+                            }).then(function (results) {
+                                var data = results.data;
                                 var title = data.name || data.title;
                                 element.html(title);
                                 var mi_inner = element.closest('.mi-inner');
@@ -132,7 +141,7 @@
                                     elTitle.val(title);
                                     elHandle.html(title);
                                 }
-                            }).error(function (err) {
+                            }).catch(function (err) {
                                 console.log(err);
                             });
                         });

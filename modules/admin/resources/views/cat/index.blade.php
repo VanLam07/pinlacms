@@ -1,40 +1,61 @@
-@extends('layouts.manage')
+@extends('admin::layouts.manage')
 
-@section('title', trans('manage.man_cats'))
+@section('title', trans('admin::view.man_cats'))
 
-@section('page_title', trans('manage.man_cats'))
+<?php 
+use Admin\Facades\AdConst;
 
-@section('table_nav')
-@include('manage.parts.table_nav', ['action_btns' => ['remove'], 'one_status' => true])
+$multiActions = ['delete', 'draft'];
+$statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT];
+?>
+
+@section('nav_status')
+    @include('admin::parts.actions-nav')
 @stop
 
 @section('content')
 
-{!! show_messes() !!}
+{!! showMessage() !!}
 
-@if(!$items->isEmpty())
+
 <div class="table-responsive">
-    <table class="table table-hover table-striped">
+    <table class="table table-hover table-striped table-bordered">
         <thead>
             <tr>
                 <th width="30"><input type="checkbox" class="check_all"/></th>
-                <th>ID {!! link_order('taxs.id') !!}</th>
-                <th>{{trans('manage.name')}} {!! link_order('td.name') !!}</th>
-                <th>{{trans('manage.slug')}}</th>
-                <th>{{trans('manage.parent')}} {!! link_order('parent_id') !!}</th>
-                <th>{{trans('manage.order')}} {!! link_order('order') !!}</th>
-                <th>{{trans('manage.count')}} {!! link_order('count') !!}</th>
+                <th>ID {!! linkOrder('taxs.id') !!}</th>
+                <th>{{trans('admin::view.name')}} {!! linkOrder('td.name') !!}</th>
+                <th>{{trans('admin::view.slug')}}</th>
+                <th>{{trans('admin::view.parent')}} {!! linkOrder('parent_id') !!}</th>
+                <th>{{trans('admin::view.order')}} {!! linkOrder('order') !!}</th>
+                <th>{{trans('admin::view.count')}} {!! linkOrder('count') !!}</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    <input type="text" name="filters[td.name]" value="{{ getRequestParam('filters', 'td.name') }}"
+                           class="form-control filter-data" placeholder="{{ trans('admin::view.search') }}">
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            @if(!$items->isEmpty())
             {!! $tableCats !!}
+            @else
+            <tr>
+                <td colspan="8"><h4 class="text-center">{{ trans('admin::message.not_found_items') }}</h4></td>
+            </tr>
+            @endif
         </tbody>
     </table>
 </div>
-@else
-<p>{{trans('manage.no_item')}}</p>
-@endif
 
 @stop
 

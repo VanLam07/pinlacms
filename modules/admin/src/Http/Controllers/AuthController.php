@@ -70,7 +70,7 @@ class AuthController extends Controller {
             'email' => $request->input('email'),
             'password' => $request->input('password')
         ], $request->input('remember'));
-
+        
         if (!$auth) {
             return redirect()->back()->withInput()->with('error_mess', trans('admin::message.login_failed'));
         }

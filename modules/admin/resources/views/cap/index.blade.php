@@ -59,9 +59,7 @@ $statuses = [];
     
 </div>
     
-<div class="paginate text-center">
-    {!! $items->links() !!}
-</div>
+@include('admin::parts.paginate')
 
 @stop
 

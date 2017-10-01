@@ -2,15 +2,34 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
+use Admin\Facades\AdConst;
+
 class Tax extends BaseModel
 {
     protected $table = 'taxs';
+    protected $tblDesc = 'tax_desc';
     protected $fillable = ['image_id', 'type', 'parent_id', 'order', 'count', 'status'];
 
-    public function joinLang($lang=null) {
-        $lang = ($lang) ? $lang : current_locale();
-        return $this->join('tax_desc as td', 'taxs.id', '=', 'td.tax_id')
-                        ->where('td.lang_code', '=', $lang);
+    public function joinLang($code = null) {
+        if (!$code) {
+            $code = currentLocale();
+        }
+        return $this->join($this->tblDesc . ' as td', 'taxs.id', '=', 'td.tax_id')
+                    ->where('td.lang_code', '=', $code);
+    }
+    
+    public function rules($update = false) {
+        if ($update) {
+            return [
+                'locale.name' => 'required',
+                'lang' => 'required'
+            ];
+        }
+        $code = currentLocale();
+        return [
+            $code . '.name' => 'required'
+        ];
     }
     
     public function getName($lang=null){
@@ -22,7 +41,7 @@ class Tax extends BaseModel
         return null;
     }
     
-    public function parent_name() {
+    public function parentName() {
         $item = $this->joinLang()
                 ->where('taxs.id', $this->parent_id)
                 ->first(['td.name']);
@@ -54,57 +73,49 @@ class Tax extends BaseModel
         }
         return null;
     }
-    
-    public function status() {
-        switch ($this->status) {
-            case 0:
-                return trans('manage.disable');
-            case 1:
-                return trans('manage.enable');
-        }
-    }
-    
-    public function rules($update = false) {
-        if ($update) {
-            return [
-                'locale.name' => 'required',
-                'lang' => 'required'
-            ];
-        }
-        $code = current_locale();
-        return [
-            $code . '.name' => 'required'
-        ];
-    }
 
-    public function getData($type='cat', $args = []) {
+    public function getData($type = 'cat', $args = []) {
         $opts = [
             'fields' => ['taxs.*', 'td.*'],
             'orderby' => 'td.name',
             'order' => 'asc',
-            'per_page' => 20,
+            'status' => [AdConst::STT_PUBLISH],
+            'per_page' => AdConst::PER_PAGE,
+            'exclude_key' => 'taxs.id',
             'exclude' => [],
-            'key' => '',
+            'page' => 1,
+            'filters' => []
         ];
+        
         $opts = array_merge($opts, $args);
 
         $result = $this->joinLang()
                 ->where('type', $type)
-                ->whereNotNull('td.name')
-                ->where('td.name', 'like', '%' . $opts['key'] . '%')
-                ->whereNotIn('taxs.id', $opts['exclude'])
-                ->select($opts['fields'])
-                ->orderBy($opts['orderby'], $opts['order']);
-
-        if ($opts['per_page'] == -1) {
-            $result = $result->get();
-        } else {
-            $result = $result->paginate($opts['per_page']);
+                ->whereNotNull('td.name');
+        if ($opts['exclude']) {
+            $result->whereNotIn($opts['exclude_key'], $opts['exclude']);
         }
-        return $result;
+        if ($opts['status']) {
+            if (!is_array($opts['status'])) {
+                $opts['status'] = [$opts['status']];
+            }
+            $result->whereIn('status', $opts['status']);
+        }
+        $result->select($opts['fields'])
+                ->orderBy($opts['orderby'], $opts['order']);
+        
+        if ($opts['filters']) {
+            $this->filterData($result, $opts['filters']);
+        }
+
+        if ($opts['per_page'] > -1) {
+            return $result->paginate($opts['per_page']);
+        }
+        
+        return $result->get();
     }
 
-    public function insertData($data, $type='cat') {
+    public function insertData($data, $type = 'cat') {
         $this->validator($data, $this->rules());
 
         if(isset($data['parent_id']) && $data['parent_id'] == 0){
@@ -114,17 +125,21 @@ class Tax extends BaseModel
         if(isset($data['file_ids']) && $data['file_ids']){
             $data['image_id'] = $data['file_ids'][0];
         }
+        if (!isset($data['order']) || !$data['order']) {
+            $data['order'] = 0;
+        }
         $fillable = $this->getFillable();
-        $fill_data = array_only($data, $fillable);
-        $item = self::create($fill_data);
+        $fillData = array_only($data, $fillable);
+        $item = self::create($fillData);
 
-        foreach (get_langs(['fields' => ['id', 'code']]) as $lang) {
-            $lang_data = $data[$lang->code];
-            $name = $lang_data['name'];
-            $slug = isset($lang_data['slug']) ? $lang_data['slug'] : '';
-            $lang_data['slug'] = (trim($slug) == '') ? str_slug($name) : str_slug($slug);
+        $allLangs = getLangs();
+        foreach ($allLangs as $lang) {
+            $langData = $data[$lang->code];
+            $name = $langData['name'];
+            $slug = isset($langData['slug']) ? $langData['slug'] : '';
+            $langData['slug'] = (trim($slug) == '') ? str_slug($name) : str_slug($slug);
 
-            $item->langs()->attach($lang->code, $lang_data);
+            $item->langs()->attach($lang->code, $langData);
         }
         return $item;
     }
@@ -135,7 +150,7 @@ class Tax extends BaseModel
         if($item){
             return $item;
         }
-        return $this->find($id);
+        return self::findOrFail($id);
     }
 
     public function updateData($id, $data) {
@@ -147,17 +162,20 @@ class Tax extends BaseModel
         if(isset($data['parent_id']) && $data['parent_id'] == 0){
             $data['parent_id'] = null;
         }
+        if (!isset($data['order']) || !$data['order']) {
+            $data['order'] = 0;
+        }
         $fillable = $this->getFillable();
-        $fill_data = array_only($data, $fillable);
+        $fillData = array_only($data, $fillable);
         $item = $this->findOrFail($id);
-        $item->update($fill_data);
+        $item->update($fillData);
 
-        $lang_data = $data['locale'];
-        $name = $lang_data['name'];
-        $slug = isset($lang_data['slug']) ? $lang_data['slug'] : '';
-        $lang_data['slug'] = (trim($slug) == '') ? str_slug($name) : str_slug($slug);
+        $langData = $data['locale'];
+        $name = $langData['name'];
+        $slug = isset($langData['slug']) ? $langData['slug'] : '';
+        $langData['slug'] = (trim($slug) == '') ? str_slug($name) : str_slug($slug);
 
-        $item->langs()->sync([$data['lang'] => $lang_data], false);
+        $item->langs()->sync([$data['lang'] => $langData], false);
     }
     
     public function tableCats($items, $parent = 0, $depth = 0) {
@@ -170,11 +188,14 @@ class Tax extends BaseModel
                 <td>' . $item->id . '</td>
                 <td>' . $indent . ' ' . $item->name . '</td>
                 <td>' . $item->slug . '</td>
-                <td>' . $item->parent_name() . '</td>
+                <td>' . $item->parentName() . '</td>
                 <td>' . $item->order . '</td>
-                <td><a href="'.route('post.index', ['cats' => [$item->id], 'status' => 1]).'">' . $item->count . '</a></td>
+                <td><a href="'.route('admin::post.index', ['cats' => [$item->id], 'status' => AdConst::STT_PUBLISH]).'">' . $item->count . '</a></td>
                 <td>
-                    <a href="' . route('cat.edit', ['id' => $item->id]) . '" class="btn btn-sm btn-info" title="' . trans('manage.edit') . '"><i class="fa fa-edit"></i></a>
+                    <a href="' . route('admin::cat.edit', ['id' => $item->id]) . '" '
+                        . 'class="btn btn-sm btn-info" title="' . trans('admin::view.edit') . '">
+                            <i class="fa fa-edit"></i>
+                    </a>
                 </td>';
                 $html .= '</tr>';
                 $html .= $this->tableCats($items, $item->id, $depth + 1);

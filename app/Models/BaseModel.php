@@ -95,19 +95,32 @@ class BaseModel extends Model {
     public function updateData($id, $data) {
         $this->validator($data, $this->rules($id));
 
+        $itemUpdate = self::findOrFail($id);
         if (isset($data['time'])) {
             $time = $data['time'];
             $date = date('Y-m-d', strtotime($time['year'] . '-' . $time['month'] . '-' . $time['day']));
             $data['created_at'] = $date;
         }
+        $hasDel = false;
+        if (isset($data['status']) && $data['status'] == AdConst::STT_TRASH) {
+            unset($data['status']);
+            $hasDel = true;
+        }
         $fillable = self::getFillable();
         $data = array_only($data, $fillable);
-        return self::where('id', $id)->update($data);
+        $itemUpdate->update($data);
+        if ($hasDel) {
+            $itemUpdate->delete();
+        }
+        return $itemUpdate;
     }
 
     public function changeStatus($ids, $status) {
         if (!is_array($ids)) {
             $ids = [$ids];
+        }
+        if ($status == AdConst::STT_TRASH) {
+            self::whereIn('id', $ids)->delete();
         }
         return self::whereIn('id', $ids)->update(['status' => $status]);
     }

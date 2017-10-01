@@ -3,7 +3,8 @@
 namespace App\Facades\Access;
 
 use App\Models\Cap;
-use Admin\Facades\AdView\AdView;
+use Admin\Facades\AdConst;
+use Illuminate\Support\Facades\Auth;
 
 class Access {
 
@@ -14,14 +15,13 @@ class Access {
     }
 
     public function can($cap) {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return false;
         }
-        $user = auth()->user();
+        $user = Auth::user();
         $userId = $user->id;
 
         //switch caps
-        
         $args = array_slice(func_get_args(), 1);
         $author = $args ? $args[0] : null;
         $userCaps = $user->caps();
@@ -29,17 +29,16 @@ class Access {
             return false;
         }
         $level = $userCaps[$cap];
-        if ($author && $level == AdView::CAP_SELF) {
+        if ($author && $level == AdConst::CAP_SELF) {
             return $userId == $author;
         }
         return true;
     }
 
     public function check() {
-        $args = func_get_args();   
-        $can = call_user_func_array([$this, 'can'], $args);
-        if (!$can) {
-            abort(403, trans('auth.authorize'));
+        $args = func_get_args();
+        if (!call_user_func_array([$this, 'can'], $args)) {
+            abort(403, trans('admin::view.authorize'));
         }
     }
 
