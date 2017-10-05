@@ -4,7 +4,7 @@ namespace Admin\Seeds;
 
 use Admin\Seeds\BaseSeeder;
 use App\Models\Cap;
-use Admin\Facades\AdView\AdView;
+use Admin\Facades\AdConst;
 
 class CapSeeder extends BaseSeeder
 {
@@ -19,8 +19,8 @@ class CapSeeder extends BaseSeeder
             return;
         }
         // name => [[role_ids]]
-        $capOther = AdView::CAP_OTHER;
-        $capSelf = AdView::CAP_SELF;
+        $capOther = AdConst::CAP_OTHER;
+        $capSelf = AdConst::CAP_SELF;
         $caps = [
             'view_post' => [1 => $capOther, 2 => $capOther, 3 => $capOther],
             'publish_post' => [1 => $capOther, 2 => $capOther, 3 => $capOther],
