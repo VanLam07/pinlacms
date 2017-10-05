@@ -1,40 +1,39 @@
-@extends('layouts.manage')
+@extends('admin::layouts.manage')
 
-@section('title', trans('manage.man_sliders'))
+@section('title', trans('admin::view.man_sliders'))
 
-@section('page_title', trans('manage.edit'))
+<?php
+use Admin\Facades\AdConst;
+?>
 
 @section('content')
 
+{!! showMessage() !!}
 
-{!! show_messes() !!}
+@include('admin::parts.lang_edit_tabs', ['route' => 'admin::slider.edit'])
 
-@if($item)
-
-@include('manage.parts.lang_edit_tabs', ['route' => 'slider.edit'])
-
-{!! Form::open(['method' => 'put', 'route' => ['slider.update', $item->id]]) !!}
+{!! Form::open(['method' => 'put', 'route' => ['admin::slider.update', $item->id]]) !!}
 
 <div class="row">
     <div class="col-sm-6">
 
         <div class="form-group">
-            <label>{{trans('manage.name')}} (*)</label>
-            {!! Form::text('locale[name]', $item->name, ['class' => 'form-control', 'placeholder' => trans('manage.name')]) !!}
-            {!! error_field('locale.name') !!}
+            <label>{{trans('admin::view.name')}} (*)</label>
+            {!! Form::text('locale[name]', $item->name, ['class' => 'form-control', 'placeholder' => trans('admin::view.name')]) !!}
+            {!! errorField('locale.name') !!}
         </div>
 
         <div class="form-group">
-            <label>{{trans('manage.status')}}</label>
-            {!! Form::select('status', [1 => 'Active', 0 => 'Disable'], $item->status, ['class' => 'form-control']) !!}
+            <label>{{trans('admin::view.status')}}</label>
+            {!! Form::select('status', AdView::getStatusLabel(false), $item->status, ['class' => 'form-control']) !!}
         </div>
 
         <input type="hidden" name="lang" value="{{$lang}}">
-        {!! error_field('lang') !!}
+        {!! errorField('lang') !!}
 
         <div class="form-group">
-            <a href="{{route('slider.index')}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('manage.back')}}</a>
-            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('manage.update')}}</button>
+            <a href="{{route('admin::slider.index', ['status' => AdConst::STT_PUBLISH])}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('admin::view.update')}}</button>
         </div>
 
     </div>
@@ -42,10 +41,6 @@
 </div>
 
 {!! Form::close() !!}
-
-@else
-<p>{{trans('manage.no_item')}}</p>
-@endif
 
 @stop
 

@@ -4,20 +4,19 @@ namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Controllers\Controller;
+use Admin\Http\Controllers\BaseController;
 use App\Models\Cap;
 use Exception;
 
-class CapController extends Controller
+class CapController extends BaseController
 {
-    protected $cap;
     
     public function __construct(Cap $cap) {
-        $this->cap = $cap;
+        $this->model = $cap;
     }
     
     public function index(Request $request){
-        $caps = $this->cap->getData($request->all());
+        $caps = $this->model->getData($request->all());
         return view('admin::cap.index', ['items' => $caps]);
     }
     
@@ -27,37 +26,26 @@ class CapController extends Controller
     
     public function store(Request $request){
         try{
-            $this->cap->insertData($request->all());
-            return redirect()->back()->with('succ_mess', trans('manage.store_success'));
+            $this->model->insertData($request->all());
+            return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (Exception $ex) {
-            return redirect()->back()->withInput()->withErrors($this->cap->getError());
+            return redirect()->back()->withInput()->withErrors($this->model->getError());
         }
     }
     
     public function edit($id){
-        $item = $this->cap->find($id);
-        $highers = $this->cap->getData(['orderby' => 'name', 'exclude' => [$id], 'per_page' => -1])->lists('name', 'name');
-        $highers->prepend(trans('manage.selection'), '');
-        return view('manage.cap.edit', ['item' => $item, 'highers' => $highers]);
+        $item = $this->model->findOrFail($id);
+        return view('admin::cap.edit', compact('item'));
     }
     
-    public function update($id, Request $request){
-        try{
-            $this->cap->updateData($id, $request->all());
-            return redirect()->back()->with('succ_mess', trans('manage.update_success'));
-        } catch (Exception $ex) {
-            return redirect()->back()->withInput()->withErrors($this->cap->getError());
-        }
+    public function update($name, Request $request){
+        $this->model->updateData($name, $request->all());
+        return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
     }
     
     public function destroy($id){
-        if(!$this->cap->destroy($id)){
-            return redirect()->back()->with('error_mess', trans('manage.no_item'));
-        }
-        return redirect()->back()->with('succ_mess', trans('manage.destroy_success'));
+        $this->model->destroy($id);
+        return redirect()->back()->with('succ_mess', trans('admin::message.destroy_success'));
     }
     
-    public function multiAction(Request $request){
-        return response()->json($this->cap->actions($request));
-    }
 }

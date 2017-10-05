@@ -1,30 +1,32 @@
-@extends('layouts.manage')
+@extends('admin::layouts.manage')
 
-@section('title', trans('manage.man_sliders'))
+@section('title', trans('admin::view.man_sliders'))
 
-@section('page_title', trans('manage.create'))
+<?php
+use Admin\Facades\AdConst;
+?>
 
 @section('content')
 
 <div class="row">
     <div class="col-sm-6">
 
-        {!! show_messes() !!}
+        {!! showMessage() !!}
 
-        {!! Form::open(['method' => 'post', 'route' => 'slider.store']) !!}
+        {!! Form::open(['method' => 'post', 'route' => 'admin::slider.store']) !!}
 
 
-        @include('manage.parts.lang_tabs')
+        @include('admin::parts.lang_tabs')
 
         <div class="tab-content">
             @foreach($langs as $lang)
             <?php $code = $lang->code; ?>
-            <div class="tab-pane fade in {{ locale_active($code) }}" id="tab-{{$lang->code}}">
+            <div class="tab-pane fade in {{ localeActive($code) }}" id="tab-{{$lang->code}}">
 
                 <div class="form-group">
-                    <label>{{trans('manage.name')}} (*)</label>
-                    {!! Form::text($code.'[name]', old($code.'.name'), ['class' => 'form-control', 'placeholder' => trans('manage.name')]) !!}
-                    {!! error_field($code.'.name') !!}
+                    <label>{{trans('admin::view.name')}} (*)</label>
+                    {!! Form::text($code.'[name]', old($code.'.name'), ['class' => 'form-control', 'placeholder' => trans('admin::view.name')]) !!}
+                    {!! errorField($code.'.name') !!}
                 </div>
 
             </div>
@@ -32,13 +34,13 @@
         </div>
 
         <div class="form-group">
-            <label>{{trans('manage.status')}}</label>
-            {!! Form::select('status', [1 => 'Active', 0 => 'Disable'], old('status'), ['class' => 'form-control']) !!}
+            <label>{{trans('admin::view.status')}}</label>
+            {!! Form::select('status', AdView::getStatusLabel(false), old('status'), ['class' => 'form-control']) !!}
         </div>
 
         <div class="form-group">
-            <a href="{{route('slider.index')}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('manage.back')}}</a>
-            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('manage.create')}}</button>
+            <a href="{{route('admin::slider.index', ['status' => AdConst::STT_PUBLISH])}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('admin::view.create')}}</button>
         </div>
 
 

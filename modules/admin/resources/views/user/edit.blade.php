@@ -1,58 +1,49 @@
-@extends('layouts.manage')
+@extends('admin::layouts.manage')
 
-@section('title', trans('manage.man_users'))
-
-@section('page_title', trans('manage.edit'))
-
-<?php
-use App\User;
-?>
+@section('title', trans('admin::view.man_users'))
 
 @section('content')
 
 <div class="row">
     <div class="col-sm-6">
         
-        {!! show_messes() !!}
+        {!! showMessage() !!}
         
-        @if($item)
-        {!! Form::open(['method' => 'put', 'route' => ['user.update', $item->id]]) !!}
+        {!! Form::open(['method' => 'put', 'route' => ['admin::user.update', $item->id]]) !!}
         
         <div class="form-group">
-            <label>{{trans('manage.name')}}</label>
-            {!! Form::text('name', $item->name, ['class' => 'form-control', 'placeholder' => trans('manage.name')]) !!}
-            {!! error_field('name') !!}
+            <label>{{ trans('admin::view.name') }}</label>
+            {!! Form::text('name', $item->name, ['class' => 'form-control', 'placeholder' => trans('admin::view.name')]) !!}
+            {!! errorField('name') !!}
         </div>
         
         <div class="form-group">
-            <label>{{trans('manage.email')}} (*)</label>
-            {!! Form::email('email', $item->email, ['class' => 'form-control', 'placeholder' => trans('manage.email')]) !!}
-            {!! error_field('email') !!}
+            <label>{{ trans('admin::view.email') }} (*)</label>
+            {!! Form::email('email', $item->email, ['class' => 'form-control', 'placeholder' => trans('admin::view.email')]) !!}
+            {!! errorField('email') !!}
         </div>
         
-        <div class="form-group">
-            <label>{{trans('manage.password')}}</label>
+<!--        <div class="form-group">
+            <label>{{ trans('admin::view.password') }}</label>
             {!! Form::password('password', ['class' => 'form-control']) !!}
-            {!! error_field('password') !!}
+            {!! errorField('password') !!}
+        </div>-->
+        
+        <div class="form-group">
+            <label>{{ trans('admin::view.role') }}</label>
+            {!! Form::select('role_ids[]', $roles, $item->roles->pluck('id')->toArray(), ['class' => 'form-control', 'multiple']) !!}
         </div>
         
         <div class="form-group">
-            <label>{{trans('manage.role')}}</label>
-            {!! Form::select('role_ids[]', $roles, $item->roles->lists('id')->toArray(), ['class' => 'form-control', 'multiple']) !!}
+            <label>{{ trans('admin::view.status') }}</label>
+            {!! Form::select('status', AdView::getStatusLabel(), $item->status, ['class' => 'form-control']) !!}
         </div>
         
-        <div class="form-group">
-            <label>{{trans('manage.status')}}</label>
-            {!! Form::select('status', User::arrStatus(), $item->status, ['class' => 'form-control']) !!}
-        </div>
-        
-        <a href="{{route('user.index', ['status' => 1])}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('manage.back')}}</a>
-        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('manage.update')}}</button>
+        <a href="{{ route('admin::user.index', ['status' => 1]) }}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('admin::view.update')}}</button>
         
         {!! Form::close() !!}
-        @else
-        <p class="alert alert-danger">{{trans('manage.no_item')}}</p>
-        @endif
+        
     </div>
 </div>
 

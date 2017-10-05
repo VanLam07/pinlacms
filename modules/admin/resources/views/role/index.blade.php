@@ -1,48 +1,74 @@
-@extends('layouts.manage')
+@extends('admin::layouts.manage')
 
-@section('title', trans('manage.man_roles'))
+@section('title', trans('admin::view.man_roles'))
 
-@section('page_title', trans('manage.man_roles'))
+<?php
+$multiActions = ['delete'];
+$statuses = [];
+?>
 
-@section('table_nav')
-@include('manage.parts.table_nav', ['action_btns' => ['remove'], 'one_status' => true])
+@section('nav_status')
+    @include('admin::parts.actions-nav')
 @stop
 
 @section('content')
 
-{!! show_messes() !!}
-@if(!$items->isEmpty())
+{!! showMessage() !!}
+
 <div class="table-responsive">
-    <table class="table table-hover table-striped">
+    <table class="table table-hover table-striped table-bordered">
         <thead>
             <tr>
                 <th width="30"><input type="checkbox" class="check_all"/></th>
-                <th>ID {!! link_order('id') !!}</th>
-                <th>{{trans('manage.name')}} {!! link_order('name') !!}</th>
-                <th>{{trans('manage.description')}}</th>
-                <th>{{trans('manage.default')}}</th>
+                <th>ID {!! linkOrder('id') !!}</th>
+                <th>{{ trans('admin::view.name') }} {!! linkOrder('id') !!}</th>
+                <th>{{ trans('admin::view.description') }} {!! linkOrder('id') !!}</th>
+                <th>{{ trans('admin::view.default') }} {!! linkOrder('id') !!}</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach($items as $item)
             <tr>
-                <td><input type="checkbox" name="check_items[]" class="check_item" value="{{ $item->id }}" /></td>
-                <td>{{ $item->id }}</td>
-                <td>{{ $item->name }}</td>
-                <td>{{ $item->label }}</td>
-                <td>{{ $item->str_default() }}</td>
+                <td></td>
+                <td></td>
                 <td>
-                    <a href="{{route('role.edit', ['id' => $item->id])}}" class="btn btn-sm btn-info" title="{{trans('manage.edit')}}"><i class="fa fa-edit"></i></a>
+                    <input type="text" name="filters[name]" 
+                           value="{{ getRequestParam('filters', 'name') }}" 
+                           placeholder="{{ trans('admin::view.search') }}"
+                           class="form-control filter-data">
                 </td>
+                <td>
+                    <input type="text" name="filters[label]" 
+                           value="{{ getRequestParam('filters', 'label') }}" 
+                           placeholder="{{ trans('admin::view.search') }}"
+                           class="form-control filter-data">
+                </td>
+                <td></td>
             </tr>
-            @endforeach
+            @if (!$items->isEmpty())
+                @foreach($items as $item)
+                <tr>
+                    <td><input type="checkbox" name="check_items[]" class="check_item" value="{{ $item->id }}" /></td>
+                    <td>{{ $item->id }}</td>
+                    <td>{{ $item->name }}</td>
+                    <td>{{ $item->label }}</td>
+                    <td>{{ $item->strDefault() }}</td>
+                    <td>
+                        <a href="{{ route('admin::role.edit', ['id' => $item->id]) }}" 
+                           class="btn btn-sm btn-info" title="{{ trans('admin::view.edit') }}"><i class="fa fa-edit"></i></a>
+                    </td>
+                </tr>
+                @endforeach
+            @else
+            <tr>
+                <td class="text-center" colspan="6"><h4>@lang('admin::message.not_found_items')</h4></td>
+            </tr>
+            @endif
         </tbody>
     </table>
 </div>
-@else
-<p>{{trans('manage.no_item')}}</p>
-@endif
+
+@include('admin::parts.paginate')
 
 @stop
 

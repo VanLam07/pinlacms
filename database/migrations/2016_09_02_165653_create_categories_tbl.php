@@ -31,8 +31,8 @@ class CreateCategoriesTbl extends Migration
         Schema::create('tax_desc', function(Blueprint $table){
            $table->integer('tax_id')->unsigned();
            $table->string('lang_code', 3);
-           $table->string('name');
-           $table->string('slug');
+           $table->string('name')->nullable();
+           $table->string('slug')->nullable();
            $table->text('description', 500)->nullable();
            $table->string('meta_keyword')->nullable();
            $table->text('meta_desc', 500)->nullable();

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Admin\Facades\AdConst;
 use Storage;
 use Image;
 
@@ -10,6 +12,12 @@ class File extends BaseModel
     protected $table = 'files';
     
     protected $fillable = ['title', 'url', 'type', 'mimetype', 'author_id', 'created_at', 'updated_at'];
+    
+    use SoftDeletes;
+    
+    public function isUseSoftDelete() {
+        return true;
+    }
     
     public function author(){
         return $this->belongsTo('\App\User', 'author_id', 'id');
@@ -41,9 +49,9 @@ class File extends BaseModel
             }
         }
         if($src = $this->getSrc($size)){
-            return '<img '. $attrsText .' class="img-fluid '.$class.'" src="'.$src.'" alt="No image">';
+            return '<img '. $attrsText .' class="img-responsive '.$class.'" src="'.$src.'" alt="No image">';
         }
-        return null;
+        return '<img '. $attrsText .' class="img-responsive '.$class.'" src="/public/images/default.jpg" alt="No image">';
     }
     
     public function rules() {
@@ -56,34 +64,42 @@ class File extends BaseModel
         $opts = [
             'fields' => ['*'],
             'orderby' => 'created_at',
-            'type' => '_all',
             'order' => 'desc',
-            'per_page' => 20,
-            'key' => '',
-            'author' => -1,
-            'page' => 1
+            'per_page' => AdConst::PER_PAGE,
+            'status' => [],
+            'exclude_key' => 'id',
+            'exclude' => [],
+            'page' => 1,
+            'type' => [],
+            'filters' => []
         ];
 
         $opts = array_merge($opts, $args);
-
-        $result = self::where('title', 'like', '%' . $opts['key'] . '%')
-                ->select($opts['fields'])
-                ->orderBy($opts['orderby'], $opts['order']);
-
-        if ($opts['type'] != '_all'){
-            $result = $result->where('type', $opts['type']);
-        }
         
-        if ($opts['author'] > -1) {
-            $result = $result->where('author_id', $opts['author']);
+        $result = self::select($opts['fields']);
+        
+        if ($opts['status']) {
+            if (!is_array($opts['status'])) {
+                $opts['status'] = [$opts['status']];
+            }
+            if ($opts['status'][0] == AdConst::STT_TRASH) {
+                $result->onlyTrashed();
+            } else {
+                $result->whereIn('status', $opts['status']);
+            }
         }
-
-        if ($opts['per_page'] == -1) {
-            $result = $result->get();
-        } else {
-            $result = $result->paginate($opts['per_page']);
+        if ($opts['exclude']) {
+            $result->whereNotIn($opts['exclude_key'], $opts['exclude']);
         }
-        return $result;
+        if ($opts['filters']) {
+            $this->filterData($result, $opts['filters']);
+        }
+        $result->orderby($opts['orderby'], $opts['order']);
+        
+        if($opts['per_page'] == -1){
+            return $result->get();
+        }
+        return $result->paginate($opts['per_page']);
     }
 
     public function insertData($file) {

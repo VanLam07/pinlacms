@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use App\Http\Controllers\Controller;
+use Admin\Http\Controllers\BaseController;
 use App\Models\PostType;
 use Illuminate\Validation\ValidationException;
-use App\Exceptions\DbException;
 use File;
+use DB;
+use Exception;
 
-class PageController extends Controller
+class PageController extends BaseController
 {
-    protected $page;
+    protected $model;
     protected $templates = [];
 
     public function __construct(PostType $page) {
-        $this->page = $page;
-        $this->templates = ['' => trans('manage.selection')];
+        $this->model = $page;
+        $this->templates = ['' => trans('admin::view.selection')];
         
         $view_path = config('view.paths')[0].'\front\templates';
         $files = File::files($view_path);
@@ -28,66 +28,52 @@ class PageController extends Controller
     }
 
     public function index(Request $request) {
-        $items = $this->page->getData('page', $request->all());
-        return view('manage.page.index', ['items' => $items]);
+        $items = $this->model->getData('page', $request->all());
+        return view('admin::page.index', ['items' => $items]);
     }
 
     public function create() {
-        canAccess('publish_posts');
+//        canAccess('publish_posts');
 
-        return view('manage.page.create', ['templates' => $this->templates]);
+        return view('admin::page.create', ['templates' => $this->templates]);
     }
 
     public function store(Request $request) {
-        canAccess('publish_posts');
-
+//        canAccess('publish_posts');
+        
+        DB::beginTransaction();
         try {
-            $this->page->insertData($request->all(), 'page');
-            return redirect()->back()->with('succ_mess', trans('manage.store_success'));
+            $this->model->insertData($request->all(), 'page');
+            DB::commit();
+            return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        } catch (DbException $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
+            DB::rollback();
+            return redirect()->back()->withInput()->withErrors($ex->errors());
+        } catch (Exception $ex) {
+            DB::rollback();
+            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
         }
     }
 
     public function edit($id, Request $request) {
-        canAccess('edit_my_post', $this->page->get_author_id($id));
+//        canAccess('edit_my_post', $this->model->get_author_id($id));
 
-        $lang = current_locale();
-        if($request->has('lang')){
-            $lang = $request->get('lang');
+        $lang = $request->get('lang');
+        if(!$lang){
+            $lang = currentLocale();
         }
-        $item = $this->page->findByLang($id, ['posts.*', 'pd.*'], $lang);
+        $item = $this->model->findByLang($id, ['posts.*', 'pd.*'], $lang);
         $templates = $this->templates;
-        return view('manage.page.edit', compact('item', 'templates', 'lang'));
+        return view('admin::page.edit', compact('item', 'templates', 'lang'));
     }
 
     public function update($id, Request $request) {
-        try {
-            $this->page->updateData($id, $request->all());
-            return redirect()->back()->with('succ_mess', trans('manage.update_success'));
-        } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        }
+        return parent::update($id, $request);
     }
 
-    public function destroy($id) {
-        if (!$this->page->changeStatus($id, 0)) {
-            return redirect()->back()->with('error_mess', trans('manage.no_item'));
-        }
-        return redirect()->back()->with('succ_mess', trans('manage.destroy_success'));
-    }
 
     public function multiAction(Request $request) {
-        if(!cando('remove_other_posts')){
-            return redirect()->back()->withInput()->with('error_mess', trans('auth.authorize'));
-        }
-        try {
-            $this->page->actions($request);
-            return redirect()->back()->withInput()->with('succ_mess', trans('message.action_success'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
-        }
+        
+        return parent::multiActions($request);
     }
 }

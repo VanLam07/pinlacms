@@ -1,75 +1,56 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use App\Http\Controllers\Controller;
+use Admin\Http\Controllers\BaseController;
 use Illuminate\Validation\ValidationException;
+use Exception;
 use App\Models\Tax;
+use Illuminate\Support\Facades\DB;
 
-class SliderController extends Controller
+class SliderController extends BaseController
 {
-   protected $slider;
+   protected $model;
 
     public function __construct(Tax $slider) {
-        canAccess('manage_cats');
+//        canAccess('manage_cats');
 
-        $this->slider = $slider;
+        $this->model = $slider;
     }
 
     public function index(Request $request) {
         $data = $request->all();
-        $sliders = $this->slider->getData('slider', $data);
-        return view('manage.slider.index', ['items' => $sliders]);
+        $sliders = $this->model->getData('slider', $data);
+        return view('admin::slider.index', ['items' => $sliders]);
     }
 
     public function create() {
-        return view('manage.slider.create');
+        return view('admin::slider.create');
     }
 
     public function store(Request $request) {
+        DB::beginTransaction();
         try {
-            $this->slider->insertData($request->all(), 'slider');
-            return redirect()->back()->with('succ_mess', trans('manage.store_success'));
+            $this->model->insertData($request->all(), 'slider');
+            DB::commit();
+            return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        } catch (DbException $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMess());
+            DB::rollback();
+            return redirect()->back()->withInput()->withErrors($ex->errors());
+        } catch (Exception $ex) {
+            DB::rollback();
+            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
         }
     }
 
     public function edit($id, Request $request) {
-        $lang = current_locale();
-        if($request->has('lang')){
-            $lang = $request->get('lang');
+        $lang = $request->get('lang');
+        if(!$lang){
+            $lang = currentLocale();
         }
-        $item = $this->slider->findByLang($id, ['taxs.*', 'td.*'], $lang);
-        return view('manage.slider.edit', compact('item', 'lang'));
+        $item = $this->model->findByLang($id, ['taxs.*', 'td.*'], $lang);
+        return view('admin::slider.edit', compact('item', 'lang'));
     }
 
-    public function update($id, Request $request) {
-        try {
-            $this->slider->updateData($id, $request->all());
-            return redirect()->back()->with('succ_mess', trans('manage.update_success'));
-        } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        }
-    }
-
-    public function destroy($id) {
-        if (!$this->slider->destroy($id)) {
-            return redirect()->back()->with('error_mess', trans('manage.no_item'));
-        }
-        return redirect()->back()->with('succ_mess', trans('manage.destroy_success'));
-    }
-
-    public function multiAction(Request $request) {
-        try {
-            $this->slider->actions($request);
-            return redirect()->back()->withInput()->with('succ_mess', trans('message.action_success'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
-        }
-    }
 }

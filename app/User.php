@@ -4,6 +4,11 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Admin\Facades\AdConst;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Validator;
+use Exception;
 
 class User extends Authenticatable
 {
@@ -13,10 +18,31 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
     protected $fillable = [
-        'type', 'name', 'slug', 'email', 'password', 'birth', 'gender', 'status', 'image_id', 'image_url', 'role_id'
+        'type', 'name', 'slug', 'email', 'password', 'birth', 'gender', 'status', 'image_id', 'image_url', 'role_id', 'remember_token'
     ];
 
-    protected $dates = ['created_at', 'updated_at', 'birth'];
+    protected $dates = ['birth'];
+    
+    use SoftDeletes;
+    
+    public function isUseSoftDelete() {
+        return true;
+    }
+    
+    public function rules($id = null) {
+        if (!$id) {
+            return [
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:6|confirmed'
+            ];
+        }
+        return [
+            'name' => 'required',
+            'email' => 'email|unique:users,email,' . $id,
+            'password' => 'min:6'
+        ];
+    }
     
     public function roles() {
         return $this->belongsToMany('\App\Models\Role', 'user_role', 'user_id', 'role_id');
@@ -88,67 +114,67 @@ class User extends Authenticatable
     
     public function status(){
         switch ($this->status){
-            case self::STT_TRASH:
-                return trans('manage.trash');
-            case self::STT_BANNED:
-                return trans('manage.banned');
-            case self::STT_ACTIVE:
-                return trans('manage.active');
+            case AdConst::STT_TRASH:
+                return trans('admin::view.trash');
+            case AdConst::STT_PUBLISH:
+                return trans('admin::view.publish');
             default:
-                return trans('amange.disable');
+                return trans('amange.draft');
         }
     }
     
-    public static function arrStatus() {
-        return [
-            self::STT_ACTIVE => trans('manage.active'),
-            self::STT_DISABLE => trans('manage.disable'),
-            self::STT_BANNED => trans('manage.ban'),
-            self::STT_TRASH => trans('manage.trash')
-        ];
-    }
-
-    public function rules($id = null) {
-        if (!$id) {
-            return [
-                'name' => 'required',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:6|confirmed'
-            ];
-        }
-        return [
-            'name' => 'required',
-            'email' => 'email|unique:users,email,' . $id,
-            'password' => 'min:6'
-        ];
-    }
-
-    public function getData($args = []) {
+    public function getData($data) {
         $opts = [
-            'status' => 1,
-            'field' => ['*'],
-            'orderby' => 'id',
-            'order' => 'asc',
-            'per_page' => 20,
+            'fields' => ['*'],
+            'orderby' => 'created_at',
+            'order' => 'desc',
+            'per_page' => AdConst::PER_PAGE,
+            'status' => [AdConst::STT_PUBLISH],
+            'exclude_key' => 'id',
             'exclude' => [],
-            'key' => '',
-            'withs' => ['roles'],
-            'page' => 1
+            'page' => 1,
+            'filters' => [],
         ];
-
-        $opts = array_merge($opts, $args);
-
-        $result = self::where('status', $opts['status'])
-                        ->whereNotIn('id', $opts['exclude'])
-                        ->where('email', 'like', '%' . $opts['key'] . '%')
-                        ->orderby($opts['orderby'], $opts['order']);
-        if ($opts['withs']) {
-            $result = $result->with($opts['withs']);
+        
+        $opts = array_merge($opts, $data);
+        
+        $result = self::select($opts['fields']);
+        if ($opts['status']) {
+            if (!is_array($opts['status'])) {
+                $opts['status'] = [$opts['status']];
+            }
+            if ($opts['status'][0] == AdConst::STT_TRASH) {
+                $result->onlyTrashed();
+            } else {
+                $result->whereIn('status', $opts['status']);
+            }
         }
+        if ($opts['exclude']) {
+            $result->whereNotIn($opts['exclude_key'], $opts['exclude']);
+        }
+        if ($opts['filters']) {
+            $this->filterData($result, $opts['filters']);
+        }
+        $result->orderby($opts['orderby'], $opts['order']);
         
-        $result = $result->paginate($opts['per_page']);
-        
-        return $result;
+        if($opts['per_page'] == -1){
+            return $result->get();
+        }
+        return $result->paginate($opts['per_page']);
+    }
+    
+    public function filterData(&$collection, $filters) {
+        if ($filters && is_array($filters)) {
+            foreach ($filters as $key => $value) {
+                if (is_array($value)) {
+                    $collection->whereIn($key, $value);
+                } else {
+                    if ($value) {
+                        $collection->where($key, 'like', "%$value%");
+                    }
+                }
+            }
+        }
     }
 
     public function getRoles() {
@@ -167,7 +193,70 @@ class User extends Authenticatable
         if (!is_array($ids)) {
             $ids = [$ids];
         }
-        self::whereIn('id', $ids)
-                ->update(['status' => $status]);
+        return self::whereIn('id', $ids)->update(['status' => $status]);
+    }
+    
+    public function forceDeleteData($ids) {
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        $items = self::withTrashed()
+                ->whereIn('id', $ids)->get();
+        if (!$items->isEmpty()) {
+            foreach ($items as $item) {
+                $item->forceDelete();
+            }
+        }
+    }
+    
+    public function destroyData($ids) {
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        return self::destroy($ids);
+    }
+    
+    public function restoreData($ids) {
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+        return self::whereIn('id', $ids)
+                ->restore();
+    }
+
+    public function actions($request) {
+        $valid = Validator::make($request->all(), [
+            'action' => 'required',
+            'item_ids.*' => 'required' 
+        ]);
+        if ($valid->fails()) {
+            throw new ValidationException($valid, 422);
+        }
+
+        $item_ids = $request->input('item_ids');
+        if (!$item_ids) {
+            throw new Exception(trans('admin::message.no_item'));
+        }
+        $action = $request->input('action');
+        switch ($action) {
+            case 'restore':
+                $this->restoreData($item_ids);
+                break;
+            case 'publish':
+                $this->changeStatus($item_ids, AdConst::STT_PUBLISH);
+                break;
+            case 'draft': 
+                $this->changeStatus($item_ids, AdConst::STT_DRAFT);
+                break;
+            case 'trash':
+                $this->destroyData($item_ids);
+                break;
+                break;
+            case 'delete':
+                $this->forceDeleteData($item_ids);
+                break;
+            case defalt:
+                break;
+        }
     }
 }

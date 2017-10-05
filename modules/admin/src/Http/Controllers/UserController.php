@@ -1,44 +1,36 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use App\Http\Controllers\Controller;
+use Admin\Http\Controllers\BaseController;
 use App\User;
 use App\Models\Role;
 use Validator;
 
-use Illuminate\Validation\ValidationException;
-
-class UserController extends Controller
+class UserController extends BaseController
 {
-    protected $user;
+    protected $model;
     protected $role;
 
     public function __construct(User $user, Role $role) {
-        $this->user = $user;
+        $this->model = $user;
         $this->role = $role;
     }
     
     public function index(Request $request){
-        canAccess('read_users');
-        
-        $users = $this->user->getData($request->all());
-        return view('manage.user.index', ['items' => $users]);
+        $items = $this->model->getData($request->all());
+        return view('admin::user.index', compact('items'));
     }
     
     public function create(){
-        canAccess('publish_users');
-        
-        $roles = $this->role->getData(['orderby' => 'id', 'order' => 'asc'])->lists('label', 'id'); 
-        return view('manage.user.create', ['roles' => $roles]);
+        $roles = $this->role->getData(['orderby' => 'id', 'order' => 'asc', 'per_page' => -1])->pluck('label', 'id'); 
+        return view('admin::user.create', compact('roles'));
     }
     
     public function store(Request $request){
-        canAccess('publish_users');
+        $valid = Validator::make($request->all(), $this->model->rules());
         
-        $valid = Validator::make($request->all(), $this->user->rules());
         if ($valid->fails()) {
             return redirect()->back()->withInput()->withErrors($valid->errors());
         }
@@ -46,34 +38,32 @@ class UserController extends Controller
         $data = $request->all();
         $data['password'] = bcrypt($data['password']);
         $data['slug'] = str_slug($data['name']);
-        $user = $this->user->create($data);
+        $user = $this->model->create($data);
         
         if (!isset($data['role_ids']) || !$data['role_ids']) {
             $data['role_ids'] = [$this->role->getDefaultId()];
         }
         $user->roles()->attach($data['role_ids']);
         
-        return redirect()->back()->with('succ_mess', trans('manage.store_success'));
+        return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
     }
     
     public function edit($id){
-        canAccess('edit_my_user', $id);
-        
-        $item = $this->user->find($id);
-        $roles = $this->role->getData(['orderby' => 'id', 'order' => 'asc'])->lists('label', 'id');
-        return view('manage.user.edit', ['item' => $item, 'roles' => $roles]);
+        $item = $this->model->findOrFail($id);
+        $roles = $this->role->getData(['orderby' => 'id', 'order' => 'asc', 'per_page' => -1])->pluck('label', 'id');
+        return view('admin::user.edit', ['item' => $item, 'roles' => $roles]);
     }
     
     public function update($id, Request $request){
-        canAccess('edit_my_user', $id);
+//        canAccess('edit_my_user', $id);
         
-        $valid = Validator::make($request->all(), $this->user->rules($id));
+        $valid = Validator::make($request->all(), $this->model->rules($id));
         if ($valid->fails()) {
             return redirect()->back()->withInput()->withErrors($valid->errors());
         }
         
         $data = $request->all();
-        $fillable = $this->user->getFillable();
+        $fillable = $this->model->getFillable();
         if (isset($data['password']) && ($data['password'])) {
             $data['password'] = bcrypt($data['password']);
         } else {
@@ -88,7 +78,7 @@ class UserController extends Controller
             $data['image_url'] = cutImgPath($data['image_id']);
         }
         
-        $user = $this->user->find($id);
+        $user = $this->model->findOrFail($id);
         if (!isset($data['role_ids']) || !$data['role_ids']) {
             $data['role_ids'] = [$this->role->getDefaultId()];
         }
@@ -97,55 +87,19 @@ class UserController extends Controller
         $data = array_only($data, $fillable);
         
         $user->update($data);
-        $user->save();
         
-        return redirect()->back()->with('succ_mess', trans('manage.update_success'));
+        return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
     }
     
     public function destroy($id){
-        canAccess('remove_my_user', $id);
+//        canAccess('remove_my_user', $id);
         
-        if(!$this->user->destroy($id)){
-            return redirect()->back()->with('error_mess', trans('manage.no_item'));
-        }
-        return redirect()->back()->with('succ_mess', trans('manage.destroy_success'));
+        $this->model->destroyData($id);
+        return redirect()->back()->with('succ_mess', trans('admin::message.destroy_success'));
     }
     
-    public function multiAction(Request $request){
-        canAccess('manage_users');
-        
-        $valid = Validator::make($request->all(), [
-            'action' => 'required',
-            'item_ids.*' => 'required' 
-        ]);
-        if ($valid->fails()) {
-            return redirect()->back()->withInput()->withErrors($valid->errors());
-        }
-
-        $item_ids = $request->input('item_ids');
-        if (!$item_ids) {
-            return redirect()->back()->withInput()->with('error_mess', trans('message.no_item'));
-        }
-        $action = $request->input('action');
-        switch ($action) {
-            case 'restore':
-                $this->user->changeStatus($item_ids, User::STT_ACTIVE);
-                break;
-            case 'ban':
-                $this->user->changeStatus($item_ids, User::STT_BANNED);
-                break;
-            case 'trash':
-            case 'delete':
-                $this->user->changeStatus($item_ids, User::STT_TRASH);
-                break;
-            case 'disable':
-                $this->user->changeStatus($item_ids, User::STT_DISABLE);
-                break;
-            case 'remove':
-                $this->user->destroy($item_ids);
-                break;
-        }
-        
-        return redirect()->back()->with('succ_mess', trans('message.action_success'));
+    public function multiActions(Request $request){
+//        canAccess('manage_users');
+        return parent::multiActions($request);
     }
 }

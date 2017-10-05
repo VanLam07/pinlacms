@@ -75,8 +75,8 @@ class RouteServiceProvider extends BaseRouteServiceProvider
     {
         Route::prefix($this->locale . '/'. $this->prefix . '/api')
              ->middleware('api')
-             ->namespace($this->namespace)
-             ->name('admin::api')
+             ->namespace($this->namespace . '\\Api')
+             ->name('admin::api.')
              ->group(__DIR__.'/../../routes/api.php');
     }
 }

@@ -2,16 +2,28 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
+use Admin\Facades\AdConst;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Media extends BaseModel {
 
     protected $table = 'medias';
     protected $fillable = ['thumb_id', 'thumb_type', 'author_id', 'slider_id', 'media_type', 'media_type_id', 'status', 'target', 'views'];
+    
+    use SoftDeletes;
+    
+    public function isUseSoftDelete() {
+        return true;
+    }
 
     public function joinLang($lang = null) {
-        $locale = ($lang) ? $lang : current_locale();
-        return $this->join('media_desc as md', function($join) use ($locale) {
+        if (!$lang) {
+            $lang = currentLocale();
+        }
+        return $this->join('media_desc as md', function($join) use ($lang) {
                     $join->on('medias.id', '=', 'md.media_id')
-                            ->where('md.lang_code', '=', $locale);
+                            ->where('md.lang_code', '=', $lang);
                 });
     }
 
@@ -39,19 +51,12 @@ class Media extends BaseModel {
                         ->select(['taxs.id', 'td.slug', 'td.name'])
                         ->where('taxs.type', 'album');
     }
-
-    public function str_status() {
-        if ($this->status == 1) {
-            return trans('manage.enable');
-        }
-        return trans('manage.disable');
-    }
     
     public function thumbnail(){
         return $this->belongsTo('\App\Models\File', 'thumb_id', 'id');
     }
     
-    public function getThumbnailSrc($size='thumbnail') {
+    public function getThumbnailSrc($size = 'thumbnail') {
         if ($this->thumbnail) {
             return $this->thumbnail->getSrc($size);
         }
@@ -67,7 +72,7 @@ class Media extends BaseModel {
     
     public function rules($update = false) {
         if (!$update) {
-            $code = current_locale();
+            $code = currentLocale();
             return [
                 $code . '.name' => 'required'
             ];
@@ -82,46 +87,59 @@ class Media extends BaseModel {
         $opts = [
             'type' => 'inherit',
             'fields' => ['medias.*', 'md.*'],
-            'status' => 1,
+            'status' => AdConst::STT_PUBLISH,
             'orderby' => 'medias.created_at',
             'order' => 'desc',
-            'per_page' => 20,
+            'per_page' => AdConst::PER_PAGE,
             'exclude' => [],
-            'key' => '',
             'albums' => [],
-            'slider_id' => null
+            'slider_id' => null,
+            'filters' => []
         ];
 
         $opts = array_merge($opts, $args);
 
-        $result = $this->joinLang();
+        $result = $this->joinLang()
+                ->whereNotNull('md.name');
         
-        if($opts['albums']){
+        if ($opts['albums']){
             $album_ids = $opts['albums'];
-            $result = $result->join('media_tax as mt', function($join) use($album_ids){
+            $result->join('media_tax as mt', function($join) use($album_ids){
                 $join->on('mt.media_id', '=', 'medias.id')
                         ->whereIn('tax_id', $album_ids);
             });
         }
         if($opts['slider_id']){
-            $result = $result->where('medias.slider_id', $opts['slider_id']);
+            $result->where('medias.slider_id', $opts['slider_id']);
         }
-        $result = $result->where('medias.status', $opts['status'])
-                ->whereNotNull('md.name')
-                ->where('md.name', 'like', '%' . $opts['key'] . '%')
-                ->whereNotIn('medias.id', $opts['exclude'])
-                ->select($opts['fields'])
+        
+        if ($opts['status']) {
+            if (!is_array($opts['status'])) {
+                $opts['status'] = [$opts['status']];
+            }
+            if ($opts['status'][0] == AdConst::STT_TRASH) {
+                $result->onlyTrashed();
+            } else {
+                $result->whereIn('status', $opts['status']);
+            }
+        }
+        
+        if ($opts['exclude']) {
+            $result->whereNotIn('medias.id', $opts['exclude']);
+        }
+        if ($opts['filters']) {
+            $this->filterData($result, $opts['filters']);
+        }
+        $result->select($opts['fields'])
                 ->orderBy($opts['orderby'], $opts['order']);
 
-        if ($opts['per_page'] == -1) {
-            $result = $result->get();
-        } else {
-            $result = $result->paginate($opts['per_page']);
+        if ($opts['per_page'] > -1) {
+            return $result->paginate($opts['per_page']);
         }
-        return $result;
+        return $result->get();
     }
 
-    public function insertData($data, $type='inherit') {
+    public function insertData($data, $type = 'inherit') {
         $this->validator($data, $this->rules());
 
         $data['author_id'] = auth()->id();
@@ -135,7 +153,7 @@ class Media extends BaseModel {
         $data['media_type'] = $type;
         $item = self::create($data);    
         
-        $langs = get_langs(['fields' => ['id', 'code']]);
+        $langs = getLangs(['fields' => ['code']]);
 
         if (isset($data['cat_ids'])) {
             $item->albums()->attach($data['cat_ids']);
@@ -159,7 +177,7 @@ class Media extends BaseModel {
         $item = $this->joinLang($lang)
                 ->find($id, $fields);
         if (!$item) {
-            $item = $this->find($id);
+            $item = $this->findOrFail($id);
         }
         return $item;
     }

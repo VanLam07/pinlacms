@@ -10,7 +10,7 @@ and open the template in the editor.
         <title>Error 403 - Authorize</title>
     </head>
     <body>
-        <h1 style="text-align: center;">{{trans('auth.authorize')}}</h1>
+        <h1 style="text-align: center;">{{trans('admin::view.authorize')}}</h1>
     </body>
 </html>
 

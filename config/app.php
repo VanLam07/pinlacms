@@ -244,7 +244,7 @@ return [
         /*
          * Modules
          */
-        'AdView' => Admin\Facades\AdView\AdViewFacade::class,
+        'AdView' => Admin\Facades\AdViewFacade::class,
 
     ],
 

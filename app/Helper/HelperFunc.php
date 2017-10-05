@@ -50,6 +50,19 @@ if (!function_exists('rsNames')) {
     }
 }
 
+if (!function_exists('requestValue')) {
+    function getRequestParam($key, $keyElement = null) {
+        $data = request()->get($key);
+        if (!$keyElement) {
+            return $data;
+        }
+        if (is_array($data) && isset($data[$keyElement])) {
+            return $data[$keyElement];
+        }
+        return null;
+    }
+}
+
 if (!function_exists('showMessage')) {
 
     function showMessage($txt_class = null, $box_class = null) {
@@ -130,20 +143,18 @@ function makeToken($length = 17, $model = null) {
     return $str;
 }
 
-function linkOrder($orderby) {
-    $request = request();
-    $route = $request->route()->getName();
-    $order = 'asc';
-    if ($request->has('order')) {
-        if ($request->has('orderby')) {
-            $c_orderby = $request->get('orderby');
-            if ($c_orderby == $orderby) {
-                $order = ($request->get('order') == 'asc') ? 'desc' : 'asc';
-            }
+if (!function_exists('linkOrder')) {
+    function linkOrder($orderby) {
+        $request = request();
+        $route = $request->route()->getName();
+        $order = 'asc';
+        if ($request->has('order') && $request->has('orderby') 
+                && $request->get('orderby') == $orderby) {
+            $order = ($request->get('order') == 'asc') ? 'desc' : 'asc';
         }
+        $args = array_merge($request->all(), ['orderby' => $orderby, 'order' => $order]);
+        echo '<a href="' . route($route, $args) . '"><i class="fa fa-sort"></i></a>';
     }
-    $args = array_merge($request->all(), ['orderby' => $orderby, 'order' => $order]);
-    echo '<a href="' . route($route, $args) . '"><i class="fa fa-sort"></i></a>';
 }
 
 function selected($current, $values, $echo = true, $selected = "checked") {
@@ -176,56 +187,47 @@ function selected($current, $values, $echo = true, $selected = "checked") {
     }
 }
 
-function isActive($route, $status = null, $active = 'active') {
-    $request = request();
-    $current_route = $request->route()->getName();
-    if ($route == $current_route) {
-        if ($request->has('status')) {
-            $current_status = $request->get('status');
-            if ($status == $current_status) {
+if (!function_exists('linkClassActive')) {
+    function linkClassActive($route, $status = null, $active = 'active') {
+        $request = request();
+        $current_route = $request->route()->getName();
+        if ($route == $current_route && $request->has('status')) {
+            if ($status == $request->get('status')) {
                 return $active;
             }
             return null;
         }
-        return $active;
+        return null;
     }
-    return null;
 }
 
-function isSubActive($route, $active = 'active') {
-    if (Request::route()->getName() == $route || Request::is(trim(route($route, [], false) . '/*', '\/'))) {
-        return $active;
+if (!function_exists('subLinkClassActive')) {
+    function subLinkClassActive($route, $active = 'active') {
+        if (Request::route()->getName() == $route || Request::is(trim(route($route, [], false) . '/*', '\/'))) {
+            return $active;
+        }
+        return null;
     }
-    return null;
 }
 
-function nestedOption($items, $selected = 0, $parent = 0, $depth = 0) {
-    $html = '';
-    $intent = str_repeat('-- ', $depth);
-    if (!is_array($selected)) {
-        $selected = [$selected];
-    }
-    if ($items) {
-        foreach ($items as $item) {
-            if ($item->parent_id == $parent) {
-                $select = in_array($item->id, $selected) ? 'selected' : '';
-                $html .= '<option value="' . $item->id . '" ' . $select . '>' . $intent . $item->name . '</option>';
-                $html .= nested_option($items, $selected, $item->id, $depth + 1);
+if (!function_exists('nestedOption')) {
+    function nestedOption($items, $selected = 0, $parent = 0, $depth = 0) {
+        $html = '';
+        $intent = str_repeat('-- ', $depth);
+        if (!is_array($selected)) {
+            $selected = [$selected];
+        }
+        if ($items) {
+            foreach ($items as $item) {
+                if ($item->parent_id == $parent) {
+                    $select = in_array($item->id, $selected) ? 'selected' : '';
+                    $html .= '<option value="' . $item->id . '" ' . $select . '>' . $intent . $item->name . '</option>';
+                    $html .= nestedOption($items, $selected, $item->id, $depth + 1);
+                }
             }
         }
+        return $html;
     }
-    return $html;
-}
-
-function list_menu_types() {
-    return [
-        0 => trans('menu.custom'),
-        1 => trans('menu.post'),
-        2 => trans('menu.page'),
-        3 => trans('menu.cat'),
-        4 => trans('menu.tag'),
-        5 => trans('menu.service')
-    ];
 }
 
 function makeRandDir($length = 16, $model) {
@@ -247,17 +249,19 @@ if (!function_exists('rangeOptions')) {
     }
 }
 
-function catCheckLists($items, $checked = [], $parent = 0, $depth = 0) {
-    $html = '';
-    $intent = str_repeat("--- ", $depth);
-    foreach ($items as $item) {
-        if ($item->parent_id == $parent) {
-            $check = in_array($item->id, $checked) ? 'checked' : '';
-            $html .= '<li>' . $intent . '<label><input type="checkbox" name="cat_ids[]" ' . $check . ' value="' . $item->id . '"> ' . $item->name . '</label></li>';
-            $html .= cat_check_lists($items, $checked, $item->id, $depth + 1);
+if (!function_exists('catCheckLists')) {
+    function catCheckLists($items, $checked = [], $parent = 0, $depth = 0) {
+        $html = '';
+        $intent = str_repeat("--- ", $depth);
+        foreach ($items as $item) {
+            if ($item->parent_id == $parent) {
+                $check = in_array($item->id, $checked) ? 'checked' : '';
+                $html .= '<li>' . $intent . '<label><input type="checkbox" name="cat_ids[]" ' . $check . ' value="' . $item->id . '"> ' . $item->name . '</label></li>';
+                $html .= catCheckLists($items, $checked, $item->id, $depth + 1);
+            }
         }
+        return $html;
     }
-    return $html;
 }
 
 function cutImgPath($full_url) {

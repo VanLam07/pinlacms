@@ -1,0 +1,156 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Sep 16, 2017, 7:57:29 PM
+    Author     : Pinla
+*/
+
+@import "../mixin.scss";
+
+html, body{
+    background: #f3f3f3; font-size: 0.93rem;
+}
+
+.loading{
+    display: none; z-index: 100000;
+    background: rgba(255, 255, 255, 0.8); padding: 5px; 
+    border-radius: 5px; 
+    border: 1px solid #ddd;
+    position: fixed; top: 50%; left: 50%; 
+    @include transform(translate(-50%, -50%));
+    span{
+        display: inline-block; width: 32px; height: 32px; float: left;
+        background: url('../../images/loading.gif') no-repeat;
+        background-size: 100% 100%; 
+    }
+}
+.loading.show{display: block;}
+.loading.show-inline{display: inline-block;}
+.nav-status.hidden{display: none;}
+
+a{
+    &:hover, &:active, &:focus{
+        text-decoration: none; outline: none;
+    }
+    @include transi(all ease-in-out 0.3s);
+}
+.inline{
+    display: inline-block!important;
+}
+.content-wrapper {
+    background: #fff;
+}
+
+#topnav{
+    padding-left: 0; padding-right: 0;
+    background: #fff; 
+    border-radius: 0; 
+    border: none; color: $main_cl; 
+    border-bottom: 1px solid #ddd;
+    a{
+        color: $main_cl; padding-left: 0.9rem; padding-right: 0.9rem;
+        &:hover{color: $hover_cl;}
+    }
+    .dropdown-menu{
+        top: calc(~"100% + 9px"); 
+        border-radius: 0; right: 3px;
+        a{
+            color: $main_cl; white-space: nowrap; display: block; padding-top: 0.5rem; padding-bottom: 0.5rem;
+            &:hover{color: $hover_cl;}
+            border-bottom: 1px solid #ddd;
+        }
+        li:last-child a{border-bottom: none;}
+    }
+    .navbar-brand{min-width: $sbar_w; border-right: 1px solid #ddd; margin-right: 0;}
+}
+
+.table-data{
+    tr{
+        th, td{
+            &:first-child{width: 33px; text-align: center;}
+        }
+    }
+}
+.table_nav{
+    margin-bottom: 10px;
+}
+.page-header{font-size: 1.5rem; margin-bottom: 0;}
+.box-title{font-size: 1.1rem;}
+.data_box{
+    .box-title{margin-bottom: 0;}
+    .items{margin-top: 20px;}
+}
+#files_modal{z-index: 30001;}
+.thumb_item{
+    margin: 10px 0; position: relative;
+    .close{
+        position: absolute; top: 5px; right: 5px;
+        background: rgba(255, 255, 255, 9);
+        padding: 5px 7px;
+        opacity: 0.8;
+        border-radius: 50%;
+    }
+}
+
+.items{
+    .item{margin-bottom: 5px;}
+    .title, .title a{
+        font-size: 0.9rem; color: $main_cl;
+        &:hover{
+            color: $hover_cl;
+        }
+    }
+    .title a{display: inline-block; vertical-align: middle;}
+}
+
+.time_group{
+    font-size: 0.8rem;
+    .t_field{display: inline-block;}
+}
+.lang_tabs{
+    list-style: none; padding: 0;
+    li{
+        display: inline-block;
+        a{display: inline-block; padding: 5px 15px;}
+    } 
+    .active a, li a:hover{
+        border-bottom: 2px solid tomato;
+    }
+}
+.cat-check-lists{
+    list-style: none; max-height: 230px; overflow: auto; padding-left: 0;
+    background: #f5f5f5; padding: 10px;
+}
+.status-nav{
+    margin: 0 15px 10px 0; list-style: none; padding: 0; display: inline-block;
+    li{display: inline-block; margin-right: 15px;}
+    li a{padding: .25rem .3rem; line-height: 1rem; vertical-align: top; display: inline-block;}
+    li.active {
+        border-top: 2px solid #ff6600;
+    }
+    .active a{
+        font-weight: 600;
+        color: #ff6600;
+    }
+}
+
+.actions-nav {
+    margin-bottom: 10px;
+}
+
+.btn_actions{display: inline-block;}
+.list_types{
+    .panel-title a{font-size: 1rem;}
+}
+#files-modal{
+    .files-frame{width: 100%; height: 75vh;}
+    .modal-body{padding-bottom: 0;}
+}
+.btn-choose-files {
+    input[type="file"] {
+        /*display: none;*/
+    }
+}

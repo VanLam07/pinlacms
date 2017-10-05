@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Admin\Facades\AdConst;
+use App\Models\BaseModel;
+
 class Menu extends BaseModel {
 
     protected $table = 'menus';
@@ -9,7 +12,9 @@ class Menu extends BaseModel {
     public $timestamps = false;
 
     public function joinLang($lang = null) {
-        $lang = ($lang) ? $lang : current_locale();
+        if (!$lang) {
+            $lang = currentLocale();
+        }
         return $this->join('menu_desc as md', 'menus.id', '=', 'md.menu_id')
                         ->where('md.lang_code', '=', $lang);
     }
@@ -24,41 +29,21 @@ class Menu extends BaseModel {
 
     public function getObject() {
         switch ($this->menu_type) {
-            case 5:
-                $object = $this->join('service_desc as sd', function($join) {
-                            $join->on('menus.type_id', '=', 'sd.service_id')
-                            ->where('sd.lang_code', '=', current_locale())
-                            ->where('sd.service_id', '=', $this->type_id);
-                        })
-                        ->first(['sd.title', 'sd.slug']);
-                break;
-            case 4:
+            case AdConst::MENU_TYPE_CAT:
+            case AdConst::MENU_TYPE_TAX:
                 $object = $this->join('tax_desc as td', 'menus.type_id', '=', 'td.tax_id')
-                        ->where('td.lang_code', '=', current_locale())
+                        ->where('td.lang_code', '=', currentLocale())
                         ->where('td.tax_id', '=', $this->type_id)
                         ->first(['td.name as title', 'td.slug']);
                 break;
-            case 3:
-                $object = $this->join('tax_desc as td', 'menus.type_id', '=', 'td.tax_id')
-                        ->where('td.lang_code', '=', current_locale())
-                        ->where('td.tax_id', '=', $this->type_id)
-                        ->first(['td.name as title', 'td.slug']);
-                break;
-            case 2:
+            case AdConst::MENU_TYPE_POST:
+            case AdConst::MENU_TYPE_PAGE:
                 $object = $this->join('post_desc as pd', 'menus.type_id', '=', 'pd.post_id')
-                        ->where('pd.lang_code', '=', current_locale())
-                        ->where('pd.post_id', '=', $this->type_id)
-                        ->first(['pd.title', 'pd.slug']);
-                break;
-            case 1:
-                $object = $this->join('post_desc as pd', 'menus.type_id', '=', 'pd.post_id')
-                        ->where('pd.lang_code', '=', current_locale())
+                        ->where('pd.lang_code', '=', currentLocale())
                         ->where('pd.post_id', '=', $this->type_id)
                         ->first(['pd.title', 'pd.slug']);
                 break;
             case 0:
-                $object = null;
-                break;
             default:
                 $object = null;
                 break;
@@ -69,23 +54,19 @@ class Menu extends BaseModel {
     public function getItemRoute() {
         $route = null;
         switch ($this->menu_type) {
-            case 0:
-                break;
-            case 1:
-                $route = 'post.view';
-                break;
-            case 2:
-                $route = 'page.view';
-                break;
-            case 3:
-                $route = 'cat.view';
-                break;
-            case 4:
+            case AdConst::MENU_TYPE_TAX:
                 $route = 'tag.view';
                 break;
-            case 5:
-                $route = 'service.view';
+            case AdConst::MENU_TYPE_CAT:
+                $route = 'cat.view';
                 break;
+            case AdConst::MENU_TYPE_POST:
+                $route = 'page.view';
+                break;
+            case AdConst::MENU_TYPE_PAGE:
+                $route = 'post.view';
+                break;
+            case 0:
             default:
                 break;
         }
@@ -112,31 +93,33 @@ class Menu extends BaseModel {
             'group_id' => -1,
             'orderby' => 'order',
             'order' => 'asc',
-            'per_page' => 20,
+            'per_page' => AdConst::PER_PAGE,
             'exclude' => [],
-            'key' => '',
-            'lang' => current_locale()
+            'lang' => currentLocale(),
+            'filters' => []
         ];
 
         $opts = array_merge($opts, $args);
 
         $result = $this->joinLang($opts['lang'])
-                ->whereNotNull('md.title')
-                ->where('md.title', 'like', '%' . $opts['key'] . '%')
-                ->whereNotIn('menus.id', $opts['exclude'])
-                ->select($opts['fields'])
-                ->orderBy($opts['orderby'], $opts['order']);
-
+                ->whereNotNull('md.title');
+        if ($opts['exclude']) {
+            $result->whereNotIn('menus.id', $opts['exclude']);
+        }
+        if ($opts['filters']) {
+            $this->filterData($result, $opts['filters']);
+        }
         if ($opts['group_id'] > -1) {
             $result = $result->where('group_id', $opts['group_id']);
         }
+        
+        $result->select($opts['fields'])
+                ->orderBy($opts['orderby'], $opts['order']);
 
-        if ($opts['per_page'] == -1) {
-            $result = $result->get();
-        } else {
-            $result = $result->paginate($opts['per_page']);
+        if ($opts['per_page'] > -1) {
+            return $result->paginate($opts['per_page']);
         }
-        return $result;
+        return $result->get();
     }
 
     public function insertData($data) {
@@ -146,7 +129,7 @@ class Menu extends BaseModel {
 
         $item = self::create($data);
 
-        $langs = get_langs(['fields' => ['id', 'code']]);
+        $langs = getLangs(['fields' => ['code']]);
         foreach ($langs as $lang) {
             $lang_data = [
                 'title' => isset($data['title']) ? $data['title'] : $data['name'],
@@ -158,7 +141,7 @@ class Menu extends BaseModel {
 
     public function findCustom($id, $fields = ['md.*'], $lang = null) {
         return $this->joinLang($lang)
-                        ->find($id, $fields);
+                        ->findOrFail($id, $fields);
     }
 
     public function updateData($id, $data) {

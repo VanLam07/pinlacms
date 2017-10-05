@@ -9,10 +9,10 @@ class Cap extends BaseModel
     public $timestamps = false;
     protected $primaryKey = 'name';
     public $incrementing = false;
-    
+
     public function rules(){
         return [
-            'name' => 'required|alpha_dash'
+            'name' => 'required|alpha_dash|unique:caps,name'
         ];
     }
 
@@ -30,12 +30,10 @@ class Cap extends BaseModel
                 ->withPivot('level');
     }
     
-    public function updateData($id, $data) {
-        $this->validator($data, $this->rules());
-        
+    public function updateData($name, $data) {
         $fillable = self::getFillable();
         $data = array_only($data, $fillable);
-        return self::where('name', $id)->update($data);
+        return self::where('name', $name)->update($data);
     }
     
     function findByName($name) {
