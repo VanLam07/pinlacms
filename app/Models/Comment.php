@@ -3,18 +3,26 @@
 namespace App\Models;
 
 use App\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Admin\Facades\AdConst;
 
 class Comment extends BaseModel {
 
     protected $table = 'comments';
     protected $fillable = ['post_id', 'author_email', 'author_name', 'author_id', 'author_ip', 'content', 'status', 'agent', 'parent_id'];
+    
+    use SoftDeletes;
+    
+    public function isUseSoftDelete() {
+        return true;
+    }
 
     public function post() {
         return $this->belongsTo('\App\Models\PostType', 'post_id', 'id');
     }
     
     public function getPost($lang=null){
-        $lang = $lang ? $lang : current_locale();
+        $lang = $lang ? $lang : currentLocale();
         return $this->post()
                 ->join('post_desc as pd', 'posts.id', '=', 'pd.post_id')
                 ->where('pd.lang_code', '=', $lang)
@@ -38,22 +46,31 @@ class Comment extends BaseModel {
     public function getData($args = []) {
         $opts = [
             'fields' => ['*'],
-            'status' => 1,
+            'status' => [AdConst::STT_PUBLISH],
             'orderby' => 'created_at',
             'order' => 'desc',
-            'per_page' => 20,
+            'per_page' => AdConst::PER_PAGE,
+            'exclude_key' => 'id',
             'exclude' => [],
-            'key' => '',
+            'filters' => [],
             'post_id' => null,
             'author_id' => null
         ];
         $opts = array_merge($opts, $args);
         
-        $result = self::where('content', 'like', '%' . $opts['key'] . '%')
-                ->where('status', $opts['status'])
-                ->select($opts['fields'])
-                ->orderBy($opts['orderby'], $opts['order']);
-
+        $result = self::select($opts['fields']);
+        
+        if ($opts['status']) {
+            if (!is_array($opts['status'])) {
+                $opts['status'] = [$opts['status']];
+            }
+            if ($opts['status'][0] == AdConst::STT_TRASH) {
+                $result->onlyTrashed();
+            } else {
+                $result->whereIn('status', $opts['status']);
+            }
+        }
+        
         if ($opts['post_id']) {
             $result = $result->where('post_id', $opts['post_id']);
         }
@@ -63,13 +80,19 @@ class Comment extends BaseModel {
         }
         
         if ($opts['exclude']) {
-            $result = $result->whereNotIn('id', $opts['exclude']);
+            $result = $result->whereNotIn($opts['exclude_key'], $opts['exclude']);
         }
+        
+        if ($opts['filters']) {
+            $this->filterData($result, $opts['filters']);
+        }
+        
+        $result->orderBy($opts['orderby'], $opts['order']);
 
-        if ($opts['per_page'] == -1) {
-            return $result->get();
+        if ($opts['per_page'] > -1) {
+            $result->paginate($opts['per_page']);
         }
-        return $result->paginate($opts['per_page']);
+        return $result->get();
     }
 
     public function insertData($data) {
@@ -122,17 +145,17 @@ class Comment extends BaseModel {
         return self::where('id', $id)->update($data);
     }
     
-    public function destroyData($ids) {
-        if(!is_array($ids)){
+    public function forceDeleteData($ids) {
+        if (!is_array($ids)) {
             $ids = [$ids];
         }
-        if($ids){
-            foreach ($ids as $id){
-                $item = self::find($id);
+        $items = self::withTrashed()
+                ->whereIn('id', $ids)->get();
+        if (!$items->isEmpty()) {
+            foreach ($items as $item) {
                 $item->post()->decrement('comment_count');
-                $item->delete();
+                $item->forceDelete();
             }
-            return true;
         }
     }
 }

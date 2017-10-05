@@ -1,64 +1,60 @@
-@extends('layouts.manage')
+@extends('admin::layouts.manage')
 
-@section('title', trans('manage.man_comments'))
+@section('title', trans('admin::view.man_comments'))
 
-@section('page_title', trans('manage.edit'))
+<?php
+use Admin\Facades\AdConst;
+?>
 
 @section('content')
 
 <div class="row">
     <div class="col-sm-6">
         
-        {!! show_messes() !!}
-        
-        @if($item)
-        {!! Form::open(['method' => 'put', 'route' => ['comment.update', $item->id]]) !!}
-        
-        {!! show_messes() !!}
-        
-        {!! Form::open(['method' => 'post', 'route' => 'comment.store']) !!}
+        {!! showMessage() !!}
+
+        {!! Form::open(['method' => 'put', 'route' => ['admin::comment.update', $item->id]]) !!}
         
         <div class="form-group">
-            <label>{{trans('manage.posts')}} (*)</label>
-            {!! Form::text('post_id', $item->post_id, ['class' => 'form-control', 'placeholder' => trans('manage.posts')]) !!}
-            {!! error_field('post_id') !!}
+            <label>{{trans('admin::view.posts')}} (*)</label>
+            {!! Form::text('post_id', $item->post_id, ['class' => 'form-control', 'placeholder' => trans('admin::view.posts')]) !!}
+            {!! errorField('post_id') !!}
         </div>
         
         <div class="form-group">
-            <label>{{trans('manage.author')}}</label>
-            {!! Form::text('author_id', $item->author_id, ['class' => 'form-control', 'placeholder' => trans('manage.author')]) !!}
+            <label>{{trans('admin::view.author')}}</label>
+            {!! Form::text('author_id', $item->author_id, ['class' => 'form-control', 'placeholder' => trans('admin::view.author')]) !!}
         </div>
         
         <div class="form-group">
-            <label>{{trans('manage.content')}} (*)</label>
-            {!! Form::textarea('content', $item->content, ['class' => 'form-control', 'rows' => 5, 'placeholder' => trans('manage.content')]) !!}
-            {!! error_field('content') !!}
+            <label>{{trans('admin::view.content')}} (*)</label>
+            {!! Form::textarea('content', $item->content, ['class' => 'form-control', 'rows' => 5, 'placeholder' => trans('admin::view.content')]) !!}
+            {!! errorField('content') !!}
         </div>
         
         <div class="form-group">
-            <label>{{trans('manage.parent')}}</label>
+            <label>{{trans('admin::view.parent')}}</label>
             <select name="parent_id" class="form-control">
-                <option value="">{{trans('manage.selection')}}</option>
+                <option value="">{{trans('admin::view.selection')}}</option>
                 @if($parents)
-                @foreach($parents as $cm)
-                <option value="{{$cm->id}}" @if($cm->id == $item->parent_id) selected @endif>{{$cm->id}}</option>
-                @endforeach
+                    @foreach($parents as $cm)
+                    <option value="{{$cm->id}}" @if($cm->id == $item->parent_id) selected @endif>{{$cm->id}}</option>
+                    @endforeach
                 @endif
             </select>
         </div>
         
         <div class="form-group">
-            <label>{{trans('manage.status')}}</label>
-            {!! Form::select('status', [1 => trans('manage.active'), 0 => trans('manage.disable')], $item->status, ['class' => 'form-control']) !!}
+            <label>{{trans('admin::view.status')}}</label>
+            {!! Form::select('status', AdView::getStatusLabel(), $item->status, ['class' => 'form-control']) !!}
         </div>
         
-        <a href="{{route('comment.index', ['status' => 1])}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('manage.back')}}</a>
-        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('manage.update')}}</button>
+        <a href="{{route('admin::comment.index', ['status' => AdConst::STT_PUBLISH])}}" class="btn btn-warning">
+            <i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('admin::view.update')}}</button>
         
         {!! Form::close() !!}
-        @else
-        <p class="alert alert-danger">{{trans('manage.no_item')}}</p>
-        @endif
+        
     </div>
 </div>
 
