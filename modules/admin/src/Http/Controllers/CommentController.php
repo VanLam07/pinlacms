@@ -1,93 +1,66 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use App\Http\Controllers\Controller;
+use Admin\Http\Controllers\BaseController;
 use App\Models\Comment;
 
-use Illuminate\Validation\ValidationException;
-
-class CommentController extends Controller
+class CommentController extends BaseController
 {
-    protected $comment;
+    protected $model;
 
     public function __construct(Comment $comment) {
-        $this->comment = $comment;
+        $this->model = $comment;
     }
     
     public function index(Request $request){
-        $items = $this->comment->getData($request->all());
-        return view('manage.comment.index', compact('items'));
+        $items = $this->model->getData($request->all());
+        return view('admin::comment.index', compact('items'));
     }
     
     public function create(){
-        canAccess('publish_comments');
+//        canAccess('publish_comments');
         
-        $parents = $this->comment->getData([
+        $parents = $this->model->getData([
             'fields' => ['id', 'parent_id'],
             'per_page' => -1,
             'orderby' => 'id'
         ]);
-        return view('manage.comment.create', compact('parents'));
+        return view('admin::comment.create', compact('parents'));
     }
     
     public function store(Request $request){
-        canAccess('publish_comments');
+//        canAccess('publish_comments');
         
-        try{
-            $this->comment->insertData($request->all());
-            return redirect()->back()->with('succ_mess', trans('manage.store_success'));
-        } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        }
+        return parent::store($request);
     }
     
     public function edit($id){
-        canAccess('edit_my_comment', $this->comment->get_author_id($id));
+//        canAccess('edit_my_comment', $this->model->get_author_id($id));
         
-        $parents = $this->comment->getData([
+        $parents = $this->model->getData([
             'fields' => ['id', 'parent_id'],
             'per_page' => -1,
             'orderby' => 'id',
             'exclude' => [$id]
         ]);
-        $item = $this->comment->find($id); 
-        return view('manage.comment.edit', compact('item', 'parents'));
+        $item = $this->model->find($id); 
+        return view('admin::comment.edit', compact('item', 'parents'));
     }
     
     public function update($id, Request $request){
-        canAccess('edit_my_comment', $this->comment->get_author_id($id));
+//        canAccess('edit_my_comment', $this->model->get_author_id($id));
         
-        try{
-            $this->comment->updateData($id, $request->all());
-            return redirect()->back()->with('succ_mess', trans('manage.update_success'));
-        } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        }
+        return parent::update($id, $request);
     }
-    
-    public function destroy($id){
-        canAccess('remove_my_comment', $this->comment->get_author_id($id));
-        
-        if(!$this->comment->destroyData($id)){
-            return redirect()->back()->with('error_mess', trans('manage.no_item'));
-        }
-        return redirect()->back()->with('succ_mess', trans('manage.destroy_success'));
-    }
-    
-    public function multiAction(Request $request){
-        if(!cando('remove_other_comments')){
-            return redirect()->back()->withInput()->with('error_mess', trans('auth.authorize'));
-        }
 
-        try {
-            $this->comment->actions($request);
-            return redirect()->back()->withInput()->with('succ_mess', trans('message.action_success'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
-        }
+    public function multiAction(Request $request){
+//        if(!cando('remove_other_comments')){
+//            return redirect()->back()->withInput()->with('error_mess', trans('auth.authorize'));
+//        }
+
+        return parent::multiActions($request);
     }
     
 }

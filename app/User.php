@@ -14,6 +14,7 @@ use Exception;
 class User extends Authenticatable
 {
     use Notifiable;
+    use SoftDeletes;
 
     protected $hidden = [
         'password', 'remember_token',
@@ -24,7 +25,6 @@ class User extends Authenticatable
 
     protected $dates = ['birth'];
     
-    use SoftDeletes;
     
     public function isUseSoftDelete() {
         return true;

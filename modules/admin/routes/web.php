@@ -84,9 +84,9 @@ Route::group(['middleware' => 'auth'], function () {
 //    Route::post('/options/update-all', ['as' => 'option.update_all', 'uses' => 'OptionController@updateAll']);
 //    Route::resource('/options', 'OptionController', rsNames('option'));
 //    Route::post('/options/actions', ['as' => 'option.actions', 'uses' => 'OptionController@multiActions']);
-//    //    Comments
-//    Route::resource('/comments', 'CommentController', rsNames('comment'));
-//    Route::post('/comments/actions', ['as' => 'comment.actions', 'uses' => 'CommentController@multiActions']);
+    //    Comments
+    Route::resource('/comments', 'CommentController', rsNames('comment'));
+    Route::post('/comments/actions', ['as' => 'comment.actions', 'uses' => 'CommentController@multiActions']);
 //    
 //    //    API
 //    Route::controller('/api', 'Api\ApiController');

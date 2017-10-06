@@ -17,7 +17,6 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT];
 
 {!! showMessage() !!}
 
-
 <div class="table-responsive">
     <table class="table table-hover table-striped table-bordered">
         <thead>
