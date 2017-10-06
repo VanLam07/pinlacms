@@ -55,10 +55,9 @@ class AdView {
         $html = '<ul '. ($depth == 0 ? 'class="sidebar-menu" data-widget="tree"' : 'class="treeview-menu"') .'>';
         foreach ($items as $item) {
             if (canDo($item['cap'])) {
-                $routeParams = (isset($item['route_params'])) ? $item['route_params'] : [];
                 $hasChilds = (isset($item['childs']) && $item['childs']);
                 $html .= '<li'. ($depth == 0 ? ' class="treeview"' : '') .'>';
-                $html .= '<a href="#" title="'.$item['name'].'">'
+                $html .= '<a href="'. $item['url'] .'" title="'.$item['name'].'">'
                             . '<i class="fa ' . (isset($item['icon']) ? $item['icon'] : 'fa-circle-o') . '"></i> '
                             . '<span>' . $item['name'] . '</span> ';
                 if($hasChilds) {

@@ -9,10 +9,10 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <title>@yield('title', 'Account')</title>
         
-        <link rel="stylesheet" href="/public/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/public/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/font-awesome.min.css">
         
-        <script src="/public/js/jquery.min.js"></script>
+        <script src="/js/jquery.min.js"></script>
     </head>
     <body>
         <header>
@@ -32,8 +32,8 @@ and open the template in the editor.
             
         </footer>
         
-        <script src="/public/js/tether.min.js"></script>
-        <script src="/public/js/popper.min.js"></script>
-        <script src="/public/js/bootstrap.min.js"></script>
+        <script src="/js/tether.min.js"></script>
+        <script src="/js/popper.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
     </body>
 </html>

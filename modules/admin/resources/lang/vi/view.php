@@ -141,7 +141,6 @@ return [
     'active' =>                     'Hoạt động',
     'author_id' =>                  'Author ID',
     'disable' =>                    'Disable',
-    'all' =>                        'Tất cả',
     'create' =>                     'Thêm mới',
     'current_tab' =>                'Cửa sổ hiện tại',
     'filemanage_title' =>           'Chọn tệp tin',

@@ -7,7 +7,6 @@ use Admin\Http\Controllers\BaseController;
 use App\Models\PostType;
 use App\Models\Tax;
 use App\User;
-use Illuminate\Validation\ValidationException;
 
 class PostController extends BaseController {
 
@@ -22,6 +21,8 @@ class PostController extends BaseController {
     }
 
     public function index(Request $request) {
+        canAccess('view_post');
+        
         $items = $this->model->getData('post', $request->all());
         return view('admin::post.index', ['items' => $items]);
     }

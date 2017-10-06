@@ -2,17 +2,10 @@
 
 namespace App\Facades\Access;
 
-use App\Models\Cap;
 use Admin\Facades\AdConst;
 use Illuminate\Support\Facades\Auth;
 
 class Access {
-
-    protected $cap;
-
-    public function __construct(Cap $cap) {
-        $this->cap = $cap;
-    }
 
     public function can($cap) {
         if (!Auth::check()) {
@@ -20,7 +13,7 @@ class Access {
         }
         $user = Auth::user();
         $userId = $user->id;
-
+        
         //switch caps
         $args = array_slice(func_get_args(), 1);
         $author = $args ? $args[0] : null;

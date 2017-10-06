@@ -7,14 +7,14 @@
         
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         
-        <link rel="stylesheet" href="/public/css/select2.min.css">
-        <link rel="stylesheet" href="/public/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/public/css/font-awesome.min.css">
-        <link rel="stylesheet" href="/public/plugins/adminlte/css/AdminLTE.css">
-        <link rel="stylesheet" href="/public/plugins/adminlte/css/skins/_all-skins.css">
+        <link rel="stylesheet" href="/css/select2.min.css">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/plugins/adminlte/css/AdminLTE.css">
+        <link rel="stylesheet" href="/plugins/adminlte/css/skins/_all-skins.css">
         
-        <link rel="stylesheet" href="/public/modules/admin/css/main.css">
-        <link rel="stylesheet" href="/public/modules/admin/css/screen.css">
+        <link rel="stylesheet" href="/modules/admin/css/main.css">
+        <link rel="stylesheet" href="/modules/admin/css/screen.css">
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -65,7 +65,7 @@
                 <div class="pull-right hidden-xs">
                     <b>Version</b> 1.0
                 </div>
-                <strong>Copyright &copy; 2017 <a href="https://adminlte.io">Pinla CMS</a>.</strong> All rights reserved.
+                <strong>Copyright &copy; 2017 <a href="#">Pinla CMS</a>.</strong> All rights reserved.
             </footer>
         </div>
         <!-- ./wrapper -->
@@ -74,15 +74,15 @@
             var file_dialog_url = '{{ route("admin::file.dialog") }}';
             var filemanager_title  = '{{ trans("admin::view.filemanager_title") }}';
         </script>
-        <script src="/public/js/jquery.min.js"></script>
-        <script src="/public/js/jquery-ui.min.js"></script>
-        <script src="/public/js/select2.min.js" ></script>
-        <script src="/public/js/popper.min.js"></script>
-        <script src="/public/js/bootstrap.min.js"></script>
-        <script src="/public/plugins/adminlte/js/adminlte.min.js"></script>
-        <script src="/public/js/bootbox.min.js"></script>
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/jquery-ui.min.js"></script>
+        <script src="/js/select2.min.js" ></script>
+        <script src="/js/popper.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/plugins/adminlte/js/adminlte.min.js"></script>
+        <script src="/js/bootbox.min.js"></script>
         
-        <script src="/public/modules/admin/js/script.js"></script>
+        <script src="/modules/admin/js/script.js"></script>
         
         @yield('foot')
         

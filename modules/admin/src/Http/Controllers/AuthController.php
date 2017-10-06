@@ -52,7 +52,10 @@ class AuthController extends Controller {
 
     public function getLogin() {
         if (auth()->check()) {
-            return view('errors.notice', ['message' => trans('admin::message.you_are_logged_in')]);
+            return view('errors.notice', [
+                'message' => trans('admin::message.you_are_logged_in') . 
+                        ' <a href="'. route('admin::auth.logout') .'">Logout</a>'
+            ]);
         }
         return view('admin::auth.login');
     }
@@ -74,6 +77,8 @@ class AuthController extends Controller {
         if (!$auth) {
             return redirect()->back()->withInput()->with('error_mess', trans('admin::message.login_failed'));
         }
+        
+        auth()->user()->storeCapsToSession();
         
         return redirect()->intended(route('admin::index'));
     }

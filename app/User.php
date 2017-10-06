@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Admin\Facades\AdConst;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Session;
 use Validator;
 use Exception;
 
@@ -29,6 +30,10 @@ class User extends Authenticatable
         return true;
     }
     
+    public function getSessionKey() {
+        return 'user_cap_'.$this->name.'_'.sha1($this->id);
+    }
+    
     public function rules($id = null) {
         if (!$id) {
             return [
@@ -49,6 +54,12 @@ class User extends Authenticatable
     }
     
     public function caps(){
+        $userKey = $this->getSessionKey();
+        
+        if (Session::has($userKey) && $caps = Session::get($userKey)) {
+            return unserialize($caps);
+        }
+        
         $roles = $this->roles;
         $caps = [];
         if ($roles->isEmpty()) {
@@ -69,7 +80,16 @@ class User extends Authenticatable
                 }
             }
         }
+        Session::put($userKey, serialize($caps));
+        
         return $caps;
+    }
+    
+    public function storeCapsToSession() {
+        $caps = $this->caps();
+        if ($caps) {
+            Session::put($this->getSessionKey(), serialize($caps));
+        }
     }
     
     public function hasCaps($caps) {
@@ -107,20 +127,9 @@ class User extends Authenticatable
             return $this->avatar->getImage($size, $class);
         }
         if ($this->image_url) {
-            return '<img class="img-fluid" src="'.$this->image_url.'" alt=" ">';
+            return '<img class="img-responsive" src="'.$this->image_url.'" alt=" ">';
         }
-        return '<img  class="img-fluid" src="/images/icon/user-icon.png" alt=" ">';
-    }
-    
-    public function status(){
-        switch ($this->status){
-            case AdConst::STT_TRASH:
-                return trans('admin::view.trash');
-            case AdConst::STT_PUBLISH:
-                return trans('admin::view.publish');
-            default:
-                return trans('amange.draft');
-        }
+        return '<img  class="img-responsive" src="/images/icon/user-icon.png" alt=" ">';
     }
     
     public function getData($data) {
