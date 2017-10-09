@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Models\Media;
 use App\Models\Tax;
+use PlMenu;
 
 class SlideController extends BaseController
 {
@@ -16,7 +17,8 @@ class SlideController extends BaseController
     protected $slider;
 
     public function __construct(Media $slide, Tax $slider) {
-//        canAccess('manage_cats');
+        canAccess('manage_cats');
+        PlMenu::setActive('sliders');
         
         $this->model = $slide;
         $this->slider = $slider;

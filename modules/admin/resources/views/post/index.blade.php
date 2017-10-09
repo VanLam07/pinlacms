@@ -7,6 +7,11 @@ use Admin\Facades\AdConst;
 
 $multiActions = ['draft', 'trash', 'delete'];
 $statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT, AdConst::STT_TRASH];
+$actionCaps = [
+    'create' => 'publish_post',
+    'edit' => 'edit_post',
+    'remove' => 'remove_post'
+];
 ?>
 
 @section('nav_status')

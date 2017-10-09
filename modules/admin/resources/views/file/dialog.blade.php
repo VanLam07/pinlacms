@@ -6,15 +6,15 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <link rel="stylesheet" href="/public/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/public/css/font-awesome.min.css">
-        <link rel="stylesheet" href="/public/css/filemanager.css">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/css/filemanager.css">
         
         <style>
             .files-tab{margin-top: 10px;}
         </style>
         
-        <script src="/public/js/jquery.min.js"></script>
+        <script src="/js/jquery.min.js"></script>
     </head>
 
     <body class="file_dialog">
@@ -54,7 +54,7 @@ and open the template in the editor.
             <button type="button" class="btn btn-primary btn-editor-submit-files"><i class="fa fa-check"></i> {{trans('file.submit_selected')}}</button>
         </div>
         
-        <script src="/public/js/bootstrap.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
 
         <script>
             

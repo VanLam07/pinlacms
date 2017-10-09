@@ -7,6 +7,7 @@ use Admin\Http\Controllers\BaseController;
 use App\User;
 use App\Models\Role;
 use Validator;
+use PlMenu;
 
 class UserController extends BaseController
 {
@@ -16,14 +17,20 @@ class UserController extends BaseController
     public function __construct(User $user, Role $role) {
         $this->model = $user;
         $this->role = $role;
+        
+        PlMenu::setActive('users');
     }
     
     public function index(Request $request){
+        canAccess('view_user');
+        
         $items = $this->model->getData($request->all());
         return view('admin::user.index', compact('items'));
     }
     
     public function create(){
+        canAccess('publish_user');
+        
         $roles = $this->role->getData(['orderby' => 'id', 'order' => 'asc', 'per_page' => -1])->pluck('label', 'id'); 
         return view('admin::user.create', compact('roles'));
     }

@@ -29,6 +29,7 @@ class AdminServiceProvider extends ServiceProvider {
         $this->app->register(\Admin\Providers\AdminComposerProvider::class);
         
         $this->app->bind('admin-view-function', '\Admin\Facades\Adview');
+        $this->app->bind('pl-admin-menu', '\Admin\Facades\PlMenu');
         
     }
     

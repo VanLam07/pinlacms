@@ -3,6 +3,7 @@
 namespace Admin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use PlMenu;
 
 class AdminController extends Controller {
     
@@ -11,6 +12,8 @@ class AdminController extends Controller {
     }
     
     public function index() {
+        PlMenu::setActive('dashboard');
+        
         return view('admin::dashboard');
     }
     

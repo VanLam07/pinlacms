@@ -15,26 +15,44 @@ if (!isset($multiActions)) {
 if (!isset($statuses)) {
     $statuses = [AdConst::STT_PUBLISH];
 }
+if (!isset($actionCaps)) {
+    $actionCaps = [
+        'create' => 'publish_post',
+        'edit' => 'edit_post',
+        'remove' => 'remove_post'
+    ];
+}
+$capCreate = $actionCaps['create'];
+$capEdit = $actionCaps['edit'];
+$capRemove = $actionCaps['remove'];
 ?>
 <div class="actions-nav">
     
     @if (count($statuses) > 0)
     <div class="status-nav">
         <ul class="list-inline items-link">
-            @if (in_array(AdConst::STT_PUBLISH, $statuses))
-            <li class="{{ linkClassActive($route, AdConst::STT_PUBLISH) }}">
-                <a href="{{ route($route, ['status' => AdConst::STT_PUBLISH]) }}">{{ trans('admin::view.publish') }}</a>
-            </li>
+            @if (canDo($capCreate))
+                @if (in_array(AdConst::STT_PUBLISH, $statuses))
+                <li class="{{ linkClassActive($route, AdConst::STT_PUBLISH) }}">
+                    <a href="{{ route($route, ['status' => AdConst::STT_PUBLISH]) }}">{{ trans('admin::view.publish') }}</a>
+                </li>
+                @endif
             @endif
-            @if (in_array(AdConst::STT_DRAFT, $statuses))
-            <li class="{{ linkClassActive($route, AdConst::STT_DRAFT) }}">
-                <a href="{{ route($route, ['status' => AdConst::STT_DRAFT]) }}">{{ trans('admin::view.label_draft') }}</a>
-            </li>
+            
+            @if (canDo($capEdit))
+                @if (in_array(AdConst::STT_DRAFT, $statuses))
+                <li class="{{ linkClassActive($route, AdConst::STT_DRAFT) }}">
+                    <a href="{{ route($route, ['status' => AdConst::STT_DRAFT]) }}">{{ trans('admin::view.label_draft') }}</a>
+                </li>
+                @endif
             @endif
-            @if (in_array(AdConst::STT_TRASH, $statuses))
-            <li class="{{ linkClassActive($route, AdConst::STT_TRASH) }}">
-                <a href="{{ route($route, ['status' => AdConst::STT_TRASH]) }}">{{ trans('admin::view.label_trash') }}</a>
-            </li>
+            
+            @if (canDo($capRemove))
+                @if (in_array(AdConst::STT_TRASH, $statuses))
+                <li class="{{ linkClassActive($route, AdConst::STT_TRASH) }}">
+                    <a href="{{ route($route, ['status' => AdConst::STT_TRASH]) }}">{{ trans('admin::view.label_trash') }}</a>
+                </li>
+                @endif
             @endif
         </ul>
     </div>
@@ -44,14 +62,14 @@ if (!isset($statuses)) {
     
         <div class="btn-actions col-sm-6 col-md-4">
 
-            @if ($hasAddNew)
+            @if (canDo($capCreate) && $hasAddNew)
                 <a href="{{ route($routePrefix.'.create', request()->all()) }}" class="create-btn btn btn-sm btn-success m-b-1" 
                    data-toggle="tooltip" title="{{ trans('admin::view.create') }}">
                     <i class="fa fa-plus"></i> <span class="">{{ trans('admin::view.create') }}</span>
                 </a>
             @endif
             
-            @if (in_array('draft', $multiActions) && $status == AdConst::STT_PUBLISH)
+            @if (canDo($capEdit) && in_array('draft', $multiActions) && $status == AdConst::STT_PUBLISH)
                 <form method="post" action="{{ $routeActions }}" class="inline form-confirm">
                     {!! csrf_field() !!}
                     <input type="hidden" name="action" value="draft">
@@ -63,7 +81,7 @@ if (!isset($statuses)) {
                 </form>
             @endif
             
-            @if (in_array('draft', $multiActions) && $status == AdConst::STT_DRAFT)
+            @if (canDo($capEdit) && in_array('draft', $multiActions) && $status == AdConst::STT_DRAFT)
                 <form method="post" action="{{ $routeActions }}" class="inline form-confirm">
                     {!! csrf_field() !!}
                     <input type="hidden" name="action" value="publish">
@@ -75,7 +93,7 @@ if (!isset($statuses)) {
                 </form>
             @endif
             
-            @if (in_array('trash', $multiActions) && $status != AdConst::STT_TRASH)
+            @if (canDo($capRemove) && in_array('trash', $multiActions) && $status != AdConst::STT_TRASH)
                 <form method="post" action="{{ $routeActions }}" class="inline form-confirm">
                     {!! csrf_field() !!}
                     <input type="hidden" name="action" value="trash">
@@ -88,7 +106,7 @@ if (!isset($statuses)) {
                 </form>
             @endif
 
-            @if (in_array('delete', $multiActions) && (!in_array('trash', $multiActions) || $status == AdConst::STT_TRASH))
+            @if (canDo($capRemove) && in_array('delete', $multiActions) && (!in_array('trash', $multiActions) || $status == AdConst::STT_TRASH))
                 <form method="post" action="{{ $routeActions }}" class="inline form-confirm">
                     {!! csrf_field() !!}
                     <input type="hidden" name="action" value="delete">
@@ -101,7 +119,7 @@ if (!isset($statuses)) {
                 </form>
             @endif
 
-            @if (in_array('trash', $multiActions) && $status == AdConst::STT_TRASH)
+            @if (canDo($capRemove) && in_array('trash', $multiActions) && $status == AdConst::STT_TRASH)
                 <form method="post" action="{{ $routeActions }}" class="inline form-confirm">
                     {!! csrf_field() !!}
                     <input type="hidden" name="action" value="restore">

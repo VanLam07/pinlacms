@@ -17,7 +17,7 @@ class MenuController extends BaseController {
     protected $post;
 
     public function __construct(Menu $menu, Tax $tax, PostType $post) {
-//        canAccess('manage_menus');
+        canAccess('manage_menus');
 
         $this->model = $menu;
         $this->tax = $tax;

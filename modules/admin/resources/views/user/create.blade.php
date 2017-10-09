@@ -48,7 +48,7 @@ use Admin\Facades\AdConst;
             {!! Form::select('status', AdView::getStatusLabel(), old('status'), ['class' => 'form-control']) !!}
         </div>
         
-        <div class="text-center">
+        <div class="">
             <a href="{{route('admin::user.index', ['status' => AdConst::STT_PUBLISH])}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
             <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('admin::view.create')}}</button>
         </div>

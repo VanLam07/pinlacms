@@ -96,7 +96,7 @@
 
 @section('foot')
 <script>
-    var MAX_LEVEL = <?php echo Admin\Facades\AdView\AdView::CAP_OTHER; ?>;
+    var MAX_LEVEL = <?php echo \Admin\Facades\AdConst::CAP_OTHER; ?>;
     (function ($) {
         $('.item-all').click(function () {
             var level = $(this).data('level');

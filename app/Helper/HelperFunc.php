@@ -132,15 +132,17 @@ function validateMessage() {
  * @param type $model
  * @return type
  */
-function makeToken($length = 17, $model = null) {
-    $str = str_random($length);
-    if ($model) {
-        $token = $model->where('resetPasswdToken', $str)->first();
-        if ($token) {
-            $str = makeToken($length, $model);
+if (!function_exists('makeToken')) {
+    function makeToken($length = 17, $model = null) {
+        $str = str_random($length);
+        if ($model) {
+            $token = $model->where('resetPasswdToken', $str)->first();
+            if ($token) {
+                $str = makeToken($length, $model);
+            }
         }
+        return $str;
     }
-    return $str;
 }
 
 if (!function_exists('linkOrder')) {
@@ -157,33 +159,35 @@ if (!function_exists('linkOrder')) {
     }
 }
 
-function selected($current, $values, $echo = true, $selected = "checked") {
-    $result = false;
-    if ($values) {
-        if (is_object($values)) {
-            foreach ($values as $item) {
-                if ($item->id == $current) {
+if (!function_exists('selected')) {
+    function selected($current, $values, $echo = true, $selected = "checked") {
+        $result = false;
+        if ($values) {
+            if (is_object($values)) {
+                foreach ($values as $item) {
+                    if ($item->id == $current) {
+                        $result = true;
+                        break;
+                    }
+                }
+            } elseif (is_array($values)) {
+                if (in_array($current, $values)) {
                     $result = true;
-                    break;
+                }
+            } else {
+                if ($current == $values) {
+                    $result = true;
                 }
             }
-        } elseif (is_array($values)) {
-            if (in_array($current, $values)) {
-                $result = true;
-            }
-        } else {
-            if ($current == $values) {
-                $result = true;
-            }
         }
-    }
-    if ($result) {
-        if ($echo)
-            echo $selected;
-        else
-            return true;
-    }else {
-        return false;
+        if ($result) {
+            if ($echo)
+                echo $selected;
+            else
+                return true;
+        }else {
+            return false;
+        }
     }
 }
 
@@ -207,6 +211,17 @@ if (!function_exists('subLinkClassActive')) {
             return $active;
         }
         return null;
+    }
+}
+
+if (!function_exists('matchPatternUrl')) {
+    function matchPatternUrl($pattern, $url = null) {
+        if (!$url) {
+            $url = Request::url();
+        }
+        $pattern = preg_quote($pattern, '/');
+        $pattern = str_replace('\*', '*', $pattern);
+        return preg_match('/'. $pattern .'/', $url);
     }
 }
 

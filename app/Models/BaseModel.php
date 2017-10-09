@@ -10,6 +10,11 @@ use Validator;
 
 class BaseModel extends Model {
     
+    protected $capCreate = 'publish_post';
+    protected $capEdit = 'edit_post';
+    protected $capRemove = 'remove_post';
+
+
     public function isUseSoftDelete() {
         return false;
     }
@@ -78,7 +83,7 @@ class BaseModel extends Model {
         }
     }
 
-    public function get_author_id($id, $author_field = 'author_id') {
+    public function getAuthorId($id, $author_field = 'author_id') {
         $item = self::find($id, [$author_field]);
         if ($item) {
             return $item->$author_field;
@@ -163,6 +168,7 @@ class BaseModel extends Model {
         if (!$item_ids) {
             throw new Exception(trans('admin::message.no_item'));
         }
+        
         $action = $request->input('action');
         switch ($action) {
             case 'restore':
@@ -186,6 +192,16 @@ class BaseModel extends Model {
                 break;
             case defalt:
                 break;
+        }
+    }
+    
+    public function checkPermissAction ($itemIds, $cap) {
+        if (!is_array($itemIds) || !$itemIds) {
+            return false;
+        }
+        $items = self::whereIn('id', $itemIds)->get();
+        if ($items->isEmpty()) {
+            return false;
         }
     }
 

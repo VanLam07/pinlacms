@@ -7,7 +7,7 @@ use Admin\Facades\AdConst;
 @section('title', trans('admin::view.man_menucats'))
 
 @section('head')
-<link rel="stylesheet" href="/public/modules/admin/css/nested_menu.css">
+<link rel="stylesheet" href="/modules/admin/css/nested_menu.css">
 @stop
 
 @section('body_attrs', 'ng-app=ngMenu ng-controller=MenuCtrl')
@@ -203,9 +203,9 @@ use Admin\Facades\AdConst;
 
 @section('foot')
 
-<script src="/public/plugins/angular/angular.min.js"></script>
-<script src="/public/plugins/angular/angular-nestedSortable.js"></script>
-<script src="/public/modules/admin/js/menu.js"></script>
+<script src="/plugins/angular/angular.min.js"></script>
+<script src="/plugins/angular/angular-nestedSortable.js"></script>
+<script src="/modules/admin/js/menu.js"></script>
 <script>
 
     var group_id = '<?php echo ($item) ? $item->id : 0; ?>';

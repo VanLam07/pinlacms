@@ -7,6 +7,7 @@ use Admin\Http\Controllers\BaseController;
 use App\Models\PostType;
 use App\Models\Tax;
 use App\User;
+use PlMenu;
 
 class PostController extends BaseController {
 
@@ -21,15 +22,17 @@ class PostController extends BaseController {
     }
 
     public function index(Request $request) {
-        canAccess('view_post');
+        canAccess('view_post', 1, \Admin\Facades\AdConst::CAP_OTHER);
         
+        PlMenu::setActive(['posts', 'post_all']);
         $items = $this->model->getData('post', $request->all());
         return view('admin::post.index', ['items' => $items]);
     }
 
     public function create() {
-//        canAccess('publish_posts');
-
+        canAccess('publish_post');
+        
+        PlMenu::setActive(['posts', 'post_create']);
         $cats = $this->tax->getData('cat', [
             'orderby' => 'name',
             'order' => 'asc',
@@ -55,14 +58,15 @@ class PostController extends BaseController {
     }
 
     public function store(Request $request) {
-//        canAccess('publish_posts');
+        canAccess('publish_post');
 
         return parent::store($request);
     }
 
     public function edit($id, Request $request) {
-//        canAccess('edit_my_post', $this->model->get_author_id($id));
+        canAccess('edit_post', $this->model->getAuthorId($id));
 
+        PlMenu::setActive(['posts', 'post_edit']);
         $lang = $request->get('lang');
         if (!$lang) {
             $lang = currentLocale();
@@ -94,20 +98,19 @@ class PostController extends BaseController {
     }
 
     public function update($id, Request $request) {
-//        canAccess('edit_my_post', $this->model->get_author_id($id));
+        canAccess('edit_post', $this->model->get_author_id($id));
         return parent::update($id, $request);
     }
 
-//    public function multiAction(Request $request) {
-//        if(!cando('remove_other_posts')){
-//            return redirect()->back()->withInput()->with('error_mess', trans('auth.authorize'));
-//        }
-//        try {
-//            $this->model->actions($request);
-//            return redirect()->back()->withInput()->with('succ_mess', trans('message.action_success'));
-//        } catch (\Exception $ex) {
-//            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
-//        }
-//    }
+    public function multiAction(Request $request) {
+        canAccess('remove_post', null, \Admin\Facades\AdConst::CAP_OTHER);
+        
+        try {
+            $this->model->actions($request);
+            return redirect()->back()->withInput()->with('succ_mess', trans('message.action_success'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
+        }
+    }
 
 }

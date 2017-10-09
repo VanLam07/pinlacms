@@ -51,31 +51,5 @@ class AdView {
         ];
     }
     
-    public function nestedAdminMenus($items, $depth = 0) {
-        $html = '<ul '. ($depth == 0 ? 'class="sidebar-menu" data-widget="tree"' : 'class="treeview-menu"') .'>';
-        foreach ($items as $item) {
-            if (canDo($item['cap'])) {
-                $hasChilds = (isset($item['childs']) && $item['childs']);
-                $html .= '<li'. ($depth == 0 ? ' class="treeview"' : '') .'>';
-                $html .= '<a href="'. $item['url'] .'" title="'.$item['name'].'">'
-                            . '<i class="fa ' . (isset($item['icon']) ? $item['icon'] : 'fa-circle-o') . '"></i> '
-                            . '<span>' . $item['name'] . '</span> ';
-                if($hasChilds) {
-                    $html .= '<span class="pull-right-container">'
-                                .'<i class="fa fa-angle-left pull-right"></i>'
-                            .'</span>';
-                }
-                $html .= '</a>';
-                if ($hasChilds) {
-                    $html .= $this->nestedAdminMenus($item['childs'], $depth + 1);
-                }
-                $html .= '</li>';
-            }
-        }
-        $html .= '</ul>';
-
-        return $html;
-    }
-    
 }
 

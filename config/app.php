@@ -245,6 +245,7 @@ return [
          * Modules
          */
         'AdView' => Admin\Facades\AdViewFacade::class,
+        'PlMenu' => Admin\Facades\PlMenuFacade::class,
 
     ],
 

@@ -48,19 +48,19 @@ use Admin\Facades\AdConst;
             <div class="time_group">
                 <div class="t_field">
                     <span>{{trans('admin::view.day')}}</span>
-                    <select name="time[day]">
+                    <select name="time[day]" class="form-control">
                         {!! rangeOptions(1, 31, date('d')) !!}
                     </select>
                 </div>
                 <div class="t_field">
                     <span>{{trans('admin::view.month')}}</span>
-                    <select name="time[month]">
+                    <select name="time[month]" class="form-control">
                         {!! rangeOptions(1, 12, date('m')) !!}
                     </select>
                 </div>
                 <div class="t_field">
                     <span>{{trans('admin::view.year')}}</span>
-                    <select name="time[year]">
+                    <select name="time[year]" class="form-control">
                         {!! rangeOptions(2010, 2030, date('Y')) !!}
                     </select>
                 </div>
@@ -110,8 +110,6 @@ use Admin\Facades\AdConst;
 @stop
 
 @section('foot')
-
-<script src="/public/modules/admin/js/tinymce_script.js"></script>
 
 @include('admin::file.manager')
 

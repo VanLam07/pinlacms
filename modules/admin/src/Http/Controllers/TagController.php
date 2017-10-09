@@ -8,13 +8,15 @@ use App\Models\Tax;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Exception;
+use PlMenu;
 
 class TagController extends BaseController
 {
     protected $model;
 
     public function __construct(Tax $tag) {
-//        canAccess('manage_tags');
+        canAccess('manage_tags');
+        PlMenu::setActive('tags');
 
         $this->model = $tag;
     }

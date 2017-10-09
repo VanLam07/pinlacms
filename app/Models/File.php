@@ -28,17 +28,14 @@ class File extends BaseModel
         if(!isset($image_sizes[$size])){
             $size = 'full';
         }
-        $upload_dir = config('image.upload_dir');
- 
-        $src_file = $upload_dir.$size.'/'.$this->url;
+        $upload_dir = trim(config('image.upload_dir'), '/');
+        
+        $src_file = $upload_dir . '/' .$size. '/' .$this->url;
         $file = Storage::disk()->exists($src_file); 
         if(!$file){
             return null;
         }
-        if(config('filesystems.default') == 'local'){
-            $src_file = 'app/'.$src_file;
-        }
-        return Storage::disk()->url($src_file);
+        return '/' . $src_file;
     }
     
     public function getImage($size='full', $class=null, $attrs = []){
@@ -51,7 +48,7 @@ class File extends BaseModel
         if($src = $this->getSrc($size)){
             return '<img '. $attrsText .' class="img-responsive '.$class.'" src="'.$src.'" alt="No image">';
         }
-        return '<img '. $attrsText .' class="img-responsive '.$class.'" src="/public/images/default.jpg" alt="No image">';
+        return '<img '. $attrsText .' class="img-responsive '.$class.'" src="/images/default.jpg" alt="No image">';
     }
     
     public function rules() {

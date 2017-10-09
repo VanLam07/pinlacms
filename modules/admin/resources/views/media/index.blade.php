@@ -37,12 +37,12 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_TRASH];
             <tr>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td></td>
                 <td>
                     <input type="text" name="filters[md.name]" value="{{ getRequestParam('filters', 'md.name') }}"
                            placeholder="{{ trans('search') }}..." class="form-control filter-data">
                 </td>
-                <td></td>
-                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

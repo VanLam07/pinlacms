@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use File;
 use DB;
 use Exception;
+use PlMenu;
 
 class PageController extends BaseController
 {
@@ -25,21 +26,24 @@ class PageController extends BaseController
             $name = explode('.', basename($file))[0];
             $this->templates[$name] = $name;
         }
+        PlMenu::setActive('pages');
     }
 
     public function index(Request $request) {
+        canAccess('view_post');
+        
         $items = $this->model->getData('page', $request->all());
         return view('admin::page.index', ['items' => $items]);
     }
 
     public function create() {
-//        canAccess('publish_posts');
+        canAccess('publish_post');
 
         return view('admin::page.create', ['templates' => $this->templates]);
     }
 
     public function store(Request $request) {
-//        canAccess('publish_posts');
+        canAccess('publish_post');
         
         DB::beginTransaction();
         try {
@@ -56,7 +60,7 @@ class PageController extends BaseController
     }
 
     public function edit($id, Request $request) {
-//        canAccess('edit_my_post', $this->model->get_author_id($id));
+        canAccess('edit_post', $this->model->getAuthorId($id));
 
         $lang = $request->get('lang');
         if(!$lang){
@@ -68,6 +72,8 @@ class PageController extends BaseController
     }
 
     public function update($id, Request $request) {
+        canAccess('edit_post', $this->model->getAuthorId($id));
+        
         return parent::update($id, $request);
     }
 

@@ -7,6 +7,7 @@ use Admin\Http\Controllers\BaseController;
 use App\Models\File as FileModel;
 use Illuminate\Validation\ValidationException;
 use App\User;
+use PlMenu;
 
 class FileController extends BaseController {
 
@@ -14,13 +15,14 @@ class FileController extends BaseController {
     protected $user;
 
     public function __construct(FileModel $file, User $user) {
+        PlMenu::setActive('files');
 
         $this->model = $file;
         $this->user = $user;
     }
 
     public function index(Request $request) {
-//        canAccess('read_files');
+        canAccess('view_file');
         
         $files = $this->model->getData($request->all());
         if($request->wantsJson() || $request->ajax()){
@@ -30,16 +32,21 @@ class FileController extends BaseController {
     }
     
     public function dialog(Request $request){
-//        canAccess('read_files');
+        canAccess('view_file');
+        
         $params = $request->all();
         return view('admin::file.dialog', compact('params'));
     }
     
     public function manage(){
+        canAccess('view_file');
+        
         return view('admin::file.manage');
     }
     
     public function show($id, Request $request){
+        canAccess('view_file', $this->model->getAuthorId($id));
+        
         $size = 'thumbnail';
         if($request->has('size')){
             $size = $request->get('size');
@@ -52,13 +59,13 @@ class FileController extends BaseController {
     }
 
     public function create() {
-//        canAccess('publish_files');
+        canAccess('publish_file');
         
         return view('admin::file.create');
     }
 
     public function store(Request $request) {
-//        canAccess('publish_files');
+        canAccess('publish_file');
         
         if (!$request->hasFile('files')) {
             if ($request->ajax() || $request->wantsJson()) {
@@ -95,7 +102,7 @@ class FileController extends BaseController {
     }
 
     public function edit($id) {
-//        canAccess('edit_my_file', $this->model->get_author_id($id));
+        canAccess('edit_file', $this->model->getAuthorId($id));
         
         $item = $this->model->findOrFail($id);
         $users = null;
@@ -106,7 +113,7 @@ class FileController extends BaseController {
     }
 
     public function update($id, Request $request) {
-//        canAccess('edit_my_file', $this->model->get_author_id($id));
+        canAccess('edit_file', $this->model->getAuthorId($id));
         
         try {
             $this->model->updateData($id, $request->all());
@@ -116,15 +123,6 @@ class FileController extends BaseController {
         } catch (\Exception $ex) {
             return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
         }
-    }
-
-    public function destroy($id) {
-//        canAccess('remove_my_file', $this->model->get_author_id($id));
-        
-        if (!$this->model->destroyData($id)) {
-            return redirect()->back()->with('error_mess', trans('manage.no_item'));
-        }
-        return redirect()->back()->with('succ_mess', trans('manage.destroy_success'));
     }
 
 }

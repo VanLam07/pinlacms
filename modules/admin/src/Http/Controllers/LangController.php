@@ -6,14 +6,15 @@ use Illuminate\Http\Request;
 
 use Admin\Http\Controllers\BaseController;
 use App\Models\Lang;
-use Exception;
+use PlMenu;
 
 class LangController extends BaseController
 {
     protected $model;
     
     public function __construct(Lang $lang) {
-//        canAccess('manage_langs');
+        canAccess('manage_langs');
+        PlMenu::setActive('langs');
         
         $this->model = $lang;
     }

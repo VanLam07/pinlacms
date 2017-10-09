@@ -29,7 +29,6 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT, AdConst::STT_TRASH];
                 <th>{{trans('admin::view.email')}} {!! linkOrder('email') !!}</th>
                 <th>{{trans('admin::view.account_type')}} {!! linkOrder('type') !!}</th>
                 <th>{{trans('admin::view.role')}}</th>
-                <th>{{trans('admin::view.status')}} {!! linkOrder('status') !!}</th>
                 <th></th>
             </tr>
         </thead>
@@ -48,7 +47,6 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT, AdConst::STT_TRASH];
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
             </tr>
             @if (!$items->isEmpty())
                 @foreach($items as $item)
@@ -59,7 +57,6 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT, AdConst::STT_TRASH];
                     <td>{{ $item->email }}</td>
                     <td>{{ $item->type }}</td>
                     <td>{{ $item->getRoles() }}</td>
-                    <td>{{ $item->status() }}</td>
                     <td>
                         <a href="{{ route('admin::user.edit', ['id' => $item->id]) }}" 
                            class="btn btn-sm btn-info" 
@@ -69,14 +66,14 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT, AdConst::STT_TRASH];
                 @endforeach
             @else
                 <tr>
-                    <td colspan="9" class="text-center"><h4>@lang('admin::message.not_found_items')</h4></td>
+                    <td colspan="8" class="text-center"><h4>@lang('admin::message.not_found_items')</h4></td>
                 </tr>
             @endif
         </tbody>
     </table>
 </div>
 
-@include('admin::parts.link')
+@include('admin::parts.paginate')
 
 @stop
 

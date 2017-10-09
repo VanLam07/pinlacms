@@ -8,6 +8,7 @@ use App\Models\Menu;
 use App\Models\Tax;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
+use PlMenu;
 
 class MenuCatController extends BaseController {
 
@@ -15,7 +16,8 @@ class MenuCatController extends BaseController {
     protected $menu;
 
     public function __construct(Tax $tax, Menu $menu) {
-//        canAccess('manage_menus');
+        canAccess('manage_menus');
+        PlMenu::setActive('group-menus');
 
         $this->model = $tax;
         $this->menu = $menu;

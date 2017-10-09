@@ -82,7 +82,7 @@
             </div>
         </form>
         
-        {!! AdView::nestedAdminMenus($menuList) !!}
+        {!! PlMenu::renderMenus($menuList) !!}
         
     </section>
     <!-- /.sidebar -->

@@ -7,11 +7,15 @@ use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
 use App\Models\Cap;
 use Exception;
+use PlMenu;
 
 class CapController extends BaseController
 {
     
     public function __construct(Cap $cap) {
+        canAccess('manage_cap');
+        PlMenu::setActive('caps');
+        
         $this->model = $cap;
     }
     

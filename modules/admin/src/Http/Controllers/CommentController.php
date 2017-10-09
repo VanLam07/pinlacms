@@ -5,6 +5,7 @@ namespace Admin\Http\Controllers;
 use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
 use App\Models\Comment;
+use PlMenu;
 
 class CommentController extends BaseController
 {
@@ -12,15 +13,18 @@ class CommentController extends BaseController
 
     public function __construct(Comment $comment) {
         $this->model = $comment;
+        PlMenu::setActive('comments');
     }
     
     public function index(Request $request){
+        canAccess('view_comment');
+        
         $items = $this->model->getData($request->all());
         return view('admin::comment.index', compact('items'));
     }
     
     public function create(){
-//        canAccess('publish_comments');
+        canAccess('publish_comment');
         
         $parents = $this->model->getData([
             'fields' => ['id', 'parent_id'],
@@ -31,13 +35,13 @@ class CommentController extends BaseController
     }
     
     public function store(Request $request){
-//        canAccess('publish_comments');
+        canAccess('publish_comment');
         
         return parent::store($request);
     }
     
     public function edit($id){
-//        canAccess('edit_my_comment', $this->model->get_author_id($id));
+        canAccess('edit_comment', $this->model->getAuthorId($id));
         
         $parents = $this->model->getData([
             'fields' => ['id', 'parent_id'],
@@ -50,11 +54,11 @@ class CommentController extends BaseController
     }
     
     public function update($id, Request $request){
-//        canAccess('edit_my_comment', $this->model->get_author_id($id));
+        canAccess('edit_comment', $this->model->getAuthorId($id));
         
         return parent::update($id, $request);
     }
-
+    
     public function multiAction(Request $request){
 //        if(!cando('remove_other_comments')){
 //            return redirect()->back()->withInput()->with('error_mess', trans('auth.authorize'));

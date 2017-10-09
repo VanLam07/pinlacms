@@ -35,19 +35,19 @@
             <div class="time_group">
                 <div class="t_field">
                     <span>{{trans('admin::view.day')}}</span>
-                    <select name="time[day]">
+                    <select name="time[day]" class="form-control">
                         {!! rangeOptions(1, 31, $item->created_at->format('d')) !!}
                     </select>
                 </div>
                 <div class="t_field">
                     <span>{{trans('admin::view.month')}}</span>
-                    <select name="time[month]">
+                    <select name="time[month]" class="form-control">
                         {!! rangeOptions(1, 12, $item->created_at->format('m')) !!}
                     </select>
                 </div>
                 <div class="t_field">
                     <span>{{trans('admin::view.year')}}</span>
-                    <select name="time[year]">
+                    <select name="time[year]" class="form-control">
                         {!! rangeOptions(2010, 2030, $item->created_at->format('Y')) !!}
                     </select>
                 </div>
@@ -115,8 +115,6 @@
 @stop
 
 @section('foot')
-<script src="/public/plugins/tinymce/tinymce.min.js"></script>
-<script src="/public/modules/admin/js/tinymce_script.js"></script>
 
 @include('admin::file.manager')
 

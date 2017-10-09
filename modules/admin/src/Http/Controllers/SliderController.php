@@ -8,13 +8,15 @@ use Illuminate\Validation\ValidationException;
 use Exception;
 use App\Models\Tax;
 use Illuminate\Support\Facades\DB;
+use PlMenu;
 
 class SliderController extends BaseController
 {
    protected $model;
 
     public function __construct(Tax $slider) {
-//        canAccess('manage_cats');
+        canAccess('manage_cats');
+        PlMenu::setActive('sliders');
 
         $this->model = $slider;
     }

@@ -5,6 +5,7 @@ namespace Admin\Http\Controllers;
 use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
 use App\Models\Tax;
+use PlMenu;
 
 class CatController extends BaseController {
 
@@ -12,7 +13,8 @@ class CatController extends BaseController {
     protected $locale;
 
     public function __construct(Tax $cat) {
-//        canAccess('manage_cats');
+        canAccess('manage_cats');
+        PlMenu::setActive('cats');
         
         $this->model = $cat;
         $this->locale = currentLocale();

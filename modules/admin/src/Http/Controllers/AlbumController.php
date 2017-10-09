@@ -7,13 +7,15 @@ use Admin\Http\Controllers\BaseController;
 use Illuminate\Validation\ValidationException;
 use App\Models\Tax;
 use Exception;
+use PlMenu;
 
 class AlbumController extends BaseController
 {
     protected $model;
 
     public function __construct(Tax $album) {
-//        canAccess('manage_cats');
+        canAccess('manage_cats');
+        PlMenu::setActive('albums');
 
         $this->model = $album;
     }
