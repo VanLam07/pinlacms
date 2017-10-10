@@ -1,6 +1,9 @@
 <?php
 
+use Admin\Facades\AdConst;
+
 define('DEFAULT_ROLE', 3);
+
 
 /**
  * Check permission
@@ -22,6 +25,24 @@ if (!function_exists('canAccess')) {
         return call_user_func_array(['Access', 'check'], $args);
     }
 
+}
+
+if (!function_exists('hasActionItem')) {
+    
+    function hasActionItem ($actionCaps, $item, $status = null) {
+        if (!$status) {
+            return false;
+        }
+        if ($status == AdConst::STT_TRASH) {
+            return canDo($actionCaps['remove'], $item->authorId());
+        }
+        if ($status == AdConst::STT_DRAFT) {
+            return canDo($actionCaps['edit'], $item->authorId());
+        }
+        return canDo($actionCaps['edit'], $item->authorId())
+                || canDo($actionCaps['remove'], $item->authorId());
+    }
+    
 }
 
 if (!function_exists('checkAuth')) {

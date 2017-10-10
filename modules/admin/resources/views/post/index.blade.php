@@ -5,6 +5,7 @@
 <?php 
 use Admin\Facades\AdConst;
 
+$status = request()->get('status');
 $multiActions = ['draft', 'trash', 'delete'];
 $statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT, AdConst::STT_TRASH];
 $actionCaps = [
@@ -56,7 +57,11 @@ $actionCaps = [
             @if (!$items->isEmpty())
                 @foreach($items as $item)
                 <tr>
-                    <td><input type="checkbox" name="check_items[]" class="check_item" value="{{ $item->id }}" /></td>
+                    <td>
+                        @if (hasActionItem($actionCaps, $item, $status))
+                        <input type="checkbox" name="check_items[]" class="check_item" value="{{ $item->id }}" />
+                        @endif
+                    </td>
                     <td>{{$item->id}}</td>
                     <td>{{$item->title}}</td>
                     <td>{{$item->slug}}</td>
@@ -65,8 +70,11 @@ $actionCaps = [
                     <td>{{$item->views}}</td>
                     <td>{{$item->created_at}}</td>
                     <td>
-                        <a href="{{route('admin::post.edit', ['id' => $item->id])}}" 
-                           class="btn btn-sm btn-info" title="{{trans('admin::view.edit')}}"><i class="fa fa-edit"></i></a>
+                        @if (canDo('edit_post', $item->author_id)
+                                && $status && $status != AdConst::STT_TRASH)
+                            <a href="{{route('admin::post.edit', ['id' => $item->id])}}" 
+                               class="btn btn-sm btn-info" title="{{trans('admin::view.edit')}}"><i class="fa fa-edit"></i></a>
+                        @endif
                     </td>
                 </tr>
                 @endforeach

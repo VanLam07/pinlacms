@@ -8,6 +8,10 @@ class AdminServiceProvider extends ServiceProvider {
     
     public function boot() {
         
+        if (!defined('ADMIN_PATH')) {
+            define('ADMIN_PATH', __DIR__);
+        }
+        
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'admin');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'admin');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');

@@ -90,6 +90,10 @@ class BaseModel extends Model {
         }
         return 0;
     }
+    
+    public function authorId() {
+        return $this->author_id;
+    }
 
     public function insertData($data) {
         $this->validator($data, $this->rules());
@@ -182,7 +186,6 @@ class BaseModel extends Model {
             case 'trash':
                 $this->destroyData($item_ids);
                 break;
-                break;
             case 'delete':
                 if ($this->isUseSoftDelete()) {
                     $this->forceDeleteData($item_ids);
@@ -192,16 +195,6 @@ class BaseModel extends Model {
                 break;
             case defalt:
                 break;
-        }
-    }
-    
-    public function checkPermissAction ($itemIds, $cap) {
-        if (!is_array($itemIds) || !$itemIds) {
-            return false;
-        }
-        $items = self::whereIn('id', $itemIds)->get();
-        if ($items->isEmpty()) {
-            return false;
         }
     }
 

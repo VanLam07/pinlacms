@@ -11,7 +11,8 @@ use PlMenu;
 
 class CapController extends BaseController
 {
-    
+    protected $model;
+
     public function __construct(Cap $cap) {
         canAccess('manage_cap');
         PlMenu::setActive('caps');

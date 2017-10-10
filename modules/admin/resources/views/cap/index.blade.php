@@ -5,6 +5,7 @@
 <?php 
 $multiActions = ['delete'];
 $statuses = [];
+$actionCaps = [];
 ?>
 
 @section('nav_status')

@@ -10,6 +10,10 @@ use PlMenu;
 class CommentController extends BaseController
 {
     protected $model;
+    
+    protected $cap_create = 'publish_comment';
+    protected $cap_edit = 'edit_comment';
+    protected $cap_remove = 'remove_comment';
 
     public function __construct(Comment $comment) {
         $this->model = $comment;
@@ -24,7 +28,7 @@ class CommentController extends BaseController
     }
     
     public function create(){
-        canAccess('publish_comment');
+        canAccess($this->cap_create);
         
         $parents = $this->model->getData([
             'fields' => ['id', 'parent_id'],
@@ -35,13 +39,13 @@ class CommentController extends BaseController
     }
     
     public function store(Request $request){
-        canAccess('publish_comment');
+        canAccess($this->cap_create);
         
         return parent::store($request);
     }
     
     public function edit($id){
-        canAccess('edit_comment', $this->model->getAuthorId($id));
+        canAccess($this->cap_edit, $this->model->getAuthorId($id));
         
         $parents = $this->model->getData([
             'fields' => ['id', 'parent_id'],
@@ -54,17 +58,9 @@ class CommentController extends BaseController
     }
     
     public function update($id, Request $request){
-        canAccess('edit_comment', $this->model->getAuthorId($id));
+        canAccess($this->cap_edit, $this->model->getAuthorId($id));
         
         return parent::update($id, $request);
-    }
-    
-    public function multiAction(Request $request){
-//        if(!cando('remove_other_comments')){
-//            return redirect()->back()->withInput()->with('error_mess', trans('auth.authorize'));
-//        }
-
-        return parent::multiActions($request);
     }
     
 }

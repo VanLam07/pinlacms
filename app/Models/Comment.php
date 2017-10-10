@@ -10,7 +10,10 @@ class Comment extends BaseModel {
 
     protected $table = 'comments';
     protected $fillable = ['post_id', 'author_email', 'author_name', 'author_id', 'author_ip', 'content', 'status', 'agent', 'parent_id'];
-    
+    protected $capCreate = 'publish_comment';
+    protected $capEdit = 'edit_comment';
+    protected $capRemove = 'remove_comment';
+
     use SoftDeletes;
     
     public function isUseSoftDelete() {

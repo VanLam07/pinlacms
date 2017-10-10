@@ -3,7 +3,6 @@
 namespace App\Facades\Option;
 
 use App\Models\Option as OptionModel;
-use DB;
 
 class Option{
     protected $option;
@@ -12,7 +11,7 @@ class Option{
         $this->option = $option;
     }
     
-    public function update($key, $value, $lang=null){
+    public function update($key, $value, $lang = null){
         $option = $this->option->where('option_key', $key);
         if ($lang) {
             $option->where('lang_code', $lang);

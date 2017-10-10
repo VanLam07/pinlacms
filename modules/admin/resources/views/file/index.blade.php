@@ -5,8 +5,14 @@
 <?php 
 use Admin\Facades\AdConst;
 
+$status = request()->get('status');
 $multiActions = ['trash', 'delete'];
 $statuses = [AdConst::STT_PUBLISH, AdConst::STT_TRASH];
+$actionCaps = [
+    'create' => 'publish_file',
+    'edit' => 'edit_file',
+    'remove' => 'remove_file'
+];
 ?>
 
 @section('nav_status')
@@ -30,6 +36,7 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_TRASH];
                 <th>{{trans('admin::view.mimetype')}}</th>
                 <th>{{trans('admin::view.author')}} {!! linkOrder('author_id') !!}</th>
                 <th>{{trans('admin::view.created_at')}} {!! linkOrder('created_at') !!}</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -47,11 +54,16 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_TRASH];
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
             </tr>
             @if (!$items->isEmpty())
                 @foreach($items as $item)
                 <tr>
-                    <td><input type="checkbox" name="check_items[]" class="check_item" value="{{ $item->id }}" /></td>
+                    <td>
+                        @if (hasActionItem($actionCaps, $item, $status))
+                        <input type="checkbox" name="check_items[]" class="check_item" value="{{ $item->id }}" />
+                        @endif
+                    </td>
                     <td>{{ $item->id }}</td>
                     <td>{!! $item->getImage('thumbnail') !!}</td>
                     <td>{{ $item->title }}</td>
@@ -61,9 +73,12 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_TRASH];
                     <td>{{ $item->author->name }}</td>
                     <td>{{ $item->created_at }}</td>
                     <td>
-                        <a href="{{route('admin::file.edit', ['id' => $item->id])}}" 
-                           class="btn btn-sm btn-info" 
-                           title="{{trans('admin::view.edit')}}"><i class="fa fa-edit"></i></a>
+                        @if (canDo('edit_file', $item->author_id)
+                                && $status && $status != AdConst::STT_TRASH)
+                            <a href="{{route('admin::file.edit', ['id' => $item->id])}}" 
+                               class="btn btn-sm btn-info" 
+                               title="{{trans('admin::view.edit')}}"><i class="fa fa-edit"></i></a>
+                        @endif
                     </td>
                 </tr>
                 @endforeach

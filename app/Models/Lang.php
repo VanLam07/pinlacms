@@ -4,7 +4,6 @@ namespace App\Models;
 
 //use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Admin\Facades\AdConst;
 
 class Lang extends BaseModel {
 
@@ -55,7 +54,7 @@ class Lang extends BaseModel {
 
     public function icon() {
         if ($this->icon) {
-            $src = '/public/images/flags/' . $this->icon;
+            $src = '/images/flags/' . $this->icon;
             return '<img width="30" src="' . $src . '">';
         }
         return null;
@@ -103,8 +102,7 @@ class Lang extends BaseModel {
     
     public function getCurrent($fields=['*']){
         $current_locale = app()->getLocale();
-        $lang = self::where('code', $current_locale)->first($fields);
-        return $lang;
+        return self::where('code', $current_locale)->first($fields);
     }
 
 }

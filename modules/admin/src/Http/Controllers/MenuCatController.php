@@ -18,7 +18,7 @@ class MenuCatController extends BaseController {
     public function __construct(Tax $tax, Menu $menu) {
         canAccess('manage_menus');
         PlMenu::setActive('group-menus');
-
+        
         $this->model = $tax;
         $this->menu = $menu;
     }
@@ -87,7 +87,7 @@ class MenuCatController extends BaseController {
             return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
         } catch (ValidationException $ex) {
             DB::rollback();
-            return redirect()->back()->withInput()->withErrors($ex->validator);
+            return redirect()->back()->withInput()->withErrors($ex->errors());
         } catch (\Exception $ex) {
             DB::rollback();
             return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());

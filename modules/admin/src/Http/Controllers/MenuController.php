@@ -109,15 +109,15 @@ class MenuController extends BaseController {
 
         $result = null;
         switch ($menu->model_type) {
-            case 0:
+            case AdConst::MENU_TYPE_CUSTOM:
                 $result = $this->model->findCustom($menu_id, ['md.*'], $lang);
                 break;
-            case 1:
-            case 2:
+            case AdConst::MENU_TYPE_PAGE:
+            case AdConst::MENU_TYPE_POST:
                 $result = $this->post->findByLang($menu->type_id, ['posts.id', 'pd.title'], $lang);
                 break;
-            case 3:
-            case 4:
+            case AdConst::MENU_TYPE_CAT:
+            case AdConst::MENU_TYPE_TAX:
                 $result = $this->tax->findByLang($menu->type_id, ['taxs.id', 'td.name'], $lang);
                 break;
         }

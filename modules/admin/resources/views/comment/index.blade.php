@@ -5,8 +5,14 @@
 <?php 
 use Admin\Facades\AdConst;
 
+$status = request()->get('status');
 $multiActions = ['delete', 'trash', 'draft'];
 $statuses = [AdConst::STT_PUBLISH, AdConst::STT_TRASH, AdConst::STT_DRAFT];
+$actionCaps = [
+    'create' => 'publish_comment',
+    'edit' => 'edit_comment',
+    'remove' => 'remove_comment'
+];
 ?>
 
 @section('nav_status')
@@ -50,7 +56,11 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_TRASH, AdConst::STT_DRAFT];
             @if (!$items->isEmpty())
                 @foreach($items as $item)
                 <tr>
-                    <td><input type="checkbox" name="check_items[]" class="check_item" value="{{ $item->id }}" /></td>
+                    <td>
+                        @if (hasActionItem($actionCaps, $item, $status))
+                        <input type="checkbox" name="check_items[]" class="check_item" value="{{ $item->id }}" />
+                        @endif
+                    </td>
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->content }}</td>
                     <td>{{ $item->author_name }}</td>
@@ -59,10 +69,11 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_TRASH, AdConst::STT_DRAFT];
                     <td>{{ $item->parent_id }}</td>
                     <td>{{ $item->created_at }}</td>
                     <td>
-                        
-                        <a href="{{route('admin::comment.edit', ['id' => $item->id])}}" 
-                           class="btn btn-sm btn-info" title="{{trans('admin::view.edit')}}"><i class="fa fa-edit"></i></a>
-                        
+                        @if (canDo('edit_comment', $item->author_id)
+                                && $status && $status != AdConst::STT_TRASH)
+                            <a href="{{route('admin::comment.edit', ['id' => $item->id])}}" 
+                               class="btn btn-sm btn-info" title="{{trans('admin::view.edit')}}"><i class="fa fa-edit"></i></a>
+                        @endif
                     </td>
                 </tr>
                 @endforeach

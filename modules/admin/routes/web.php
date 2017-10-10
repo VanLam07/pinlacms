@@ -75,15 +75,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('sliders/slides/index', ['as' => 'slide.index', 'uses' => 'SlideController@index']);
     Route::get('sliders/slides/create', ['as' => 'slide.create', 'uses' => 'SlideController@create']);
     Route::post('sliders/slides/store', ['as' => 'slide.store', 'uses' => 'SlideController@store']);
-    Route::get('sliders/slides/{id}/edit', ['as' => 'slide.edit', 'uses' => 'SlideController@edit']);
-    Route::put('sliders/slides/{id}/update', ['as' => 'slide.update', 'uses' => 'SlideController@update']);
-    Route::delete('sliders/slides/{id}/delete', ['as' => 'slide.destroy', 'uses' => 'SlideController@destroy']);
+    Route::get('sliders/slides/{id}/edit', ['as' => 'slide.edit', 'uses' => 'SlideController@edit'])->where('id', '[0-9]+');
+    Route::put('sliders/slides/{id}/update', ['as' => 'slide.update', 'uses' => 'SlideController@update'])->where('id', '[0-9]+');
+    Route::delete('sliders/slides/{id}/delete', ['as' => 'slide.destroy', 'uses' => 'SlideController@destroy'])->where('id', '[0-9]+');
     Route::post('sliders/slides/actions', ['as' => 'slide.actions', 'uses' => 'SlideController@multiActions']);
-//    //    Options
-//    Route::get('/options/{id}/delete', ['as' => 'option.delete', 'uses' => 'OptionController@destroy'])->where('id', '[0-9]+');
-//    Route::post('/options/update-all', ['as' => 'option.update_all', 'uses' => 'OptionController@updateAll']);
-//    Route::resource('/options', 'OptionController', rsNames('option'));
-//    Route::post('/options/actions', ['as' => 'option.actions', 'uses' => 'OptionController@multiActions']);
+    //    Options
+    Route::resource('/options', 'OptionController', rsNames('option'));
+    Route::post('/options/actions', ['as' => 'option.actions', 'uses' => 'OptionController@multiActions']);
     //    Comments
     Route::resource('/comments', 'CommentController', rsNames('comment'));
     Route::post('/comments/actions', ['as' => 'comment.actions', 'uses' => 'CommentController@multiActions']);

@@ -40,5 +40,6 @@ class AdConst {
     const MENU_TYPE_CAT = 3;
     const MENU_TYPE_POST = 2;
     const MENU_TYPE_PAGE = 1;
+    const MENU_TYPE_CUSTOM = 0;
     
 }

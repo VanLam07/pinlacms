@@ -7,6 +7,7 @@ use Admin\Facades\AdConst;
 
 $multiActions = ['delete'];
 $statuses = [];
+$actionCaps = [];
 $page_title = ($slider) ? $slider->name. ' / '. trans('admin::view.man_slides') : trans('admin::view.man_slides');
 ?>
 

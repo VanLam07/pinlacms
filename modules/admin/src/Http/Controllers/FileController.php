@@ -13,6 +13,10 @@ class FileController extends BaseController {
 
     protected $model;
     protected $user;
+    
+    protected $cap_create = 'publish_file';
+    protected $cap_edit = 'edit_file';
+    protected $cap_remove = 'remove_file';
 
     public function __construct(FileModel $file, User $user) {
         PlMenu::setActive('files');
@@ -59,13 +63,13 @@ class FileController extends BaseController {
     }
 
     public function create() {
-        canAccess('publish_file');
+        canAccess($this->cap_create);
         
         return view('admin::file.create');
     }
 
     public function store(Request $request) {
-        canAccess('publish_file');
+        canAccess($this->cap_create);
         
         if (!$request->hasFile('files')) {
             if ($request->ajax() || $request->wantsJson()) {
@@ -98,11 +102,11 @@ class FileController extends BaseController {
         if($request->wantsJson() || $request->ajax()){
             return response()->json($results);
         }
-        return redirect()->route('admin::file.index')->with('succ_mess', trans('admin::message.store_success'));
+        return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
     }
 
     public function edit($id) {
-        canAccess('edit_file', $this->model->getAuthorId($id));
+        canAccess($this->cap_edit, $this->model->getAuthorId($id));
         
         $item = $this->model->findOrFail($id);
         $users = null;
@@ -110,19 +114,6 @@ class FileController extends BaseController {
             $users = $this->user->getData()->lists('name', 'id')->toArray();
         }
         return view('admin::file.edit', compact('item', 'users'));
-    }
-
-    public function update($id, Request $request) {
-        canAccess('edit_file', $this->model->getAuthorId($id));
-        
-        try {
-            $this->model->updateData($id, $request->all());
-            return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
-        } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->errors());
-        } catch (\Exception $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
-        }
     }
 
 }

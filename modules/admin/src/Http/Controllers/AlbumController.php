@@ -12,7 +12,7 @@ use PlMenu;
 class AlbumController extends BaseController
 {
     protected $model;
-
+    
     public function __construct(Tax $album) {
         canAccess('manage_cats');
         PlMenu::setActive('albums');
