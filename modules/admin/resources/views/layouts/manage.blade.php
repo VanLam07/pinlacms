@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="/plugins/adminlte/css/AdminLTE.css">
         <link rel="stylesheet" href="/plugins/adminlte/css/skins/_all-skins.css">
         
+        <link rel="stylesheet" href="/css/filemanager.css">
         <link rel="stylesheet" href="/modules/admin/css/main.css">
         <link rel="stylesheet" href="/modules/admin/css/screen.css">
 
@@ -43,10 +44,8 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>@yield('title')</h1>
-                    <ol class="breadcrumb">
-                        <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-                        <li class="active">Home</li>
-                    </ol>
+                    
+                    {!! Breadcrumb::render() !!}
                 </section>
 
                 <!-- Main content -->

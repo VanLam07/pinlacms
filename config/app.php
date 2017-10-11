@@ -246,6 +246,7 @@ return [
          */
         'AdView' => Admin\Facades\AdViewFacade::class,
         'PlMenu' => Admin\Facades\PlMenuFacade::class,
+        'Breadcrumb' => App\Facades\Breadcrumb\Breadcrumb::class,
 
     ],
 

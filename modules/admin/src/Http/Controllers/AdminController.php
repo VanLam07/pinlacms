@@ -2,12 +2,14 @@
 
 namespace Admin\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Admin\Http\Controllers\BaseController;
 use PlMenu;
 
-class AdminController extends Controller {
+class AdminController extends BaseController {
     
     public function __construct() {
+        parent::__construct();
+        
         PlMenu::setActive('dashboard');
     }
     

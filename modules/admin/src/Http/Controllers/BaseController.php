@@ -7,12 +7,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 use Exception;
 use DB;
+use Breadcrumb;
 
 class BaseController extends Controller {
     
     protected $cap_edit = null;
     protected $cap_remove = null;
     protected $cap_accept = null;
+    
+    public function __construct() {
+        Breadcrumb::add(trans('admin::view.dashboard'), route('admin::index'));
+    }
 
     public function multiActions(Request $request) {
         try {

@@ -52,7 +52,6 @@ class AuthController extends Controller {
     }
 
     public function getLogin() {
-        dd(\Illuminate\Support\Facades\Session::all());
         if (Auth::check()) {
             return view('errors.notice', [
                 'message' => trans('admin::message.you_are_logged_in') . 
