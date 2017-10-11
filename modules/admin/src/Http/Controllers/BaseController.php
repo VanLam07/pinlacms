@@ -12,6 +12,7 @@ class BaseController extends Controller {
     
     protected $cap_edit = null;
     protected $cap_remove = null;
+    protected $cap_accept = null;
 
     public function multiActions(Request $request) {
         try {
@@ -27,6 +28,10 @@ class BaseController extends Controller {
     }
     
     public function store(Request $request) {
+        if ($this->cap_accept) {
+            canAccess($this->cap_accept);
+        }
+        
         DB::beginTransaction();
         try {
             $this->model->insertData($request->all());
@@ -42,6 +47,10 @@ class BaseController extends Controller {
     }
     
     public function update($id, Request $request) {
+        if ($this->cap_accept) {
+            canAccess($this->cap_accept);
+        }
+        
         DB::beginTransaction();
         try {
             $this->model->updateData($id, $request->all());

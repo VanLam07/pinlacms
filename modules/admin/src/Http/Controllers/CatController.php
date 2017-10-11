@@ -11,9 +11,9 @@ class CatController extends BaseController {
 
     protected $model;
     protected $locale;
+    protected $cap_accept = 'manage_cats';
 
     public function __construct(Tax $cat) {
-        canAccess('manage_cats');
         PlMenu::setActive('cats');
         
         $this->model = $cat;

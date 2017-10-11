@@ -15,22 +15,25 @@ class MenuController extends BaseController {
     protected $model;
     protected $tax;
     protected $post;
+    protected $cap_accept = 'manage_menus';
 
     public function __construct(Menu $menu, Tax $tax, PostType $post) {
-        canAccess('manage_menus');
-
         $this->model = $menu;
         $this->tax = $tax;
         $this->post = $post;
     }
 
     public function index(Request $request) {
+        canAccess($this->cap_accept);
+        
         $data = $request->all();
         $menus = $this->model->getData($data);
         return view('manage.menu.index', ['items' => $menus]);
     }
 
     public function create() {
+        canAccess($this->cap_accept);
+        
         $parents = $this->model->getData(['orderby' => 'pivot_title']);
         $groups = $this->tax->getData('menucat', ['orderby' => 'pivot_name', 'fields' => ['id']]);
 
@@ -42,6 +45,8 @@ class MenuController extends BaseController {
     }
 
     public function store(Request $request) {
+        canAccess($this->cap_accept);
+        
         try {
             $this->model->insertData($request->all());
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
@@ -53,11 +58,15 @@ class MenuController extends BaseController {
     }
 
     public function edit($id) {
+        canAccess($this->cap_accept);
+        
         $item = $this->model->find($id);
         return view('manage.menu.edit', ['item' => $item]);
     }
 
     public function update($id, Request $request) {
+        canAccess($this->cap_accept);
+        
         try {
             $this->model->updateData($id, $request->all());
             return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
@@ -67,6 +76,8 @@ class MenuController extends BaseController {
     }
 
     public function destroy($id) {
+        canAccess($this->cap_accept);
+        
         if (!$this->model->destroyData($id)) {
             return redirect()->back()->with('error_mess', trans('admin::message.no_item'));
         }
@@ -74,6 +85,8 @@ class MenuController extends BaseController {
     }
     
     public function asynDestroy(Request $request){
+        canAccess($this->cap_accept);
+        
         if(!$request->has('id')){
             return response()->json(trans('admin::message.no_item'), 422);
         }
@@ -92,6 +105,8 @@ class MenuController extends BaseController {
     }
 
     public function getType(Request $request) {
+        canAccess($this->cap_accept);
+        
         if (!$request->has('menu_id')) {
             return response()->json(trans('admin::message.no_item'), 422);
         }

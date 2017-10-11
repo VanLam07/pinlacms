@@ -15,9 +15,9 @@ class SlideController extends BaseController
 {
     protected $model;
     protected $slider;
+    protected $cap_accept = 'manage_cats';
 
     public function __construct(Media $slide, Tax $slider) {
-        canAccess('manage_cats');
         PlMenu::setActive('sliders');
         
         $this->model = $slide;
@@ -25,6 +25,8 @@ class SlideController extends BaseController
     }
 
     public function index(Request $request) {
+        canAccess($this->cap_accept);
+        
         $slider_id = $request->get('slider_id');
         if (!$slider_id) {
             abort(404);
@@ -36,6 +38,8 @@ class SlideController extends BaseController
     }
 
     public function create(Request $request) {
+        canAccess($this->cap_accept);
+        
         $slider_id = $request->get('slider_id');
         if (!$slider_id) {
             abort(404);
@@ -45,6 +49,8 @@ class SlideController extends BaseController
     }
 
     public function store(Request $request) {
+        canAccess($this->cap_accept);
+        
         DB::beginTransaction();
         try {
             $this->model->insertData($request->all(), 'slide');
@@ -60,6 +66,8 @@ class SlideController extends BaseController
     }
 
     public function edit($id, Request $request) {
+        canAccess($this->cap_accept);
+        
         $lang = $request->get('lang');
         if (!$lang) {
             $lang = currentLocale();

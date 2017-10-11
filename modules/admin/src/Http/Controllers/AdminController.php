@@ -8,11 +8,11 @@ use PlMenu;
 class AdminController extends Controller {
     
     public function __construct() {
-        canAccess('accept_manage');
+        PlMenu::setActive('dashboard');
     }
     
     public function index() {
-        PlMenu::setActive('dashboard');
+        canAccess('accept_manage');
         
         return view('admin::dashboard');
     }

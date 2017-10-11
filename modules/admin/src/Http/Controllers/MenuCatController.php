@@ -14,9 +14,9 @@ class MenuCatController extends BaseController {
 
     protected $model;
     protected $menu;
+    protected $cap_accept = 'manage_menus';
 
     public function __construct(Tax $tax, Menu $menu) {
-        canAccess('manage_menus');
         PlMenu::setActive('group-menus');
         
         $this->model = $tax;
@@ -24,16 +24,22 @@ class MenuCatController extends BaseController {
     }
 
     public function index(Request $request) {
+        canAccess($this->cap_accept);
+        
         $data = $request->all();
         $menucats = $this->model->getData('menucat', $data);
         return view('admin::menucat.index', ['items' => $menucats]);
     }
 
     public function create() {
+        canAccess($this->cap_accept);
+        
         return view('admin::menucat.create');
     }
 
     public function store(Request $request) {
+        canAccess($this->cap_accept);
+        
         try {
             $this->model->insertData($request->all(), 'menucat');
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
@@ -45,6 +51,8 @@ class MenuCatController extends BaseController {
     }
     
     public function storeItems(Request $request){
+        canAccess($this->cap_accept);
+        
         $menu_items = $request->get('menuItems');
         if($menu_items){
             foreach ($menu_items as $item){ 
@@ -62,6 +70,8 @@ class MenuCatController extends BaseController {
     }
 
     public function edit($id, Request $request) {
+        canAccess($this->cap_accept);
+        
         $lang = $request->get('lang');
         if (!$lang) {
             $lang = currentLocale();
@@ -70,7 +80,9 @@ class MenuCatController extends BaseController {
         return view('admin::menucat.edit', compact('item', 'lang'));
     }
 
-    public function update($id, Request $request) {     
+    public function update($id, Request $request) {
+        canAccess($this->cap_accept);
+        
         DB::beginTransaction();
         try {
             $this->model->updateData($id, $request->all());
@@ -95,6 +107,8 @@ class MenuCatController extends BaseController {
     }
     
     public function updateOrderItems(Request $request){
+        canAccess($this->cap_accept);
+        
         $menus = $request->get('menus');
         if($menus){
             $this->nestedOrderUpdate($menus);
@@ -103,6 +117,8 @@ class MenuCatController extends BaseController {
     }
     
     public function nestedOrderUpdate($items, $parent=null){
+        canAccess($this->cap_accept);
+        
         foreach ($items as $key => $item){
             $this->menu->updateOrder($item['id'], $key, $parent);
             if(count($item['childs']) > 0){
@@ -112,6 +128,8 @@ class MenuCatController extends BaseController {
     }
     
     public function destroy($id) {
+        canAccess($this->cap_accept);
+        
         if (!$this->model->destroyData($id)) {
             return redirect()->back()->with('error_mess', trans('admin::message.no_item'));
         }
@@ -119,6 +137,8 @@ class MenuCatController extends BaseController {
     }
 
     public function getNestedMenus(Request $request) {
+        canAccess($this->cap_accept);
+        
         $menus = $this->menu->getData($request->all());
         $nested = $this->model->toNested($menus);
         return $nested;

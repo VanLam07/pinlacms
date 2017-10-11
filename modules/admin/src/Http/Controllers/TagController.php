@@ -13,25 +13,31 @@ use PlMenu;
 class TagController extends BaseController
 {
     protected $model;
+    protected $cap_accept = 'manage_tags';
 
     public function __construct(Tax $tag) {
-        canAccess('manage_tags');
         PlMenu::setActive('tags');
 
         $this->model = $tag;
     }
 
     public function index(Request $request) {
+        canAccess($this->cap_accept);
+        
         $data = $request->all();
         $tags = $this->model->getData('tag', $data);
         return view('admin::tag.index', ['items' => $tags]);
     }
 
     public function create() {
+        canAccess($this->cap_accept);
+        
         return view('admin::tag.create');
     }
     
     public function store(Request $request) {
+        canAccess($this->cap_accept);
+        
         DB::beginTransaction();
         try {
             $this->model->insertData($request->all(), 'tag');
@@ -47,6 +53,8 @@ class TagController extends BaseController
     }
 
     public function edit($id, Request $request) {
+        canAccess($this->cap_accept);
+        
         $lang = $request->get('lang');
         if(!$lang){
             $lang = currentLocale();

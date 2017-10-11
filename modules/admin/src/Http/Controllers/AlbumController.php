@@ -12,25 +12,31 @@ use PlMenu;
 class AlbumController extends BaseController
 {
     protected $model;
-    
+    protected $cap_accept = 'manage_cats';
+
     public function __construct(Tax $album) {
-        canAccess('manage_cats');
         PlMenu::setActive('albums');
 
         $this->model = $album;
     }
 
     public function index(Request $request) {
+        canAccess($this->cap_accept);
+        
         $data = $request->all();
         $albums = $this->model->getData('album', $data);
         return view('admin::album.index', ['items' => $albums]);
     }
 
     public function create() {
+        canAccess($this->cap_accept);
+        
         return view('admin::album.create');
     }
 
     public function store(Request $request) {
+        canAccess($this->cap_accept);
+        
         try {
             $this->model->insertData($request->all(), 'album');
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
@@ -42,6 +48,8 @@ class AlbumController extends BaseController
     }
 
     public function edit($id, Request $request) {
+        canAccess($this->cap_accept);
+        
         $lang = $request->get('lang');
         if(!$lang){
             $lang = currentLocale();
@@ -51,6 +59,8 @@ class AlbumController extends BaseController
     }
 
     public function update($id, Request $request) {
+        canAccess($this->cap_accept);
+        
         try {
             $this->model->updateData($id, $request->all());
             return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));

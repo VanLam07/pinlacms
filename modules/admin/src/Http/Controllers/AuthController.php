@@ -10,6 +10,7 @@ use Validator;
 use Mail;
 use DB;
 use Carbon\Carbon;
+use Auth;
 
 class AuthController extends Controller {
     
@@ -51,7 +52,8 @@ class AuthController extends Controller {
     }
 
     public function getLogin() {
-        if (auth()->check()) {
+        dd(\Illuminate\Support\Facades\Session::all());
+        if (Auth::check()) {
             return view('errors.notice', [
                 'message' => trans('admin::message.you_are_logged_in') . 
                         ' <a href="'. route('admin::auth.logout') .'">Logout</a>'
@@ -69,7 +71,7 @@ class AuthController extends Controller {
             return redirect()->back()->withInput()->withErrors($valid->errors());
         }
 
-        $auth = auth()->attempt([
+        $auth = Auth::attempt([
             'email' => $request->input('email'),
             'password' => $request->input('password')
         ], $request->input('remember'));
@@ -78,7 +80,7 @@ class AuthController extends Controller {
             return redirect()->back()->withInput()->with('error_mess', trans('admin::message.login_failed'));
         }
         
-        auth()->user()->storeCapsToSession();
+        Auth::user()->storeCapsToSession();
         
         return redirect()->intended(route('admin::index'));
     }

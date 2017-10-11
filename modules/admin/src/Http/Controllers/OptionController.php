@@ -14,9 +14,9 @@ class OptionController extends BaseController
 {
     protected $model;
     protected $file;
+    protected $cap_accept = 'manage_options';
 
     public function __construct(Option $option, File $file) {
-        canAccess('manage_options');
         PlMenu::setActive('options');
         
         $this->model = $option;
@@ -24,17 +24,22 @@ class OptionController extends BaseController
     }
     
     public function index(Request $request){
-        $options = $this->model->getData($request->all());
+        canAccess($this->cap_accept);
         
+        $options = $this->model->getData($request->all());
         return view('admin::option.index', ['items' => $options]);
     }
     
     public function create() {
+        canAccess($this->cap_accept);
+        
         return view('admin::option.create');
     }
     
     
     public function edit($id) {
+        canAccess($this->cap_accept);
+        
         $item = $this->model->findOrFail($id);
         return view('admin::option.edit', compact('item'));
     }
