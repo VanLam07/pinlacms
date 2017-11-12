@@ -41,7 +41,21 @@ class MenuComposer {
                 'url' => route('admin::page.index', ['status' => AdConst::STT_PUBLISH]),
                 'active' => 'pages',
                 'cap' => 'view_post', 
-                'icon' => 'fa-copy'
+                'icon' => 'fa-copy',
+                'childs' => [
+                    [
+                        'name' => trans('admin::view.all'),
+                        'url' => route('admin::page.index', ['status' => AdConst::STT_PUBLISH]),
+                        'active' => 'page_all',
+                        'cap' => 'view_post'
+                    ],
+                    [
+                        'name' => trans('admin::view.create'),
+                        'url' => route('admin::page.create'),
+                        'active' => 'page_create',
+                        'cap' => 'publish_post',
+                    ]
+                ]
             ],
             [
                 'name' => trans('admin::view.comments'), 

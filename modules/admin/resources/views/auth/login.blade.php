@@ -35,7 +35,7 @@
         </div>
         
         <div>
-            <p class="pull-left">{{ trans('admin::view.no_account') }} <a href="{{route('admin::auth.get_register')}}">{{ trans('admin::view.register') }}</a></p>
+            <!--<p class="pull-left">{{ trans('admin::view.no_account') }} <a href="{{route('admin::auth.get_register')}}">{{ trans('admin::view.register') }}</a></p>-->
             <p class="pull-right"><a href="{{route('admin::auth.get_forget_pass')}}">{{ trans('admin::view.forget_password') }}</a></p>
         </div>
         <div class="clearfix"></div>

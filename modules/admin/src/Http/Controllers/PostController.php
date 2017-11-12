@@ -98,7 +98,7 @@ class PostController extends BaseController {
     }
 
     public function update($id, Request $request) {
-        canAccess('edit_post', $this->model->get_author_id($id));
+        canAccess('edit_post', $this->model->getAuthorId($id));
         return parent::update($id, $request);
     }
 

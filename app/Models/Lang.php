@@ -35,7 +35,8 @@ class Lang extends BaseModel {
     public function getData($args = []) {
         $data = [
             'orderby' => 'order',
-            'order' => 'asc'
+            'order' => 'asc',
+            'status' => AdConst::STT_PUBLISH
         ];
         $data = array_merge($data, $args);
         return parent::getData($data);

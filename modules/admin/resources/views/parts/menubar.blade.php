@@ -5,7 +5,7 @@
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini">Logo</span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg">Pinla CMS</span>
+        <span class="logo-lg">Edu Admin</span>
     </a>
 
     <!-- Header Navbar: style can be found in header.less -->
