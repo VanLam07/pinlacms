@@ -1,11 +1,11 @@
 <header class="main-header">
 
     <!-- Logo -->
-    <a href="index2.html" class="logo">
+    <a href="{{ route('admin::index') }}" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini">Logo</span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg">Edu Admin</span>
+        <span class="logo-lg">Admin</span>
     </a>
 
     <!-- Header Navbar: style can be found in header.less -->
@@ -19,11 +19,19 @@
             <ul class="nav navbar-nav">
                 <!--Languages-->
                 <li class="dropdown dropdown-language">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Icon Lang</a>
+                    @if ($currentLang)
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{!! $currentLang->icon() !!} {{ $currentLang->name }}</a>
+                    @endif
+                    
+                    @if ($langs->count() > 0)
                     <ul class="dropdown-menu">
-                        <li><a href="#">Lang 1</a></li>
-                        <li><a href="#">Lang 2</a></li>
+                        @foreach ($langs as $lang)
+                        <li>
+                            <a href="{{ $lang->switchUrl() }}">{!! $lang->icon() !!} {{ $lang->name }}</a>
+                        </li>
+                        @endforeach
                     </ul>
+                    @endif
                 </li>
                 
                 <!-- Notifications: style can be found in dropdown.less -->

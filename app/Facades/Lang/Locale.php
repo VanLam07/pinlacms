@@ -12,8 +12,8 @@ class Locale{
         $this->lang = $lang;
     }
     
-    public function all($args=[]){
-        return $this->lang->getData($args);
+    public function all(){
+        return $this->lang->allLangs();
     }
     
     public function allCodes() {

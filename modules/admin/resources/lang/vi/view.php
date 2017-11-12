@@ -97,7 +97,7 @@ return [
     'count' =>                      'Tổng bài',
     'created_at' =>                 'Ngày tạo',
     'updated_at' =>                 'Ngày cập nhật',
-    'dashboard' =>                  'Chào mừng đến với trang quản trị Pinla blog',
+    'dashboard' =>                  'Dashboard',
     'day' =>                        'Ngày',
     'month' =>                      'Tháng',
     'year' =>                       'Năm',

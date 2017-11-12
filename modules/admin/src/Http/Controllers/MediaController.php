@@ -9,6 +9,7 @@ use App\Models\Tax;
 use App\Models\Media;
 use Admin\Facades\AdConst;
 use PlMenu;
+use Breadcrumb;
 
 class MediaController extends BaseController
 {
@@ -20,7 +21,9 @@ class MediaController extends BaseController
     protected $cap_remove = 'remove_post';
 
     public function __construct(Media $media, Tax $album, User $user) {
+        parent::__construct();
         PlMenu::setActive('medias');
+        Breadcrumb::add(trans('admin::view.medias'), route('admin::media.index'));
         $this->model = $media;
         $this->album = $album;
         $this->user = $user;
@@ -36,6 +39,7 @@ class MediaController extends BaseController
     public function create() {
         canAccess($this->cap_create);
 
+        Breadcrumb::add(trans('admin::view.create'));
         $albums = $this->album->getData('album', [
             'orderby' => 'name',
             'order' => 'asc',
@@ -64,6 +68,7 @@ class MediaController extends BaseController
     public function edit($id, Request $request) {
         canAccess('edit_post', $this->model->getAuthorId($id));
 
+        Breadcrumb::add(trans('admin::view.edit'));
         $lang = $request->get('lang');
         if (!$lang) {
             $lang = currentLocale();

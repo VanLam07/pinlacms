@@ -8,6 +8,7 @@ use App\Models\File as FileModel;
 use Illuminate\Validation\ValidationException;
 use App\User;
 use PlMenu;
+use Breadcrumb;
 
 class FileController extends BaseController {
 
@@ -19,8 +20,9 @@ class FileController extends BaseController {
     protected $cap_remove = 'remove_file';
 
     public function __construct(FileModel $file, User $user) {
+        parent::__construct();
         PlMenu::setActive('files');
-
+        Breadcrumb::add(trans('admin::view.files'), route('admin::file.index'));
         $this->model = $file;
         $this->user = $user;
     }
@@ -65,6 +67,7 @@ class FileController extends BaseController {
     public function create() {
         canAccess($this->cap_create);
         
+        Breadcrumb::add(trans('admin::view.create'));
         return view('admin::file.create');
     }
 
@@ -108,6 +111,7 @@ class FileController extends BaseController {
     public function edit($id) {
         canAccess($this->cap_edit, $this->model->getAuthorId($id));
         
+        Breadcrumb::add(trans('admin::view.edit'));
         $item = $this->model->findOrFail($id);
         $users = null;
         if(cando('manage_files')){

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-//use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
+use Admin\Facades\AdConst;
 
 class Lang extends BaseModel {
 
@@ -14,19 +16,21 @@ class Lang extends BaseModel {
     public $incrementing  = false;
     
     const KC_CODES = 'all_key_codes';
+    const KC_LANGS = 'all_key_langs';
+    const KC_CURRENT = 'current_key_langs';
     
     public function getAllCodes() {
         
-//        if (($allCodes = Cache::get(self::KC_CODES)) !== null) {
-//            return $allCodes;
-//        }
+        if (($allCodes = Cache::get(self::KC_CODES)) !== null) {
+            return $allCodes;
+        }
         
         $allCodes = DB::table($this->table)
                 ->select('code')
                 ->pluck('code')
                 ->toArray();
         
-//        Cache::put(self::KC_CODES, $allCodes);
+        Cache::put(self::KC_CODES, $allCodes, self::CACHE_TIME);
         
         return $allCodes;
     }
@@ -39,6 +43,20 @@ class Lang extends BaseModel {
         ];
         $data = array_merge($data, $args);
         return parent::getData($data);
+    }
+    
+    public function allLangs()
+    {
+        if (($allLangs = Cache::get(self::KC_LANGS)) !== null) {
+            return $allLangs;
+        }
+        $allLangs = $this->getData([
+            'fields' => ['code', 'icon', 'name'],
+            'per_page' => -1,
+            'to_array' => true
+        ]);
+        Cache::put(self::KC_LANGS, $allLangs, self::CACHE_TIME);
+        return $allLangs;
     }
 
     public function switchUrl() {
@@ -53,10 +71,10 @@ class Lang extends BaseModel {
         return '/'.implode('/', $segments);
     }
 
-    public function icon() {
+    public function icon($width = 16) {
         if ($this->icon) {
             $src = '/images/flags/' . $this->icon;
-            return '<img width="30" src="' . $src . '">';
+            return '<img width="'. $width .'" src="' . $src . '" alt="'. $this->code .'">';
         }
         return null;
     }
@@ -101,7 +119,7 @@ class Lang extends BaseModel {
         return self::where('code', $code)->first($fields);
     }
     
-    public function getCurrent($fields=['*']){
+    public function getCurrent($fields = ['*']){
         $current_locale = app()->getLocale();
         return self::where('code', $current_locale)->first($fields);
     }

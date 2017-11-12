@@ -9,6 +9,7 @@ use App\Models\Tax;
 use App\User;
 use Admin\Facades\AdConst;
 use PlMenu;
+use Breadcrumb;
 
 class PostController extends BaseController {
 
@@ -21,6 +22,8 @@ class PostController extends BaseController {
     protected $cap_remove = 'remove_post';
 
     public function __construct(PostType $post, Tax $tax, User $user) {
+        parent::__construct();
+        Breadcrumb::add(trans('admin::view.posts'), route('admin::post.index'));
         $this->model = $post;
         $this->tax = $tax;
         $this->user = $user;
@@ -37,6 +40,7 @@ class PostController extends BaseController {
     public function create() {
         canAccess($this->cap_create);
         
+        Breadcrumb::add(trans('admin::view.create'), route('admin::post.create'));
         PlMenu::setActive(['posts', 'post_create']);
         $cats = $this->tax->getData('cat', [
             'orderby' => 'name',
@@ -72,6 +76,7 @@ class PostController extends BaseController {
     public function edit($id, Request $request) {
         canAccess($this->cap_edit, $this->model->getAuthorId($id));
 
+        Breadcrumb::add(trans('admin::view.edit'));
         PlMenu::setActive(['posts', 'post_edit']);
         $lang = $request->get('lang');
         if (!$lang) {

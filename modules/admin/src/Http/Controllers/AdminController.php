@@ -4,6 +4,7 @@ namespace Admin\Http\Controllers;
 
 use Admin\Http\Controllers\BaseController;
 use PlMenu;
+use Breadcrumb;
 
 class AdminController extends BaseController {
     

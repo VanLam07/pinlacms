@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
 use App\Models\Tax;
 use PlMenu;
+use Breadcrumb;
 
 class CatController extends BaseController {
 
@@ -15,7 +16,8 @@ class CatController extends BaseController {
 
     public function __construct(Tax $cat) {
         PlMenu::setActive('cats');
-        
+        parent::__construct();
+        Breadcrumb::add(trans('admin::view.categories'), route('admin::cat.index'));
         $this->model = $cat;
         $this->locale = currentLocale();
     }
@@ -30,6 +32,8 @@ class CatController extends BaseController {
     }
 
     public function create() {
+        Breadcrumb::add(trans('admin::view.create'), route('admin::cat.create'));
+        
         $parents = $this->model->getData('cat', [
             'fields' => ['taxs.id', 'taxs.parent_id', 'td.name'],
             'per_page' => -1,
@@ -39,6 +43,8 @@ class CatController extends BaseController {
     }
 
     public function edit($id, Request $request) {
+        Breadcrumb::add(trans('admin::view.edit'));
+        
         $lang = $request->get('lang');
         if (!$lang) {
             $lang = currentLocale();

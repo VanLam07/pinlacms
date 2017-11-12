@@ -9,6 +9,7 @@ use App\Models\File;
 use Illuminate\Validation\ValidationException;
 use Exception;
 use PlMenu;
+use Breadcrumb;
 
 class OptionController extends BaseController
 {
@@ -17,8 +18,9 @@ class OptionController extends BaseController
     protected $cap_accept = 'manage_options';
 
     public function __construct(Option $option, File $file) {
+        parent::__construct();
         PlMenu::setActive('options');
-        
+        Breadcrumb::add(trans('admin::view.options'), route('admin::option.index'));
         $this->model = $option;
         $this->file = $file;
     }
@@ -33,6 +35,7 @@ class OptionController extends BaseController
     public function create() {
         canAccess($this->cap_accept);
         
+        Breadcrumb::add(trans('admin::view.create'));
         return view('admin::option.create');
     }
     
@@ -40,6 +43,7 @@ class OptionController extends BaseController
     public function edit($id) {
         canAccess($this->cap_accept);
         
+        Breadcrumb::add(trans('admin::view.edit'));
         $item = $this->model->findOrFail($id);
         return view('admin::option.edit', compact('item'));
     }

@@ -10,6 +10,7 @@ use File;
 use DB;
 use Exception;
 use PlMenu;
+use Breadcrumb;
 
 class PageController extends BaseController
 {
@@ -17,6 +18,7 @@ class PageController extends BaseController
     protected $templates = [];
 
     public function __construct(PostType $page) {
+        parent::__construct();
         $this->model = $page;
         $this->templates = ['' => trans('admin::view.selection')];
         
@@ -27,6 +29,7 @@ class PageController extends BaseController
             $this->templates[$name] = $name;
         }
         PlMenu::setActive('pages');
+        Breadcrumb::add(trans('admin::view.pages'), route('admin::page.index'));
     }
 
     public function index(Request $request) {
@@ -39,6 +42,7 @@ class PageController extends BaseController
     public function create() {
         canAccess('publish_post');
 
+        Breadcrumb::add(trans('admin::view.create'));
         return view('admin::page.create', ['templates' => $this->templates]);
     }
 
@@ -62,6 +66,7 @@ class PageController extends BaseController
     public function edit($id, Request $request) {
         canAccess('edit_post', $this->model->getAuthorId($id));
 
+        Breadcrumb::add(trans('admin::view.edit'));
         $lang = $request->get('lang');
         if(!$lang){
             $lang = currentLocale();

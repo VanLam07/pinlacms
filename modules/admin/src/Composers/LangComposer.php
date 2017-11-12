@@ -2,19 +2,15 @@
 
 namespace Admin\Composers;
 
-use App\Models\Lang;
+use PlLocale;
 
 class LangComposer{
     
-    protected $lang;
-
-    public function __construct(Lang $lang) {
-        $this->lang = $lang;
-    }
-
     public function compose($view){
-        $langs = $this->lang->getData(['fields' => ['code', 'name']]);
-        $view->with('langs', $langs);
+        $langs = PlLocale::all();
+        $currentLang = PlLocale::getCurrent();
+        $view->with('langs', $langs)
+                ->with('currentLang', $currentLang);
     }
     
 }

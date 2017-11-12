@@ -9,6 +9,7 @@ use App\Models\Tax;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use PlMenu;
+use Breadcrumb;
 
 class MenuCatController extends BaseController {
 
@@ -17,8 +18,9 @@ class MenuCatController extends BaseController {
     protected $cap_accept = 'manage_menus';
 
     public function __construct(Tax $tax, Menu $menu) {
+        parent::__construct();
         PlMenu::setActive('group-menus');
-        
+        Breadcrumb::add(trans('admin::view.menucats'), route('admin::menucat.index'));
         $this->model = $tax;
         $this->menu = $menu;
     }
@@ -34,6 +36,7 @@ class MenuCatController extends BaseController {
     public function create() {
         canAccess($this->cap_accept);
         
+        Breadcrumb::add(trans('admin::view.create'));
         return view('admin::menucat.create');
     }
 
@@ -72,6 +75,7 @@ class MenuCatController extends BaseController {
     public function edit($id, Request $request) {
         canAccess($this->cap_accept);
         
+        Breadcrumb::add(trans('admin::view.edit'));
         $lang = $request->get('lang');
         if (!$lang) {
             $lang = currentLocale();

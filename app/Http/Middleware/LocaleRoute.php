@@ -17,15 +17,12 @@ class LocaleRoute {
     
     public function handle($request, Closure $next) {
         $locale = $request->segment(1);
-        
-        if (!array_key_exists($locale, ['vi' => 'VI', 'en' => 'EN'])) {
+        if (!in_array($locale, langCodes())) {
             $segments = $request->segments();
-            array_unshift($segments, $this->app->getLocale());
             $segments[0] = $this->app->getLocale();
-            
+            $this->app->setLocale($locale);
             return $this->redirector->to(implode('/', $segments));
         }
-        
         $this->app->setLocale($locale);
         return $next($request);
     }

@@ -8,6 +8,7 @@ use Admin\Http\Controllers\BaseController;
 use App\Models\Cap;
 use Exception;
 use PlMenu;
+use Breadcrumb;
 
 class CapController extends BaseController
 {
@@ -15,8 +16,9 @@ class CapController extends BaseController
     protected $cap_accept = 'manage_cap';
 
     public function __construct(Cap $cap) {
+        parent::__construct();
+        Breadcrumb::add(trans('admin::view.caps'), route('admin::cap.index'));
         PlMenu::setActive('caps');
-        
         $this->model = $cap;
     }
     
@@ -30,6 +32,7 @@ class CapController extends BaseController
     public function create(){
         canAccess($this->cap_accept);
         
+        Breadcrumb::add(trans('admin::view.create'), route('admin::cap.create'));
         return view('admin::cap.create');
     }
     
@@ -47,6 +50,7 @@ class CapController extends BaseController
     public function edit($id){
         canAccess($this->cap_accept);
         
+        Breadcrumb::add(trans('admin::view.edit'));
         $item = $this->model->findOrFail($id);
         return view('admin::cap.edit', compact('item'));
     }

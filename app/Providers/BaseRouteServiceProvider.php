@@ -8,13 +8,13 @@ class BaseRouteServiceProvider extends ServiceProvider
 {
     protected $locale;
     
-    public function __construct($app) {
-        parent::__construct($app);
+    public function prefixLocal()
+    {
         $locale = request()->segment(1);
         if (!$locale || in_array($locale, langCodes())) {
             $locale = $this->app->getLocale();
         }
-        $this->locale = $locale;
+        return $locale;
     }
     
 }

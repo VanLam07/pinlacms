@@ -8,6 +8,7 @@ use App\User;
 use App\Models\Role;
 use Validator;
 use PlMenu;
+use Breadcrumb;
 
 class UserController extends BaseController
 {
@@ -19,9 +20,10 @@ class UserController extends BaseController
     protected $cap_remove = 'remove_user';
 
     public function __construct(User $user, Role $role) {
+        parent::__construct();
         $this->model = $user;
         $this->role = $role;
-        
+        Breadcrumb::add(trans('admin::view.users'), route('admin::user.index'));
         PlMenu::setActive('users');
     }
     
@@ -35,6 +37,7 @@ class UserController extends BaseController
     public function create(){
         canAccess($this->cap_create);
         
+        Breadcrumb::add(trans('admin::view.create'));
         $roles = $this->role->getData(['orderby' => 'id', 'order' => 'asc', 'per_page' => -1])->pluck('label', 'id'); 
         return view('admin::user.create', compact('roles'));
     }
@@ -64,6 +67,7 @@ class UserController extends BaseController
     public function edit($id){
         canAccess($this->cap_edit, $id);
         
+        Breadcrumb::add(trans('admin::view.edit'));
         $item = $this->model->findOrFail($id);
         $roles = $this->role->getData(['orderby' => 'id', 'order' => 'asc', 'per_page' => -1])->pluck('label', 'id');
         return view('admin::user.edit', ['item' => $item, 'roles' => $roles]);

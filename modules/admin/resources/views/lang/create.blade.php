@@ -2,8 +2,11 @@
 
 @section('title', trans('admin::view.man_langs'))
 
-
 @section('content')
+
+<?php
+use Admin\Facades\AdConst;
+?>
 
 <div class="row">
     <div class="col-sm-6">
@@ -63,7 +66,7 @@
             {!! errorField('ratio_currency') !!}
         </div>
         
-        <a href="{{route('admin::lang.index')}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
+        <a href="{{route('admin::lang.index', ['status' => AdConst::STT_PUBLISH])}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('admin::view.create')}}</button>
         
         {!! Form::close() !!}

@@ -5,8 +5,10 @@
 @section('page_title', trans('admin::view.man_langs'))
 
 <?php 
-$multiActions = ['delete'];
-$statuses = [];
+use Admin\Facades\AdConst;
+
+$multiActions = ['delete', 'draft'];
+$statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT];
 $actionCaps = [];
 ?>
 
@@ -53,7 +55,7 @@ $actionCaps = [];
                 @foreach($items as $item)
                 <tr>
                     <td><input type="checkbox" name="checked[]" class="check_item" value="{{ $item->code }}" /></td>
-                    <td>{!! $item->icon() !!}</td>
+                    <td>{!! $item->icon(32) !!}</td>
                     <td>{{ $item->name }}</td>
                     <td>{{ $item->code }}</td>
                     <td>{{ $item->order }}</td>

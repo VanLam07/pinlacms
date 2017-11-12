@@ -39,8 +39,7 @@ class Breadcrumb {
     public function render($class = 'nav-breadcrumb') {
         $render = '';
         if ($this->paths) {
-            $render = '<div class="' . $class . '">';
-            $render .= '<ol class="breadcrumb">';
+            $render = '<ol class="breadcrumb '. $class .'">';
             foreach ($this->paths as $path) {
                 $render .= '<li>';
                 if (isset($path['url']) && ($url = $path['url'])) {
@@ -50,8 +49,7 @@ class Breadcrumb {
                 }
                 $render .= '</li>';
             }
-            $render .= '</ul>';
-            $render .= '</div>';
+            $render .= '</ol>';
         }
         return $render;
     }

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Exception;
 use PlMenu;
+use Breadcrumb;
 
 class TagController extends BaseController
 {
@@ -16,8 +17,9 @@ class TagController extends BaseController
     protected $cap_accept = 'manage_tags';
 
     public function __construct(Tax $tag) {
+        parent::__construct();
         PlMenu::setActive('tags');
-
+        Breadcrumb::add(trans('admin::view.tags'), route('admin::tag.index'));
         $this->model = $tag;
     }
 
@@ -32,6 +34,7 @@ class TagController extends BaseController
     public function create() {
         canAccess($this->cap_accept);
         
+        Breadcrumb::add(trans('admin::view.create'));
         return view('admin::tag.create');
     }
     
@@ -55,6 +58,7 @@ class TagController extends BaseController
     public function edit($id, Request $request) {
         canAccess($this->cap_accept);
         
+        Breadcrumb::add(trans('admin::view.edit'));
         $lang = $request->get('lang');
         if(!$lang){
             $lang = currentLocale();

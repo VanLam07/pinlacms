@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
 use App\Models\Comment;
 use PlMenu;
+use Breadcrumb;
 
 class CommentController extends BaseController
 {
@@ -16,6 +17,8 @@ class CommentController extends BaseController
     protected $cap_remove = 'remove_comment';
 
     public function __construct(Comment $comment) {
+        parent::__construct();
+        Breadcrumb::add(trans('admin::view.comments'), route('admin::comment.index'));
         $this->model = $comment;
         PlMenu::setActive('comments');
     }
@@ -30,6 +33,7 @@ class CommentController extends BaseController
     public function create(){
         canAccess($this->cap_create);
         
+        Breadcrumb::add(trans('admin::view.create'));
         $parents = $this->model->getData([
             'fields' => ['id', 'parent_id'],
             'per_page' => -1,
@@ -47,6 +51,7 @@ class CommentController extends BaseController
     public function edit($id){
         canAccess($this->cap_edit, $this->model->getAuthorId($id));
         
+        Breadcrumb::add(trans('admin::view.edit'));
         $parents = $this->model->getData([
             'fields' => ['id', 'parent_id'],
             'per_page' => -1,

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Admin\Facades\AdConst;
 use Illuminate\Validation\ValidationException;
@@ -13,7 +14,8 @@ class BaseModel extends Model {
     protected $capCreate = 'publish_post';
     protected $capEdit = 'edit_post';
     protected $capRemove = 'remove_post';
-
+    
+    const CACHE_TIME = 3600; //minutes
 
     public function isUseSoftDelete() {
         return false;
@@ -129,9 +131,9 @@ class BaseModel extends Model {
             $ids = [$ids];
         }
         if ($status == AdConst::STT_TRASH) {
-            self::whereIn('id', $ids)->delete();
+            self::whereIn($this->getKeyName(), $ids)->delete();
         }
-        return self::whereIn('id', $ids)->update(['status' => $status]);
+        return self::whereIn($this->getKeyName(), $ids)->update(['status' => $status]);
     }
 
     public function destroyData($ids) {
@@ -196,6 +198,21 @@ class BaseModel extends Model {
             case defalt:
                 break;
         }
+    }
+    
+    public function save(array $options = array()) {
+        parent::save($options);
+        Cache::flush();
+    }
+    
+    public static function destroy($ids) {
+        parent::destroy($ids);
+        Cache::flush();
+    }
+    
+    public function delete() {
+        parent::delete();
+        Cache::flush();
     }
 
 }

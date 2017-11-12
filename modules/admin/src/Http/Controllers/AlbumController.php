@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use App\Models\Tax;
 use Exception;
 use PlMenu;
+use Breadcrumb;
 
 class AlbumController extends BaseController
 {
@@ -15,8 +16,9 @@ class AlbumController extends BaseController
     protected $cap_accept = 'manage_cats';
 
     public function __construct(Tax $album) {
+        parent::__construct();
         PlMenu::setActive('albums');
-
+        Breadcrumb::add(trans('admin::view.albums'), route('admin::album.index'));
         $this->model = $album;
     }
 
@@ -31,6 +33,7 @@ class AlbumController extends BaseController
     public function create() {
         canAccess($this->cap_accept);
         
+        Breadcrumb::add(trans('admin::view.create'), route('admin::album.create'));
         return view('admin::album.create');
     }
 
@@ -50,6 +53,7 @@ class AlbumController extends BaseController
     public function edit($id, Request $request) {
         canAccess($this->cap_accept);
         
+        Breadcrumb::add(trans('admin::view.edit'));
         $lang = $request->get('lang');
         if(!$lang){
             $lang = currentLocale();
