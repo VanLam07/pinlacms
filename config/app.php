@@ -181,6 +181,7 @@ return [
          * My modules
          */
         Admin\AdminServiceProvider::class,
+        Front\FrontServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
 
     ],
@@ -239,13 +240,14 @@ return [
         'Access' => App\Facades\Access\AccessFacade::class,
         'PlLocale' => App\Facades\Lang\LocaleFacade::class,
         'Option' => App\Facades\Option\OptionFacade::class,
-        'Post' => App\Facades\Post\PostFacade::class,
-        'Tax' => App\Facades\Tax\TaxFacade::class,
+        'Breadcrumb' => App\Facades\Breadcrumb\BreadcrumbFacade::class,
         /*
          * Modules
          */
         'AdView' => Admin\Facades\AdViewFacade::class,
         'PlMenu' => Admin\Facades\PlMenuFacade::class,
+        'Post' => App\Facades\PostFacade::class,
+        'Tax' => App\Facades\TaxFacade::class,
 
     ],
 

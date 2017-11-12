@@ -9,6 +9,9 @@ class Cap extends BaseModel
     public $timestamps = false;
     protected $primaryKey = 'name';
     public $incrementing = false;
+    protected $capCreate = 'manage_cats';
+    protected $capEdit = 'manage_cats';
+    protected $capRemove = 'manage_cats';
 
     public function rules(){
         return [

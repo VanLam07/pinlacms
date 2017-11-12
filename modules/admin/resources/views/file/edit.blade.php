@@ -1,3 +1,7 @@
+<?php
+use Admin\Facades\AdConst;
+?>
+
 @extends('admin::layouts.manage')
 
 @section('title', trans('admin::view.man_files'))
@@ -62,7 +66,7 @@
         </div>
         @endif
 
-        <a href="{{route('admin::file.index')}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
+        <a href="{{route('admin::file.index', ['status' => AdConst::STT_PUBLISH])}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('admin::view.update')}}</button>
 
     </div>

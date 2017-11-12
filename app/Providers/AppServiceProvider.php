@@ -33,5 +33,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('post-facade', 'App\Facades\Post\Post');
         //Tax
         $this->app->bind('tax-facade', 'App\Facades\Tax\Tax');
+        //Breadcrumb
+        $this->app->bind('pl-breadcrumb', 'App\Facades\Breadcrumb\Breadcrumb');
     }
 }

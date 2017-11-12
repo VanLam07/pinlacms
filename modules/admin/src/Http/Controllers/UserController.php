@@ -13,6 +13,10 @@ class UserController extends BaseController
 {
     protected $model;
     protected $role;
+    
+    protected $cap_create = 'publish_user';
+    protected $cap_edit = 'edit_user';
+    protected $cap_remove = 'remove_user';
 
     public function __construct(User $user, Role $role) {
         $this->model = $user;
@@ -29,13 +33,15 @@ class UserController extends BaseController
     }
     
     public function create(){
-        canAccess('publish_user');
+        canAccess($this->cap_create);
         
         $roles = $this->role->getData(['orderby' => 'id', 'order' => 'asc', 'per_page' => -1])->pluck('label', 'id'); 
         return view('admin::user.create', compact('roles'));
     }
     
     public function store(Request $request){
+        canAccess($this->cap_create);
+        
         $valid = Validator::make($request->all(), $this->model->rules());
         
         if ($valid->fails()) {
@@ -56,13 +62,15 @@ class UserController extends BaseController
     }
     
     public function edit($id){
+        canAccess($this->cap_edit, $id);
+        
         $item = $this->model->findOrFail($id);
         $roles = $this->role->getData(['orderby' => 'id', 'order' => 'asc', 'per_page' => -1])->pluck('label', 'id');
         return view('admin::user.edit', ['item' => $item, 'roles' => $roles]);
     }
     
     public function update($id, Request $request){
-//        canAccess('edit_my_user', $id);
+        canAccess($this->cap_edit, $id);
         
         $valid = Validator::make($request->all(), $this->model->rules($id));
         if ($valid->fails()) {
@@ -99,14 +107,10 @@ class UserController extends BaseController
     }
     
     public function destroy($id){
-//        canAccess('remove_my_user', $id);
+        canAccess('remove_user', $id);
         
         $this->model->destroyData($id);
         return redirect()->back()->with('succ_mess', trans('admin::message.destroy_success'));
     }
-    
-    public function multiActions(Request $request){
-//        canAccess('manage_users');
-        return parent::multiActions($request);
-    }
+
 }

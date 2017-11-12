@@ -4,19 +4,25 @@ namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\User;
 use App\Models\Role;
 use Validator;
 use Mail;
 use DB;
 use Carbon\Carbon;
+use Auth;
 
 class AuthController extends Controller {
     
     protected $user;
     protected $role;
+    
+    protected $decayMinutes = 5;
 
-    public function __construct(User $user,Role $role) {
+    use AuthenticatesUsers;
+
+    public function __construct(User $user, Role $role) {
         $this->user = $user;
         $this->role = $role;
     }
@@ -51,7 +57,7 @@ class AuthController extends Controller {
     }
 
     public function getLogin() {
-        if (auth()->check()) {
+        if (Auth::check()) {
             return view('errors.notice', [
                 'message' => trans('admin::message.you_are_logged_in') . 
                         ' <a href="'. route('admin::auth.logout') .'">Logout</a>'
@@ -68,19 +74,32 @@ class AuthController extends Controller {
         if ($valid->fails()) {
             return redirect()->back()->withInput()->withErrors($valid->errors());
         }
-
-        $auth = auth()->attempt([
-            'email' => $request->input('email'),
-            'password' => $request->input('password')
-        ], $request->input('remember'));
         
-        if (!$auth) {
-            return redirect()->back()->withInput()->with('error_mess', trans('admin::message.login_failed'));
+        //use trait
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+            
+            $seconds = $this->limiter()->availableIn(
+                $this->throttleKey($request)
+            );
+
+            return redirect()->back()->withInput()->with('error_mess', trans('auth.throttle', ['seconds' => $seconds]));
+        }
+
+        if ($this->attemptLogin($request)) {
+            Auth::user()->storeCapsToSession();
+            
+            return $this->sendLoginResponse($request);
         }
         
-        auth()->user()->storeCapsToSession();
+        $this->incrementLoginAttempts($request);
         
-        return redirect()->intended(route('admin::index'));
+        return redirect()->back()->withInput()->with('error_mess', trans('admin::message.login_failed'));
+        //end
+    }
+    
+    public function redirectPath() {
+        return route('admin::index');
     }
 
     public function logout() {

@@ -7,6 +7,7 @@ use Admin\Facades\AdConst;
 
 $multiActions = ['delete', 'draft'];
 $statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT];
+$actionCaps = [];
 ?>
 
 @section('nav_status')
@@ -56,7 +57,7 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT];
                 @endforeach
             @else
             <tr>
-                <td></td>
+                <td colspan="6"><h4 class="text-center">{{ trans('admin::message.not_found_items') }}</h4></td>
             </tr>
             @endif
         </tbody>

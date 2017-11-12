@@ -268,4 +268,8 @@ class User extends Authenticatable
                 break;
         }
     }
+    
+    public function authorId() {
+        return $this->id;
+    }
 }

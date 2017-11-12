@@ -22,24 +22,22 @@ if (!isset($actionCaps)) {
         'remove' => 'remove_post'
     ];
 }
-$capCreate = $actionCaps['create'];
-$capEdit = $actionCaps['edit'];
-$capRemove = $actionCaps['remove'];
+$capCreate = isset($actionCaps['create']) ? $actionCaps['create'] : 'none';
+$capEdit = isset($actionCaps['edit']) ? $actionCaps['edit'] : 'none';
+$capRemove = isset($actionCaps['remove']) ? $actionCaps['remove'] : 'none';
 ?>
 <div class="actions-nav">
     
     @if (count($statuses) > 0)
     <div class="status-nav">
         <ul class="list-inline items-link">
-            @if (canDo($capCreate))
-                @if (in_array(AdConst::STT_PUBLISH, $statuses))
+            @if (in_array(AdConst::STT_PUBLISH, $statuses))
                 <li class="{{ linkClassActive($route, AdConst::STT_PUBLISH) }}">
                     <a href="{{ route($route, ['status' => AdConst::STT_PUBLISH]) }}">{{ trans('admin::view.publish') }}</a>
                 </li>
-                @endif
             @endif
             
-            @if (canDo($capEdit))
+            @if (!$actionCaps || canDo($capEdit))
                 @if (in_array(AdConst::STT_DRAFT, $statuses))
                 <li class="{{ linkClassActive($route, AdConst::STT_DRAFT) }}">
                     <a href="{{ route($route, ['status' => AdConst::STT_DRAFT]) }}">{{ trans('admin::view.label_draft') }}</a>
@@ -47,7 +45,7 @@ $capRemove = $actionCaps['remove'];
                 @endif
             @endif
             
-            @if (canDo($capRemove))
+            @if (!$actionCaps || canDo($capRemove))
                 @if (in_array(AdConst::STT_TRASH, $statuses))
                 <li class="{{ linkClassActive($route, AdConst::STT_TRASH) }}">
                     <a href="{{ route($route, ['status' => AdConst::STT_TRASH]) }}">{{ trans('admin::view.label_trash') }}</a>
@@ -60,16 +58,17 @@ $capRemove = $actionCaps['remove'];
 
     <div class="row">
     
-        <div class="btn-actions col-sm-6 col-md-4">
+        <div class="btn-actions col-sm-6">
 
-            @if (canDo($capCreate) && $hasAddNew)
+            @if ((!$actionCaps || canDo($capCreate)) && $hasAddNew)
                 <a href="{{ route($routePrefix.'.create', request()->all()) }}" class="create-btn btn btn-sm btn-success m-b-1" 
                    data-toggle="tooltip" title="{{ trans('admin::view.create') }}">
                     <i class="fa fa-plus"></i> <span class="">{{ trans('admin::view.create') }}</span>
                 </a>
             @endif
             
-            @if (canDo($capEdit) && in_array('draft', $multiActions) && $status == AdConst::STT_PUBLISH)
+            @if ((!$actionCaps || canDo($capEdit)) 
+                    && in_array('draft', $multiActions) && $status == AdConst::STT_PUBLISH)
                 <form method="post" action="{{ $routeActions }}" class="inline form-confirm">
                     {!! csrf_field() !!}
                     <input type="hidden" name="action" value="draft">
@@ -81,7 +80,8 @@ $capRemove = $actionCaps['remove'];
                 </form>
             @endif
             
-            @if (canDo($capEdit) && in_array('draft', $multiActions) && $status == AdConst::STT_DRAFT)
+            @if ((!$actionCaps || canDo($capEdit)) 
+                    && in_array('draft', $multiActions) && $status == AdConst::STT_DRAFT)
                 <form method="post" action="{{ $routeActions }}" class="inline form-confirm">
                     {!! csrf_field() !!}
                     <input type="hidden" name="action" value="publish">
@@ -93,7 +93,8 @@ $capRemove = $actionCaps['remove'];
                 </form>
             @endif
             
-            @if (canDo($capRemove) && in_array('trash', $multiActions) && $status != AdConst::STT_TRASH)
+            @if ((!$actionCaps || canDo($capRemove)) 
+                    && in_array('trash', $multiActions) && $status != AdConst::STT_TRASH)
                 <form method="post" action="{{ $routeActions }}" class="inline form-confirm">
                     {!! csrf_field() !!}
                     <input type="hidden" name="action" value="trash">
@@ -106,7 +107,9 @@ $capRemove = $actionCaps['remove'];
                 </form>
             @endif
 
-            @if (canDo($capRemove) && in_array('delete', $multiActions) && (!in_array('trash', $multiActions) || $status == AdConst::STT_TRASH))
+            @if ((!$actionCaps || canDo($capRemove)) 
+                    && in_array('delete', $multiActions) 
+                    && (!in_array('trash', $multiActions) || $status == AdConst::STT_TRASH))
                 <form method="post" action="{{ $routeActions }}" class="inline form-confirm">
                     {!! csrf_field() !!}
                     <input type="hidden" name="action" value="delete">
@@ -119,7 +122,8 @@ $capRemove = $actionCaps['remove'];
                 </form>
             @endif
 
-            @if (canDo($capRemove) && in_array('trash', $multiActions) && $status == AdConst::STT_TRASH)
+            @if ((!$actionCaps || canDo($capRemove)) 
+                    && in_array('trash', $multiActions) && $status == AdConst::STT_TRASH)
                 <form method="post" action="{{ $routeActions }}" class="inline form-confirm">
                     {!! csrf_field() !!}
                     <input type="hidden" name="action" value="restore">
@@ -134,7 +138,7 @@ $capRemove = $actionCaps['remove'];
 
         </div>
         
-        <div class="col-sm-6 col-md-8 text-right btn-filters">
+        <div class="col-sm-6 text-right btn-filters">
             <form method="get" action="{{ request()->url() }}" class="inline">
                 @if ($status)
                 <input type="hidden" name="status" value="{{ $status }}">

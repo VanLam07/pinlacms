@@ -7,12 +7,17 @@ use Admin\Http\Controllers\BaseController;
 use App\User;
 use App\Models\Tax;
 use App\Models\Media;
+use Admin\Facades\AdConst;
 use PlMenu;
 
 class MediaController extends BaseController
 {
     protected $model;
     protected $user;
+    
+    protected $cap_create = 'publish_post';
+    protected $cap_edit = 'edit_post';
+    protected $cap_remove = 'remove_post';
 
     public function __construct(Media $media, Tax $album, User $user) {
         PlMenu::setActive('medias');
@@ -29,7 +34,7 @@ class MediaController extends BaseController
     }
 
     public function create() {
-        canAccess('publish_post');
+        canAccess($this->cap_create);
 
         $albums = $this->album->getData('album', [
             'orderby' => 'name',
@@ -37,20 +42,21 @@ class MediaController extends BaseController
             'per_page' => -1,
             'fields' => ['taxs.id', 'taxs.parent_id', 'td.name']]
         );
+        
         $users = null;
-//        if (cando('manage_posts')) {
+        if (canDo('edit_post', null, AdConst::CAP_OTHER)) {
             $users = $this->user->getData([
                 'orderby' => 'name',
                 'order' => 'asc',
                 'per_page' => -1,
                 'fields' => ['id', 'name']]
             );
-//        }
+        }
         return view('admin::media.create', compact('albums', 'users'));
     }
 
     public function store(Request $request) {
-        canAccess('publish_post');
+        canAccess($this->cap_create);
         
         return parent::store($request);
     }
@@ -83,13 +89,8 @@ class MediaController extends BaseController
     }
 
     public function update($id, Request $request) {
-        canAccess('edit_post', $this->model->getAuthorId($id));
+        canAccess($this->cap_edit, $this->model->getAuthorId($id));
         
         return parent::update($id, $request);
-    }
-
-    public function multiActions(Request $request) {
-        
-        return parent::multiActions($request);
     }
 }

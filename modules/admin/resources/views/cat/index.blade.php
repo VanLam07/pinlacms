@@ -7,6 +7,7 @@ use Admin\Facades\AdConst;
 
 $multiActions = ['delete', 'draft'];
 $statuses = [AdConst::STT_PUBLISH, AdConst::STT_DRAFT];
+$actionCaps = [];
 ?>
 
 @section('nav_status')

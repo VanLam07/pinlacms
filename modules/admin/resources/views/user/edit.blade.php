@@ -1,3 +1,7 @@
+<?php
+use Admin\Facades\AdConst;
+?>
+
 @extends('admin::layouts.manage')
 
 @section('title', trans('admin::view.man_users'))
@@ -31,7 +35,13 @@
         
         <div class="form-group">
             <label>{{ trans('admin::view.role') }}</label>
-            {!! Form::select('role_ids[]', $roles, $item->roles->pluck('id')->toArray(), ['class' => 'form-control', 'multiple']) !!}
+            @if (canDo('edit_user', null, AdConst::CAP_OTHER))
+                {!! Form::select('role_ids[]', $roles, $item->roles->pluck('id')->toArray(), ['class' => 'form-control', 'multiple']) !!}
+            @else
+            <div>
+                {{ implode(', ', $item->roles->pluck('name')->toArray()) }}
+            </div>
+            @endif
         </div>
         
         <div class="form-group">

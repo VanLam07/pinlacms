@@ -142,12 +142,13 @@ class MenuComposer {
                 'cap' => 'manage_langs', 
                 'icon' => 'fa-language'
             ],
-//            [
-//                'name' => trans('admin::view.options'), 
-//                'url' => route('admin::option.index'), 
-//                'cap' => 'manage_options', 
-//                'icon' => 'fa-gear'
-//            ]
+            [
+                'name' => trans('admin::view.options'), 
+                'url' => route('admin::option.index'),
+                'active' => 'options',
+                'cap' => 'manage_options', 
+                'icon' => 'fa-gear'
+            ]
         ];
 
         $view->with('menuList', $menus)

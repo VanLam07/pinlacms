@@ -5,8 +5,14 @@
 <?php 
 use Admin\Facades\AdConst;
 
+$status = request()->get('status');
 $multiActions = ['trash', 'delete'];
 $statuses = [AdConst::STT_PUBLISH, AdConst::STT_TRASH];
+$actionCaps = [
+    'create' => 'publish_post',
+    'edit' => 'edit_post',
+    'remove' => 'remove_post'
+];
 ?>
 
 @section('nav_status')
@@ -52,7 +58,11 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_TRASH];
             @if (!$items->isEmpty())
                 @foreach($items as $item)
                 <tr>
-                    <td><input type="checkbox" name="check_items[]" class="check_item" value="{{ $item->id }}" /></td>
+                    <td>
+                        @if (hasActionItem($actionCaps, $item, $status))
+                            <input type="checkbox" name="check_items[]" class="check_item" value="{{ $item->id }}" />
+                        @endif
+                    </td>
                     <td>{{$item->id}}</td>
                     <td><img width="50" src="{{$item->getThumbnailSrc()}}" alt="No thumbnail"></td>
                     <td>{{$item->media_type}}</td>
@@ -62,8 +72,11 @@ $statuses = [AdConst::STT_PUBLISH, AdConst::STT_TRASH];
                     <td>{{$item->views}}</td>
                     <td>{{$item->created_at}}</td>
                     <td>
-                        <a href="{{ route('admin::media.edit', ['id' => $item->id]) }}" 
-                           class="btn btn-sm btn-info" title="{{trans('admin::view.edit')}}"><i class="fa fa-edit"></i></a>
+                        @if (canDo('edit_post', $item->author_id)
+                                && $status && $status != AdConst::STT_TRASH)
+                            <a href="{{ route('admin::media.edit', ['id' => $item->id]) }}" 
+                               class="btn btn-sm btn-info" title="{{trans('admin::view.edit')}}"><i class="fa fa-edit"></i></a>
+                        @endif
                     </td>
                 </tr>
                 @endforeach

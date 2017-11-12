@@ -20,7 +20,7 @@ class Access {
         $levelParam = isset($args[1]) ? $args[1] : null;
         $userCaps = $user->caps();
         if (!array_key_exists($cap, $userCaps) 
-                || $userCaps[$cap] == AdConst::CAP_NONE) {
+                || $userCaps[$cap] === AdConst::CAP_NONE) {
             return false;
         }
         $level = $userCaps[$cap];
@@ -36,7 +36,7 @@ class Access {
             }
         }
         if ($levelParam) {
-            return ($levelParam >= $level);
+            return ($levelParam <= $level);
         }
         return true;
     }
