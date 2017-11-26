@@ -1,5 +1,7 @@
 <?php
 
+Route::get('/', 'PageController@index')->name('home');
+
 Route::group(['prefix' => 'account'], function () {
     Route::get('login-social/{driver}', 'AuthController@loginSocial')
             ->name('login_social');

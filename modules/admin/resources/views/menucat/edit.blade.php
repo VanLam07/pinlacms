@@ -79,7 +79,7 @@ use Admin\Facades\AdConst;
                 <div class="panel-heading" role="tab" id="headingThree">
                     <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#post_type" aria-expanded="false" aria-controls="collapseThree">
-                            Khóa học
+                            {{ trans('admin::view.posts') }}
                         </a>
                     </h4>
                 </div>

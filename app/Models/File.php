@@ -29,13 +29,11 @@ class File extends BaseModel
             $size = 'full';
         }
         $upload_dir = trim(config('image.upload_dir'), '/');
-        
-        $src_file = $upload_dir . '/' .$size. '/' .$this->url;
-        $file = Storage::disk()->exists($src_file); 
-        if(!$file){
+        $src_file = $upload_dir .'/'. $size. '/' .$this->url;
+        if (!Storage::disk()->exists($src_file)){
             return null;
         }
-        return '/' . $src_file;
+        return Storage::disk()->url($src_file);
     }
     
     public function getImage($size='full', $class=null, $attrs = []){
@@ -167,13 +165,13 @@ class File extends BaseModel
                         $rsImage->crop($w, $h, $sw, $sh);
                     }
 
-                    Storage::disk()->put($rspath, $rsImage->stream()->__toString());
+                    Storage::disk()->put($rspath, $rsImage->stream()->__toString(), 'public');
                 }
             }
         }
 
         $fullpath = $upload_dir . 'full/'. $cut_name.'.'.$extension;
-        Storage::disk()->put($fullpath, file_get_contents($file));
+        Storage::disk()->put($fullpath, file_get_contents($file), 'public');
 
         $item = new File();
         $item->title = $name;
@@ -187,12 +185,12 @@ class File extends BaseModel
     }
     
     public function checkRename($originalName) {
-        $upload_dir = config('image.upload_dir', 'uploads/'); 
+        $upload_dir = trim(config('image.upload_dir', 'uploads'), '/'); 
         $cut_name = $this->cutName($originalName);
         $base_name = $cut_name['name'];
         $re_name = $base_name;
         $i = 1;
-        while (Storage::disk()->exists($upload_dir.'full/'.$re_name.'.'.$cut_name['ext'])) {
+        while (Storage::disk()->exists($upload_dir . '/full/'.$re_name.'.'.$cut_name['ext'])) {
             $re_name = $base_name.'-'.$i;
             $i++;
         }

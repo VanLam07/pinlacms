@@ -8,6 +8,7 @@ use Admin\Facades\AdConst;
 use Illuminate\Validation\ValidationException;
 use Exception;
 use Validator;
+use PlOption;
 
 class BaseModel extends Model {
     
@@ -32,11 +33,12 @@ class BaseModel extends Model {
     }
     
     public function getData($data) {
+        $perPage = PlOption::get('per_page');
         $opts = [
             'fields' => ['*'],
             'orderby' => 'created_at',
             'order' => 'desc',
-            'per_page' => AdConst::PER_PAGE,
+            'per_page' => $perPage ? $perPage : AdConst::PER_PAGE,
             'status' => [],
             'exclude_key' => 'id',
             'exclude' => [],

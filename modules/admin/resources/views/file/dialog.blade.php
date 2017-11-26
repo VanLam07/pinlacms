@@ -33,6 +33,7 @@ and open the template in the editor.
                         <div class="form-group">
                             <button type="button" class="btn-choose-files btn btn-default">
                                 <i class="fa fa-upload"></i> {{trans('admin::view.choose_files')}}
+                                <i class="loading hidden fa fa-spin fa-refresh"></i>
                                 {!! Form::file('files[]', ['id' => "files-input", 'multiple']) !!}
                             </button>
                         </div>
@@ -100,15 +101,21 @@ and open the template in the editor.
                     });
                 }
                 
+                $('#files-input').click(function () {
+                    $(this).val('');
+                });
                 $('#files-input').change(function () {
-//                    loading.addClass('show'); 
+                    var loading = $('.loading');
+                    loading.removeClass('hidden'); 
                     var formData = new FormData();
                     var files = $(this)[0].files;
-                    for (var i in files) {
+                    for (var i = 0; i < files.length; i++) {
                         formData.append('files[]', files[i]);
                     }
                     var form = $(this).closest('form');
                     formData.append('_token', _token);
+                    var _this = $(this);
+                    _this.prop('disabled', true);
                     $.ajax({
                         url: form.attr('action'),
                         type: 'POST',
@@ -118,7 +125,7 @@ and open the template in the editor.
                         success: function (data) {
                             if (data.length > 0) {
                                 file_tabs.find('.tab-select-files').click();
-                                for (var i in data) {
+                                for (var i = 0; i < data.length; i++) {
                                     var file = data[i];
                                     el_files_list.prepend(
                                                 '<li>' + 
@@ -129,12 +136,14 @@ and open the template in the editor.
                                             );
                                 }
                             }
-//                            loading.removeClass('show');
                             $('#files-input').val('');
                         },
                         error: function (err) {
                             console.log(err);
-//                            loading.removeClass('show');
+                        },
+                        complete: function () {
+                            loading.addClass('hidden');
+                            _this.prop('disabled', false);
                         }
                     });
                 });

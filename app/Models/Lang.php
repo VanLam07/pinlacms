@@ -123,5 +123,10 @@ class Lang extends BaseModel {
         $current_locale = app()->getLocale();
         return self::where('code', $current_locale)->first($fields);
     }
+    
+    public function save(array $options = array()) {
+        Cache::forget(self::KC_CODES);
+        parent::save($options);
+    }
 
 }

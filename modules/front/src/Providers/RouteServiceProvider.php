@@ -51,11 +51,14 @@ class RouteServiceProvider extends BaseRouteServiceProvider
      */
     protected function mapWebRoutes()
     {
-        Route::prefix($this->locale)
-             ->middleware('web')
-             ->namespace($this->namespace)
-             ->name('front::')
-             ->group(__DIR__ . '/../../routes/web.php');
+        $allCode = langCodes();
+        foreach ($allCode as $code) {
+            Route::prefix($code)
+                 ->middleware('web')
+                 ->namespace($this->namespace)
+                 ->name('front::')
+                 ->group(__DIR__.'/../../routes/web.php');
+        }
     }
 
     /**
@@ -67,11 +70,14 @@ class RouteServiceProvider extends BaseRouteServiceProvider
      */
     protected function mapApiRoutes()
     {
-        Route::prefix($this->locale . '/api')
-             ->middleware('api')
-             ->namespace($this->namespace . '\\Api')
-             ->name('front::api.')
-             ->group(__DIR__ . '/../../routes/api.php');
+        $allCode = langCodes();
+        foreach ($allCode as $code) {
+            Route::prefix($code)
+                 ->middleware('api')
+                 ->namespace($this->namespace)
+                 ->name('front::api.')
+                 ->group(__DIR__ . '/../../routes/api.php');
+        }
     }
 }
 

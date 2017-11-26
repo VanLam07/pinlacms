@@ -223,4 +223,7 @@ return [
     'Undefined' =>                  'Không xác định',
     'Male' =>                       'Nam',
     'Female' =>                     'Nữ',
+    
+    //User
+    'members' =>                     'Thành viên',
 ];

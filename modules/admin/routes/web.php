@@ -16,6 +16,7 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['middleware' => 'auth'], function () {
     
     Route::get('/', ['as' => 'index', 'uses' => 'AdminController@index']);
+    Route::get('/search', ['as' => 'search', 'uses' => 'AdminController@search']);
     //Auth
     Route::get('/auth/logout', ['as' => 'auth.logout', 'uses' => 'AuthController@logout']);
     Route::get('/account/profile/{account?}', ['as' => 'account.profile', 'uses' => 'AuthController@getProfile']);

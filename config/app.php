@@ -239,15 +239,16 @@ return [
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Access' => App\Facades\Access\AccessFacade::class,
         'PlLocale' => App\Facades\Lang\LocaleFacade::class,
-        'Option' => App\Facades\Option\OptionFacade::class,
+        'PlOption' => App\Facades\OptionFacade::class,
         'Breadcrumb' => App\Facades\Breadcrumb\BreadcrumbFacade::class,
+        'PlMenu' => App\Facades\MenuFacade::class,
+        'PlPost' => App\Facades\PostFacade::class,
+        'PlTax' => App\Facades\TaxFacade::class,
+        'PlComment' => App\Facades\CommentFacade::class,
         /*
          * Modules
          */
         'AdView' => Admin\Facades\AdViewFacade::class,
-        'PlMenu' => Admin\Facades\PlMenuFacade::class,
-        'Post' => App\Facades\PostFacade::class,
-        'Tax' => App\Facades\TaxFacade::class,
 
     ],
 

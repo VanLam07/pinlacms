@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Facades\Tax;
-
+namespace App\Facades;
 use Illuminate\Support\Facades\Facade;
 
-class TaxFacade extends Facade{
+class PostFacade extends Facade {
+    
     public static function getFacadeAccessor() {
-        return 'tax-facade';
+        return 'post-facade';
     }
+    
 }
-

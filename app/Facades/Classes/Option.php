@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Facades\Option;
+namespace App\Facades\Classes;
 
 use App\Models\Option as OptionModel;
 
 class Option{
+    
     protected $option;
     
     public function __construct(OptionModel $option) {
@@ -28,17 +29,12 @@ class Option{
         return $option->save();
     }
     
-    public function get($key, $lang=null){
-        $item = $this->option->where('option_key', $key);
-        if ($lang) {
-            $item->where('lang_code', $lang);
-        } else {
-            $item->whereNull('lang_code');
-        }
-        if($item){
-            return $item->value;
-        }
-        return null;
+    public function get($key, $lang = null, $default = null){
+       $value =  $this->option->getOption($key, $lang);
+       if (!$value) {
+           return $default;
+       }
+       return $value;
     }
 }
 

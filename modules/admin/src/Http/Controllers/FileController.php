@@ -76,7 +76,7 @@ class FileController extends BaseController {
         
         if (!$request->hasFile('files')) {
             if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([], 422);
+                return response()->json(trans('validation.required', ['attribute' => 'file']), 422);
             }
             return redirect()->back()->withInput()->withErrors(['file' => trans('validation.required', ['attribute' => 'file'])]);
         }
@@ -93,7 +93,7 @@ class FileController extends BaseController {
             }
         } catch (ValidationException $ex) {
             if ($request->wantsJson() || $request->ajax()) {
-                return response()->json($ex, 422);
+                return response()->json($ex->getMessage(), 422);
             }
             return redirect()->back()->withInput()->withErrors($ex);
         } catch (\Exception $ex) {

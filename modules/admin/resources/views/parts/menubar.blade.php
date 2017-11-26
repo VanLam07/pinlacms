@@ -5,7 +5,7 @@
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini">Logo</span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg">Admin</span>
+        <span class="logo-lg">{{ PlOption::get('cms_title') }}</span>
     </a>
 
     <!-- Header Navbar: style can be found in header.less -->
@@ -23,7 +23,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">{!! $currentLang->icon() !!} {{ $currentLang->name }}</a>
                     @endif
                     
-                    @if ($langs->count() > 0)
+                    @if ($langs->count() > 1)
                     <ul class="dropdown-menu">
                         @foreach ($langs as $lang)
                         <li>
@@ -35,7 +35,7 @@
                 </li>
                 
                 <!-- Notifications: style can be found in dropdown.less -->
-                <li class="dropdown notifications-menu">
+<!--                <li class="dropdown notifications-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-bell-o"></i>
                         <span class="label label-warning">10</span>
@@ -43,7 +43,7 @@
                     <ul class="dropdown-menu">
                         <li class="header">You have 10 notifications</li>
                         <li>
-                            <!-- inner menu: contains the actual data -->
+                             inner menu: contains the actual data 
                             <ul class="menu">
                                 <li>
                                     <a href="#">
@@ -54,7 +54,7 @@
                         </li>
                         <li class="footer"><a href="#">View all</a></li>
                     </ul>
-                </li>
+                </li>-->
 
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown dropdown-user">
@@ -79,9 +79,9 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
         <!-- search form -->
-        <form action="#" method="get" class="sidebar-form">
+        <form action="{{ route('admin::search') }}" method="get" class="sidebar-form">
             <div class="input-group">
-                <input type="text" name="q" class="form-control" placeholder="Search...">
+                <input type="text" name="key" class="form-control" placeholder="Search...">
                 <span class="input-group-btn">
                     <button type="submit" name="search" id="search-btn" class="btn btn-flat">
                         <i class="fa fa-search"></i>

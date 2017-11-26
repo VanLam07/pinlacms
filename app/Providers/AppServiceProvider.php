@@ -29,12 +29,16 @@ class AppServiceProvider extends ServiceProvider
         //Languages
         $this->app->bind('pl-languages', 'App\Facades\Lang\Locale');
         //Options
-        $this->app->bind('options', 'App\Facades\Option\Option');
+        $this->app->bind('options', 'App\Facades\Classes\Option');
         //Post
-        $this->app->bind('post-facade', 'App\Facades\Post\Post');
+        $this->app->bind('post-facade', 'App\Facades\Classes\Post');
+        //Comment
+        $this->app->bind('comment-facade', 'App\Facades\Classes\Comment');
         //Tax
-        $this->app->bind('tax-facade', 'App\Facades\Tax\Tax');
+        $this->app->bind('tax-facade', 'App\Facades\Classes\Tax');
         //Breadcrumb
         $this->app->bind('pl-breadcrumb', 'App\Facades\Breadcrumb\Breadcrumb');
+        //Menu
+        $this->app->bind('pl-admin-menu', 'App\Facades\Classes\Menu');
     }
 }

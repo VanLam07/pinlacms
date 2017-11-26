@@ -73,6 +73,11 @@ class Tax extends BaseModel
         }
         return null;
     }
+    
+    public function menuItems()
+    {
+        return $this->hasMany('\App\Models\Menu', 'group_id');
+    }
 
     public function getData($type = 'cat', $args = []) {
         $opts = [

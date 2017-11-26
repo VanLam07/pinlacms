@@ -19,7 +19,7 @@ class LocaleRoute {
         $locale = $request->segment(1);
         if (!in_array($locale, langCodes())) {
             $segments = $request->segments();
-            $segments[0] = $this->app->getLocale();
+            array_unshift($segments, $this->app->getLocale());
             $this->app->setLocale($locale);
             return $this->redirector->to(implode('/', $segments));
         }

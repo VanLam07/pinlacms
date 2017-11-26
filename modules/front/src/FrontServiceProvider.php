@@ -13,8 +13,8 @@ class FrontServiceProvider extends ServiceProvider
             define('FRONT_DIR', __DIR__);
         }
         
-        $this->loadViewsFrom(__DIR__.'/../resources/view', 'front');
-        $this->loadTranslationsFrom(__DIR__.'/../resources/view', 'front');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'front');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'front');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
     
@@ -26,9 +26,6 @@ class FrontServiceProvider extends ServiceProvider
         
         $this->app->register('\Front\Providers\RouteServiceProvider');
         $this->app->register('\Front\Providers\FrontComposerProvider');
-        
-        $this->app->bind('post-facade', '\Front\Facades\Post');
-        $this->app->bind('tax-facade', '\Front\Facades\Tax');
     }
     
 }
