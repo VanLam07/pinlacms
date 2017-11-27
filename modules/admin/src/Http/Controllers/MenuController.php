@@ -12,35 +12,26 @@ use Admin\Facades\AdConst;
 
 class MenuController extends BaseController {
 
-    protected $model;
-    protected $tax;
-    protected $post;
     protected $cap_accept = 'manage_menus';
-
-    public function __construct(Menu $menu, Tax $tax, PostType $post) {
-        $this->model = $menu;
-        $this->tax = $tax;
-        $this->post = $post;
-    }
 
     public function index(Request $request) {
         canAccess($this->cap_accept);
         
         $data = $request->all();
-        $menus = $this->model->getData($data);
+        $menus = Menu::getData($data);
         return view('manage.menu.index', ['items' => $menus]);
     }
 
     public function create() {
         canAccess($this->cap_accept);
         
-        $parents = $this->model->getData(['orderby' => 'pivot_title']);
-        $groups = $this->tax->getData('menucat', ['orderby' => 'pivot_name', 'fields' => ['id']]);
+        $parents = Menu::getData(['orderby' => 'pivot_title']);
+        $groups = Tax::getData('menucat', ['orderby' => 'pivot_name', 'fields' => ['id']]);
 
-        $cats = $this->tax->getData('cat', ['orderby' => 'pivot_name', 'fields' => ['id']]);
-        $tags = $this->tax->getData('tag', ['orderby' => 'pivot_name', 'fields' => ['id']]);
-        $posts = $this->post->getData('post', ['orderby' => 'pivot_title', 'fields' => ['id']]);
-        $pages = $this->post->getData('page', ['orderby' => 'pivot_title', 'fields' => ['id']]);
+        $cats = Tax::getData('cat', ['orderby' => 'pivot_name', 'fields' => ['id']]);
+        $tags = Tax::getData('tag', ['orderby' => 'pivot_name', 'fields' => ['id']]);
+        $posts = PostType::getData('post', ['orderby' => 'pivot_title', 'fields' => ['id']]);
+        $pages = PostType::getData('page', ['orderby' => 'pivot_title', 'fields' => ['id']]);
         return view('manage.menu.create', compact('parents', 'groups', 'cats', 'tags', 'posts', 'pages'));
     }
 
@@ -48,7 +39,7 @@ class MenuController extends BaseController {
         canAccess($this->cap_accept);
         
         try {
-            $this->model->insertData($request->all());
+            Menu::insertData($request->all());
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (ValidationException $ex) {
             return redirect()->back()->withInput()->withErrors($ex->validator);
@@ -60,7 +51,7 @@ class MenuController extends BaseController {
     public function edit($id) {
         canAccess($this->cap_accept);
         
-        $item = $this->model->find($id);
+        $item = Menu::find($id);
         return view('manage.menu.edit', ['item' => $item]);
     }
 
@@ -68,7 +59,7 @@ class MenuController extends BaseController {
         canAccess($this->cap_accept);
         
         try {
-            $this->model->updateData($id, $request->all());
+            Menu::updateData($id, $request->all());
             return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
         } catch (ValidationException $ex) {
             return redirect()->back()->withInput()->withErrors($ex->validator);
@@ -78,7 +69,7 @@ class MenuController extends BaseController {
     public function destroy($id) {
         canAccess($this->cap_accept);
         
-        if (!$this->model->destroyData($id)) {
+        if (!Menu::destroyData($id)) {
             return redirect()->back()->with('error_mess', trans('admin::message.no_item'));
         }
         return redirect()->back()->with('succ_mess', trans('admin::message.destroy_success'));
@@ -91,13 +82,13 @@ class MenuController extends BaseController {
             return response()->json(trans('admin::message.no_item'), 422);
         }
         $id = $request->get('id');
-        $this->model->destroy($id);
+        Menu::destroy($id);
         return response()->json(trans('admin::message.destroy_success'));
     }
 
     public function multiAction(Request $request) {
         try {
-            $this->model->actions($request);
+            Menu::actions($request);
             return redirect()->back()->withInput()->with('succ_mess', trans('message.action_success'));
         } catch (\Exception $ex) {
             return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
@@ -117,7 +108,7 @@ class MenuController extends BaseController {
         
         $menu_id = $request->get('menu_id');
 
-        $menu = $this->model->find($menu_id);
+        $menu = Menu::find($menu_id);
         if (!$menu) {
             return response()->json(trans('admin::message.no_item'), 422);
         }
@@ -125,15 +116,15 @@ class MenuController extends BaseController {
         $result = null;
         switch ($menu->model_type) {
             case AdConst::MENU_TYPE_CUSTOM:
-                $result = $this->model->findCustom($menu_id, ['md.*'], $lang);
+                $result = Menu::findCustom($menu_id, ['md.*'], $lang);
                 break;
             case AdConst::MENU_TYPE_PAGE:
             case AdConst::MENU_TYPE_POST:
-                $result = $this->post->findByLang($menu->type_id, ['posts.id', 'pd.title'], $lang);
+                $result = PostType::findByLang($menu->type_id, ['posts.id', 'pd.title'], $lang);
                 break;
             case AdConst::MENU_TYPE_CAT:
             case AdConst::MENU_TYPE_TAX:
-                $result = $this->tax->findByLang($menu->type_id, ['taxs.id', 'td.name'], $lang);
+                $result = Tax::findByLang($menu->type_id, ['taxs.id', 'td.name'], $lang);
                 break;
         }
 

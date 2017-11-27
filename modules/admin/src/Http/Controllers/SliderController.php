@@ -12,20 +12,17 @@ use PlMenu;
 
 class SliderController extends BaseController
 {
-   protected $model;
    protected $cap_accept = 'manage_cats';
 
-    public function __construct(Tax $slider) {
+    public function __construct() {
         PlMenu::setActive('sliders');
-
-        $this->model = $slider;
     }
 
     public function index(Request $request) {
         canAccess($this->cap_accept);
         
         $data = $request->all();
-        $sliders = $this->model->getData('slider', $data);
+        $sliders = Tax::getData('slider', $data);
         return view('admin::slider.index', ['items' => $sliders]);
     }
 
@@ -40,7 +37,7 @@ class SliderController extends BaseController
         
         DB::beginTransaction();
         try {
-            $this->model->insertData($request->all(), 'slider');
+            Tax::insertData($request->all(), 'slider');
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (ValidationException $ex) {
@@ -59,7 +56,7 @@ class SliderController extends BaseController
         if(!$lang){
             $lang = currentLocale();
         }
-        $item = $this->model->findByLang($id, ['taxs.*', 'td.*'], $lang);
+        $item = Tax::findByLang($id, ['taxs.*', 'td.*'], $lang);
         return view('admin::slider.edit', compact('item', 'lang'));
     }
 

@@ -15,17 +15,9 @@ use Auth;
 
 class AuthController extends Controller {
     
-    protected $user;
-    protected $role;
-    
     protected $decayMinutes = 5;
 
     use AuthenticatesUsers;
-
-    public function __construct(User $user, Role $role) {
-        $this->user = $user;
-        $this->role = $role;
-    }
 
     public function getRegister() {
         return view('admin::auth.register');
@@ -41,11 +33,11 @@ class AuthController extends Controller {
             return redirect()->back()->withInput()->withErrors($valid->errors());
         }
         $role_id = DEFAULT_ROLE;
-        $role = $this->role->where('default', 1)->first(['id']);
+        $role = Role::where('default', 1)->first(['id']);
         if ($role) {
             $role_id = $role->id;
         }
-        $user = $this->user->create([
+        $user = User::create([
             'name' => $request->input('name'),
             'slug' => str_slug($request->input('name')),
             'email' => $request->input('email'),
@@ -124,7 +116,7 @@ class AuthController extends Controller {
         $email = $request->input('email');
 
         DB::beginTransaction();
-        $user = $this->user->where('email', $email)->first();
+        $user = User::where('email', $email)->first();
         $token = makeToken(45, $this->user);
         $user->resetPasswdToken = $token;
         $user->resetPasswdExpires = time() + 3600;
@@ -154,7 +146,7 @@ class AuthController extends Controller {
         }
 
         $token = $request->get('token');
-        $user = $this->user->where('resetPasswdToken', $token)->where('resetPasswdExpires', '>', time())->first();
+        $user = User::where('resetPasswdToken', $token)->where('resetPasswdExpires', '>', time())->first();
         if (!$user) {
             return $error_view;
         }
@@ -171,7 +163,7 @@ class AuthController extends Controller {
         }
 
         $token = $request->input('token');
-        $user = $this->user->where('resetPasswdToken', $token)->where('resetPasswdExpires', '>', time())->first();
+        $user = User::where('resetPasswdToken', $token)->where('resetPasswdExpires', '>', time())->first();
         if (!$user) {
             return view('errors.notice', ['message' => trans('admin::message.invalid_token')]);
         }
@@ -185,7 +177,7 @@ class AuthController extends Controller {
     }
 
     public function getProfile() {
-        $roles = $this->role->all(['id', 'label']);
+        $roles = Role::all(['id', 'label']);
         return view('admin::account.profile', compact('roles'));
     }
 
@@ -209,9 +201,9 @@ class AuthController extends Controller {
         if (isset($data['file_ids']) && $data['file_ids']) {
             $data['image_id'] = $data['file_ids'][0];
         }
-        $fillable = $this->user->getFillable();
+        $fillable = User::getFillable();
         $fill_data = array_only($data, $fillable);
-        $user = $this->user->findOrFail(auth()->id());
+        $user = User::findOrFail(auth()->id());
         $user->update($fill_data);
         if (isset($data['role_ids'])) {
             $user->roles()->sync($data['role_ids']);
@@ -236,7 +228,7 @@ class AuthController extends Controller {
         if (!$check) {
             return redirect()->back()->withInput()->with('error_mess', trans('admin::message.invalid_pass'));
         }
-        $this->user->find($user->id)->update(['password' => bcrypt($request->input('new_password'))]);
+        User::find($user->id)->update(['password' => bcrypt($request->input('new_password'))]);
         
         return redirect()->back()->with('succ_mess', trans('admin::message.updated_pass'));
     }

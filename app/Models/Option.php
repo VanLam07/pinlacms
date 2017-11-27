@@ -17,17 +17,17 @@ class Option extends BaseModel
     
     public $timestamps = false;
     
-    public $kcAll = 'key_cache_all_options';
-    protected $cacheTime = 24 * 3600;
+    const KC_ALL = 'key_cache_all_options';
+    const KC_TIME = 24 * 3600;
     
-    public function rules(){
+    public static function rules(){
         return [
             'option_key' => 'required|alpha_dash',
             'value' => 'required'
         ];
     }
     
-    public function getData($args=[]){
+    public static function getData($args=[]){
         $opts = [
             'field' => ['*'],
             'orderby' => 'option_key',
@@ -50,8 +50,8 @@ class Option extends BaseModel
         return $collection->get();
     }
     
-    public function getOption($key, $lang = null) {
-        $allValues = Cache::get($this->kcAll);
+    public static function getOption($key, $lang = null) {
+        $allValues = Cache::get(self::KC_ALL);
         $allValues = $allValues ? $allValues : [];
         if (isset($allValues[$key])) {
             return $allValues[$key];
@@ -66,13 +66,13 @@ class Option extends BaseModel
         $item = $item->first();
         if ($item) {
             $allValues[$key] = $item->value;
-            Cache::put($this->kcAll, $allValues, $this->cacheTime);
+            Cache::put(self::KC_ALL, $allValues, self::KC_TIME);
             return $item->value;
         }
         return null;
     }
     
-    public function destroyData($ids) {
+    public static function destroyData($ids) {
         return self::destroy($ids);
     }
     

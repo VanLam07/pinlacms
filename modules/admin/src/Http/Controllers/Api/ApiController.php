@@ -15,35 +15,28 @@ class ApiController extends Controller {
     protected $file;
     protected $request;
 
-    public function __construct(
-            PostType $post,  
-            Tax $tax, 
-            File $file, 
-            Request $request
-    ) {
-        $this->post = $post;
-        $this->tax = $tax;
-        $this->file = $file;
+    public function __construct(Request $request) 
+    {
         $this->request = $request;
     }
 
     public function getPosts() {
-        $posts = $this->post->getData('post', $this->request->all());
+        $posts = PostType::getData('post', $this->request->all());
         return response()->json($posts);
     }
 
     public function getPages() {
-        $pages = $this->post->getData('page', $this->request->all());
+        $pages = PostType::getData('page', $this->request->all());
         return response()->json($pages);
     }
 
     public function getCats() {
-        $cats = $this->tax->getData('cat', $this->request->all());
+        $cats = Tax::getData('cat', $this->request->all());
         return response()->json($cats);
     }
 
     public function getFiles() {
-        $files = $this->file->getData($this->request->all());
+        $files = FileModel::getData($this->request->all());
         return response()->json($files);
     }
 

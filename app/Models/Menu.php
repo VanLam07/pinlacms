@@ -11,7 +11,7 @@ class Menu extends BaseModel {
     protected $fillable = ['group_id', 'parent_id', 'menu_type', 'type_id', 'icon', 'open_type', 'order', 'status'];
     public $timestamps = false;
 
-    public function joinLang($lang = null) {
+    public static function joinLang($lang = null) {
         if (!$lang) {
             $lang = currentLocale();
         }
@@ -19,15 +19,15 @@ class Menu extends BaseModel {
                         ->where('md.lang_code', '=', $lang);
     }
 
-    public function langs() {
+    public static function langs() {
         return $this->belongsToMany('\App\Models\Lang', 'menu_desc', 'menu_id', 'lang_code');
     }
 
-    public function group() {
+    public static function group() {
         return $this->belongsTo('App\Models\MenuCat', 'group_id', 'id');
     }
 
-    public function getObject() {
+    public static function getObject() {
         switch ($this->menu_type) {
             case AdConst::MENU_TYPE_CAT:
             case AdConst::MENU_TYPE_TAX:
@@ -51,7 +51,7 @@ class Menu extends BaseModel {
         return $object;
     }
 
-    public function getItemRoute() {
+    public static function getItemRoute() {
         $route = null;
         switch ($this->menu_type) {
             case AdConst::MENU_TYPE_TAX:
@@ -73,21 +73,21 @@ class Menu extends BaseModel {
         return $route;
     }
 
-    public function str_status() {
+    public static function str_status() {
         if ($this->status == 1) {
             return trans('manage.active');
         }
         return trans('manage.disable');
     }
 
-    public function str_open_type() {
+    public static function str_open_type() {
         if ($this->open_type) {
             return trans('manage.newtab_tab');
         }
         return trans('manage.current_tab');
     }
 
-    public function getData($args = []) {
+    public static function getData($args = []) {
         $opts = [
             'fields' => ['menus.*', 'md.*'],
             'group_id' => -1,
@@ -101,7 +101,7 @@ class Menu extends BaseModel {
 
         $opts = array_merge($opts, $args);
 
-        $result = $this->joinLang($opts['lang'])
+        $result = self::joinLang($opts['lang'])
                 ->whereNotNull('md.title');
         if ($opts['exclude']) {
             $result->whereNotIn('menus.id', $opts['exclude']);
@@ -122,7 +122,7 @@ class Menu extends BaseModel {
         return $result->get();
     }
 
-    public function insertData($data) {
+    public static function insertData($data) {
         if (!isset($data['order'])) {
             $data['order'] = self::max('order') + 1;
         }
@@ -139,12 +139,12 @@ class Menu extends BaseModel {
         }
     }
 
-    public function findCustom($id, $fields = ['md.*'], $lang = null) {
-        return $this->joinLang($lang)
+    public static function findCustom($id, $fields = ['md.*'], $lang = null) {
+        return self::joinLang($lang)
                         ->findOrFail($id, $fields);
     }
 
-    public function updateData($id, $data) {
+    public static function updateData($id, $data) {
 
         $fillable = $this->getFillable();
         $fill_data = array_only($data, $fillable);
@@ -155,7 +155,7 @@ class Menu extends BaseModel {
         $item->langs()->sync([$data['lang'] => $lang_data], false);
     }
 
-    public function updateOrder($id, $order, $parent = 0) {
+    public static function updateOrder($id, $order, $parent = 0) {
         $item = self::find($id);
         if ($item) {
             $item->update(['order' => $order, 'parent_id' => $parent]);

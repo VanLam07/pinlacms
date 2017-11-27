@@ -22,7 +22,7 @@ class BaseModel extends Model {
         return false;
     }
     
-    public function validator(array $attrs, array $rule = [], array $message = []) {
+    public static function validator(array $attrs, array $rule = [], array $message = []) {
         $valid = Validator::make($attrs, 
                 $rule ? $rule : $this->rules(), 
                 $message);
@@ -32,7 +32,7 @@ class BaseModel extends Model {
         return true;
     }
     
-    public function getData($data) {
+    public static function getData($data) {
         $perPage = PlOption::get('per_page');
         $opts = [
             'fields' => ['*'],
@@ -63,7 +63,7 @@ class BaseModel extends Model {
             $result->whereNotIn($opts['exclude_key'], $opts['exclude']);
         }
         if ($opts['filters']) {
-            $this->filterData($result, $opts['filters']);
+            self::filterData($result, $opts['filters']);
         }
         $result->orderby($opts['orderby'], $opts['order']);
         
@@ -73,7 +73,7 @@ class BaseModel extends Model {
         return $result->paginate($opts['per_page']);
     }
     
-    public function filterData(&$collection, $filters) {
+    public static function filterData(&$collection, $filters) {
         if ($filters && is_array($filters)) {
             foreach ($filters as $key => $value) {
                 if (is_array($value)) {
@@ -87,7 +87,7 @@ class BaseModel extends Model {
         }
     }
 
-    public function getAuthorId($id, $author_field = 'author_id') {
+    public static function getAuthorId($id, $author_field = 'author_id') {
         $item = self::find($id, [$author_field]);
         if ($item) {
             return $item->$author_field;
@@ -99,14 +99,14 @@ class BaseModel extends Model {
         return $this->author_id;
     }
 
-    public function insertData($data) {
-        $this->validator($data, $this->rules());
+    public static function insertData($data) {
+        self::validator($data, $this->rules());
         
         return self::create($data);
     }
 
-    public function updateData($id, $data) {
-        $this->validator($data, $this->rules($id));
+    public static function updateData($id, $data) {
+        self::validator($data, self::rules($id));
 
         $itemUpdate = self::findOrFail($id);
         if (isset($data['time'])) {
@@ -128,21 +128,23 @@ class BaseModel extends Model {
         return $itemUpdate;
     }
 
-    public function changeStatus($ids, $status) {
+    public static function changeStatus($ids, $status, $primaryKey = 'id') 
+    {
         if (!is_array($ids)) {
             $ids = [$ids];
         }
         if ($status == AdConst::STT_TRASH) {
-            self::whereIn($this->getKeyName(), $ids)->delete();
+            self::whereIn($primaryKey, $ids)->delete();
         }
-        return self::whereIn($this->getKeyName(), $ids)->update(['status' => $status]);
+        return self::whereIn($primaryKey, $ids)->update(['status' => $status]);
     }
 
-    public function destroyData($ids) {
+    public static function destroyData($ids) 
+    {
         return self::destroy($ids);
     }
     
-    public function forceDeleteData($ids) {
+    public static function forceDeleteData($ids) {
         if (!is_array($ids)) {
             $ids = [$ids];
         }
@@ -155,7 +157,7 @@ class BaseModel extends Model {
         }
     }
     
-    public function restoreData($ids) {
+    public static function restoreData($ids) {
         if (!is_array($ids)) {
             $ids = [$ids];
         }
@@ -163,7 +165,7 @@ class BaseModel extends Model {
                 ->restore();
     }
 
-    public function actions($request) {
+    public static function actions($request) {
         $valid = Validator::make($request->all(), [
             'action' => 'required',
             'item_ids.*' => 'required' 
@@ -180,15 +182,15 @@ class BaseModel extends Model {
         $action = $request->input('action');
         switch ($action) {
             case 'restore':
-                $this->restoreData($item_ids);
+                self::restoreData($item_ids);
             case 'publish':
-                $this->changeStatus($item_ids, AdConst::STT_PUBLISH);
+                self::changeStatus($item_ids, AdConst::STT_PUBLISH);
                 break;
             case 'draft': 
-                $this->changeStatus($item_ids, AdConst::STT_DRAFT);
+                self::changeStatus($item_ids, AdConst::STT_DRAFT);
                 break;
             case 'trash':
-                $this->destroyData($item_ids);
+                self::destroyData($item_ids);
                 break;
             case 'delete':
                 if ($this->isUseSoftDelete()) {
@@ -204,17 +206,14 @@ class BaseModel extends Model {
     
     public function save(array $options = array()) {
         parent::save($options);
-        Cache::flush();
     }
     
     public static function destroy($ids) {
         parent::destroy($ids);
-        Cache::flush();
     }
     
     public function delete() {
         parent::delete();
-        Cache::flush();
     }
 
 }

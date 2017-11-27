@@ -13,13 +13,13 @@ class Cap extends BaseModel
     protected $capEdit = 'manage_cats';
     protected $capRemove = 'manage_cats';
 
-    public function rules(){
+    public static function rules(){
         return [
             'name' => 'required|alpha_dash|unique:caps,name'
         ];
     }
 
-    public function getData($args = []) {
+    public static function getData($args = []) {
         $opts = [
             'orderby' => 'name',
             'order' => 'asc',
@@ -33,13 +33,13 @@ class Cap extends BaseModel
                 ->withPivot('level');
     }
     
-    public function updateData($name, $data) {
+    public static function updateData($name, $data) {
         $fillable = self::getFillable();
         $data = array_only($data, $fillable);
         return self::where('name', $name)->update($data);
     }
     
-    function findByName($name) {
+    public static function findByName($name) {
         return self::where('name', $name)->first();
     }
 }

@@ -12,20 +12,18 @@ use Breadcrumb;
 
 class CapController extends BaseController
 {
-    protected $model;
     protected $cap_accept = 'manage_cap';
 
-    public function __construct(Cap $cap) {
+    public function __construct() {
         parent::__construct();
         Breadcrumb::add(trans('admin::view.caps'), route('admin::cap.index'));
         PlMenu::setActive('caps');
-        $this->model = $cap;
     }
     
     public function index(Request $request){
         canAccess($this->cap_accept);
         
-        $caps = $this->model->getData($request->all());
+        $caps = Cap::getData($request->all());
         return view('admin::cap.index', ['items' => $caps]);
     }
     
@@ -40,10 +38,10 @@ class CapController extends BaseController
         canAccess($this->cap_accept);
         
         try{
-            $this->model->insertData($request->all());
+            Cap::insertData($request->all());
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (Exception $ex) {
-            return redirect()->back()->withInput()->withErrors($this->model->getError());
+            return redirect()->back()->withInput()->withErrors(Cap::getError());
         }
     }
     
@@ -51,21 +49,21 @@ class CapController extends BaseController
         canAccess($this->cap_accept);
         
         Breadcrumb::add(trans('admin::view.edit'));
-        $item = $this->model->findOrFail($id);
+        $item = Cap::findOrFail($id);
         return view('admin::cap.edit', compact('item'));
     }
     
     public function update($name, Request $request){
         canAccess($this->cap_accept);
         
-        $this->model->updateData($name, $request->all());
+        Cap::updateData($name, $request->all());
         return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
     }
     
     public function destroy($id){
         canAccess($this->cap_accept);
         
-        $this->model->destroy($id);
+        Cap::destroy($id);
         return redirect()->back()->with('succ_mess', trans('admin::message.destroy_success'));
     }
     

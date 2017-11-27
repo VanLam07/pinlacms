@@ -8,14 +8,14 @@ class Role extends BaseModel {
     protected $fillable = ['label', 'name', 'default', 'list_caps'];
     public $timestamps = false;
 
-    public function rules($id = null) {
+    public static function rules($id = null) {
         $id = ($id) ? ',' . $id : '';
         return [
             'name' => 'required|alpha_dash|unique:roles,name' . $id
         ];
     }
 
-    public function getData($args = []) {
+    public static function getData($args = []) {
         $opts = [
             'orderby' => 'name',
             'order' => 'asc',
@@ -23,7 +23,7 @@ class Role extends BaseModel {
         return parent::getData(array_merge($opts, $args));
     }
 
-    public function getDefaultId() {
+    public static function getDefaultId() {
         $item = self::where('default', 1)->select('id')->first();
         if ($item) {
             return $item->id;
@@ -31,7 +31,7 @@ class Role extends BaseModel {
         return 0;
     }
 
-    public function updateData($id, $data) {
+    public static function updateData($id, $data) {
         $this->validator($data, $this->rules($id));
 
         $item = self::findOrFail($id);

@@ -10,31 +10,29 @@ use Breadcrumb;
 
 class CatController extends BaseController {
 
-    protected $model;
     protected $locale;
     protected $cap_accept = 'manage_cats';
 
-    public function __construct(Tax $cat) {
+    public function __construct() {
         PlMenu::setActive('cats');
         parent::__construct();
         Breadcrumb::add(trans('admin::view.categories'), route('admin::cat.index'));
-        $this->model = $cat;
         $this->locale = currentLocale();
     }
 
     public function index(Request $request) {
         $data = $request->all();
         $data['fields'] = ['taxs.id', 'taxs.image_id', 'taxs.parent_id', 'taxs.order', 'td.name', 'td.slug'];
-        $items = $this->model->getData('cat', $data);
+        $items = Tax::getData('cat', $data);
         $parent = $items->isEmpty() ? 0 : $items->first()->parent_id;
-        $tableCats = $this->model->tableCats($items, $parent);
+        $tableCats = Tax::tableCats($items, $parent);
         return view('admin::cat.index', compact('items', 'tableCats'));
     }
 
     public function create() {
         Breadcrumb::add(trans('admin::view.create'), route('admin::cat.create'));
         
-        $parents = $this->model->getData('cat', [
+        $parents = Tax::getData('cat', [
             'fields' => ['taxs.id', 'taxs.parent_id', 'td.name'],
             'per_page' => -1,
             'orderby' => 'td.name'
@@ -49,8 +47,8 @@ class CatController extends BaseController {
         if (!$lang) {
             $lang = currentLocale();
         }
-        $item = $this->model->findByLang($id, ['taxs.*', 'td.*'], $lang);
-        $parents = $this->model->getData('cat', [
+        $item = Tax::findByLang($id, ['taxs.*', 'td.*'], $lang);
+        $parents = Tax::getData('cat', [
             'fields' => ['taxs.id', 'taxs.parent_id', 'td.name'],
             'exclude' => [$id],
             'per_page' => -1,
@@ -60,7 +58,7 @@ class CatController extends BaseController {
     }
 
     public function destroy($id) {
-        if (!$this->model->destroy($id)) {
+        if (!Tax::destroy($id)) {
             return redirect()->back()->with('error_mess', trans('admin::message.no_item'));
         }
         return redirect()->back()->with('succ_mess', trans('admin::message.destroy_success'));

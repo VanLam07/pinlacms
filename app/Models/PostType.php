@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PostType extends BaseModel
 {
     protected $table = 'posts';
-    protected $tblDesc = 'post_desc';
+    protected static $tblDesc = 'post_desc';
     public $dates = ['trashed_at'];
     protected $fillable = ['thumb_id', 'thumb_ids', 'author_id', 'status', 'comment_status', 
         'comment_count', 'post_type', 'views', 'template', 'trased_at', 'created_at', 'updated_at'];
@@ -21,16 +21,16 @@ class PostType extends BaseModel
         return true;
     }
 
-    public function joinLang($lang = null) {
+    public static function joinLang($lang = null) {
         if (!$lang) {
             $lang = currentLocale();
         }
-        return $this->join($this->tblDesc.' as pd', 'posts.id', '=', 'pd.post_id')
+        return self::join(self::$tblDesc.' as pd', 'posts.id', '=', 'pd.post_id')
                         ->where('pd.lang_code', '=', $lang);
     }
 
-    public function joinCats($ids = []) {
-        $this->joinLang()
+    public static function joinCats($ids = []) {
+        self::joinLang()
                 ->join('post_tax as pt', function($join) use ($ids) {
                     $join->on('posts.id', '=', 'pt.post_id')
                     ->whereIn('tax_id', $ids);
@@ -92,7 +92,7 @@ class PostType extends BaseModel
         return null;
     }
     
-    public function rules($update = false) {
+    public static function rules($update = false) {
         if (!$update) {
             $code = currentLocale();
             return [
@@ -105,7 +105,7 @@ class PostType extends BaseModel
         ];
     }
 
-    public function getData($type = 'post', $args = []) {
+    public static function getData($type = 'post', $args = []) {
         $opts = [
             'fields' => ['posts.*', 'pd.*'],
             'status' => [AdConst::STT_PUBLISH],
@@ -123,7 +123,7 @@ class PostType extends BaseModel
 
         $opts = array_merge($opts, $args);
         
-        $result = $this->joinLang();
+        $result = self::joinLang();
 
         if ($opts['cats']) {
             $cat_ids = $this->inCats($opts['cats']);
@@ -175,8 +175,8 @@ class PostType extends BaseModel
         return $result->get();
     }
 
-    public function insertData($data, $type = 'post') {
-        $this->validator($data, $this->rules());
+    public static function insertData($data, $type = 'post') {
+        self::validator($data, self::rules());
 
         $data['author_id'] = auth()->id();
         if (isset($data['time'])) {
@@ -233,8 +233,8 @@ class PostType extends BaseModel
         return $item;
     }
 
-    public function findByLang($id, $fields = ['posts.*', 'pd.*'], $lang = null) {
-        $item = $this->joinLang($lang)
+    public static function findByLang($id, $fields = ['posts.*', 'pd.*'], $lang = null) {
+        $item = self::joinLang($lang)
                 ->find($id, $fields);
         if ($item) {
             return $item;
@@ -242,8 +242,8 @@ class PostType extends BaseModel
         return self::findOrFail($id);
     }
 
-    public function updateData($id, $data) {
-        $this->validator($data, $this->rules(true));
+    public static function updateData($id, $data) {
+        self::validator($data, self::rules(true));
 
         if (isset($data['file_ids']) && $data['file_ids']) {
             $data['thumb_id'] = $data['file_ids'][0];
@@ -260,9 +260,10 @@ class PostType extends BaseModel
             $hasDel = true;
             unset($data['status']);
         }
-        $fillable = $this->getFillable();
-        $fill_data = array_only($data, $fillable);
+        
         $item = self::findOrFail($id);
+        $fillable = $item->getFillable();
+        $fill_data = array_only($data, $fillable);
         $item->update($fill_data);
 
         $old_tags = $item->tags()->pluck('id')->toArray();
@@ -314,7 +315,7 @@ class PostType extends BaseModel
         return $item;
     }
 
-    public function destroyData($ids) {
+    public static function destroyData($ids) {
         if (!is_array($ids)) {
             $ids = [$ids];
         }
@@ -332,7 +333,7 @@ class PostType extends BaseModel
         return false;
     }
 
-    public function inCats($cat_ids){
+    public static function inCats($cat_ids){
         $ids = Tax::whereIn('parent_id', $cat_ids)->lists('id')->toArray();
         $result = array_merge($cat_ids, $ids);
         if($ids){

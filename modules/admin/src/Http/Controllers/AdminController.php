@@ -26,7 +26,7 @@ class AdminController extends BaseController {
         return view('admin::dashboard', [
             'totalPosts' => PlPost::getTotal(),
             'totalComments' => PlComment::getTotal(),
-            'totalMembers' => $this->user->getData(['per_page' => -1])->count(),
+            'totalMembers' => User::getData(['per_page' => -1])->count(),
             'totalPages' => PlPost::getTotal('page'),
         ]);
     }

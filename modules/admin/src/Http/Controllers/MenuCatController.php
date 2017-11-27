@@ -13,23 +13,19 @@ use Breadcrumb;
 
 class MenuCatController extends BaseController {
 
-    protected $model;
-    protected $menu;
     protected $cap_accept = 'manage_menus';
 
-    public function __construct(Tax $tax, Menu $menu) {
+    public function __construct() {
         parent::__construct();
         PlMenu::setActive('group-menus');
         Breadcrumb::add(trans('admin::view.menucats'), route('admin::menucat.index'));
-        $this->model = $tax;
-        $this->menu = $menu;
     }
 
     public function index(Request $request) {
         canAccess($this->cap_accept);
         
         $data = $request->all();
-        $menucats = $this->model->getData('menucat', $data);
+        $menucats = Tax::getData('menucat', $data);
         return view('admin::menucat.index', ['items' => $menucats]);
     }
 
@@ -44,7 +40,7 @@ class MenuCatController extends BaseController {
         canAccess($this->cap_accept);
         
         try {
-            $this->model->insertData($request->all(), 'menucat');
+            Tax::insertData($request->all(), 'menucat');
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (ValidationException $ex) {
             return redirect()->back()->withInput()->withErrors($ex->errors());
@@ -63,7 +59,7 @@ class MenuCatController extends BaseController {
                 $item['group_id'] = $request->get('group_id');
                 $item['type_id'] = isset($item['id']) ? $item['id'] : 0;
                 $item['lang'] = $request->has('lang') ? $request->get('lang') : currentLocale();
-                $this->menu->insertData($item);
+                Menu::insertData($item);
             }
         }
         if($request->wantsJson() || $request->ajax()){
@@ -80,7 +76,7 @@ class MenuCatController extends BaseController {
         if (!$lang) {
             $lang = currentLocale();
         }
-        $item = $this->model->findByLang($id, ['taxs.id', 'td.slug', 'td.name'], $lang);
+        $item = Tax::findByLang($id, ['taxs.id', 'td.slug', 'td.name'], $lang);
         return view('admin::menucat.edit', compact('item', 'lang'));
     }
 
@@ -89,14 +85,14 @@ class MenuCatController extends BaseController {
         
         DB::beginTransaction();
         try {
-            $this->model->updateData($id, $request->all());
+            Tax::updateData($id, $request->all());
             
             $menus = $request->get('menus');
             if($menus){
                 foreach ($menus as $menu_id => $menu){
                     $menu = (array) $menu;
                     $menu['lang'] = $request->get('lang');
-                    $this->menu->updateData($menu_id, $menu);
+                    Menu::updateData($menu_id, $menu);
                 }
             }
             DB::commit();
@@ -124,7 +120,7 @@ class MenuCatController extends BaseController {
         canAccess($this->cap_accept);
         
         foreach ($items as $key => $item){
-            $this->menu->updateOrder($item['id'], $key, $parent);
+            Menu::updateOrder($item['id'], $key, $parent);
             if(count($item['childs']) > 0){
                 $this->nestedOrderUpdate($item['childs'], $item['id']);
             }
@@ -134,7 +130,7 @@ class MenuCatController extends BaseController {
     public function destroy($id) {
         canAccess($this->cap_accept);
         
-        if (!$this->model->destroyData($id)) {
+        if (!Tax::destroyData($id)) {
             return redirect()->back()->with('error_mess', trans('admin::message.no_item'));
         }
         return redirect()->back()->with('succ_mess', trans('admin::message.destroy_success'));
@@ -143,8 +139,8 @@ class MenuCatController extends BaseController {
     public function getNestedMenus(Request $request) {
         canAccess($this->cap_accept);
         
-        $menus = $this->menu->getData($request->all());
-        $nested = $this->model->toNested($menus);
+        $menus = Menu::getData($request->all());
+        $nested = Tax::toNested($menus);
         return $nested;
     }
 

@@ -13,27 +13,22 @@ use Breadcrumb;
 
 class PostController extends BaseController {
 
-    protected $post;
-    protected $tax;
-    protected $user;
-    
+    protected $model;
     protected $cap_create = 'publish_post';
     protected $cap_edit = 'edit_post';
     protected $cap_remove = 'remove_post';
 
-    public function __construct(PostType $post, Tax $tax, User $user) {
+    public function __construct() {
         parent::__construct();
         Breadcrumb::add(trans('admin::view.posts'), route('admin::post.index'));
-        $this->model = $post;
-        $this->tax = $tax;
-        $this->user = $user;
+        $this->model = PostType::class;
     }
 
     public function index(Request $request) {
         canAccess('view_post');
         
         PlMenu::setActive(['posts', 'post_all']);
-        $items = $this->model->getData('post', $request->all());
+        $items = PostType::getData('post', $request->all());
         return view('admin::post.index', ['items' => $items]);
     }
 
@@ -42,13 +37,13 @@ class PostController extends BaseController {
         
         Breadcrumb::add(trans('admin::view.create'), route('admin::post.create'));
         PlMenu::setActive(['posts', 'post_create']);
-        $cats = $this->tax->getData('cat', [
+        $cats = Tax::getData('cat', [
             'orderby' => 'name',
             'order' => 'asc',
             'per_page' => -1,
             'fields' => ['taxs.id', 'taxs.parent_id', 'td.name']]
         );
-        $tags = $this->tax->getData('tag', [
+        $tags = Tax::getData('tag', [
             'orderby' => 'name',
             'order' => 'asc',
             'per_page' => -1,
@@ -57,7 +52,7 @@ class PostController extends BaseController {
         
         $users = null;
         if (canDo('edit_post', null, AdConst::CAP_OTHER)) {
-            $users = $this->user->getData([
+            $users = User::getData([
                 'orderby' => 'name',
                 'order' => 'asc',
                 'pre_page' => -1,
@@ -70,25 +65,32 @@ class PostController extends BaseController {
     public function store(Request $request) {
         canAccess($this->cap_create);
 
-        return parent::store($request);
+        try {
+            return parent::store($request);
+        } catch (\App\Exceptions\PlException $ex) {
+            return redirect()->back()->withInput()
+                    ->with('error_mess', $ex->getMessage());
+        }
     }
 
     public function edit($id, Request $request) {
-        canAccess($this->cap_edit, $this->model->getAuthorId($id));
-
-        Breadcrumb::add(trans('admin::view.edit'));
-        PlMenu::setActive(['posts', 'post_edit']);
         $lang = $request->get('lang');
         if (!$lang) {
             $lang = currentLocale();
         }
-        $cats = $this->tax->getData('cat', [
+        $item = PostType::findByLang($id, ['posts.*', 'pd.*'], $lang);
+        canAccess($this->cap_edit, $item->author_id);
+
+        Breadcrumb::add(trans('admin::view.edit'));
+        PlMenu::setActive(['posts', 'post_edit']);
+        
+        $cats = Tax::getData('cat', [
             'orderby' => 'name',
             'order' => 'asc',
             'per_page' => -1,
             'fields' => ['taxs.id', 'taxs.parent_id', 'td.name']
         ]);
-        $tags = $this->tax->getData('tag', [
+        $tags = Tax::getData('tag', [
             'orderby' => 'name',
             'order' => 'asc',
             'per_page' => -1,
@@ -96,28 +98,27 @@ class PostController extends BaseController {
         ]);
         $users = null;
         if (canDo('edit_post', null, AdConst::CAP_OTHER)) {
-            $users = $this->user->getData([
+            $users = User::getData([
                 'orderby' => 'name',
                 'order' => 'asc',
                 'fields' => ['name', 'id']
             ])->pluck('name', 'id')->toArray();
         }
         
-        $item = $this->model->findByLang($id, ['posts.*', 'pd.*'], $lang);
         $curr_cats = $item->cats->pluck('id')->toArray();
         $curr_tags = $item->tags->pluck('id')->toArray();
         return view('admin::post.edit', compact('item', 'cats', 'tags', 'users', 'curr_cats', 'curr_tags', 'lang'));
     }
 
     public function update($id, Request $request) {
-        canAccess('edit_post', $this->model->getAuthorId($id));
+        canAccess('edit_post', PostType::getAuthorId($id));
         return parent::update($id, $request);
     }
 
     public function multiAction(Request $request) {
-        canAccess('remove_post', null, \Admin\Facades\AdConst::CAP_OTHER);
+        canAccess('remove_post', null, AdConst::CAP_OTHER);
         
-        return parent::update($id, $request);
+        return parent::multiActions($id, $request);
     }
 
 }

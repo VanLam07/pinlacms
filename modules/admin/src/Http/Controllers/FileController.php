@@ -12,25 +12,20 @@ use Breadcrumb;
 
 class FileController extends BaseController {
 
-    protected $model;
-    protected $user;
-    
     protected $cap_create = 'publish_file';
     protected $cap_edit = 'edit_file';
     protected $cap_remove = 'remove_file';
 
-    public function __construct(FileModel $file, User $user) {
+    public function __construct() {
         parent::__construct();
         PlMenu::setActive('files');
         Breadcrumb::add(trans('admin::view.files'), route('admin::file.index'));
-        $this->model = $file;
-        $this->user = $user;
     }
 
     public function index(Request $request) {
         canAccess('view_file');
         
-        $files = $this->model->getData($request->all());
+        $files = FileModel::getData($request->all());
         if($request->wantsJson() || $request->ajax()){
             return response()->json($files);
         }
@@ -51,13 +46,13 @@ class FileController extends BaseController {
     }
     
     public function show($id, Request $request){
-        canAccess('view_file', $this->model->getAuthorId($id));
+        canAccess('view_file', FileModel::getAuthorId($id));
         
         $size = 'thumbnail';
         if($request->has('size')){
             $size = $request->get('size');
         }
-        $file = $this->model->find($id);
+        $file = FileModel::find($id);
         if ($file) {
             return $file->getImage($size);
         }
@@ -86,7 +81,7 @@ class FileController extends BaseController {
 
         try {
             foreach ($files as $file) {
-                $newfile = $this->model->insertData($file);
+                $newfile = FileModel::insertData($file);
                 $newfile->thumb_url = $newfile->getSrc('thumbnail');
                 $newfile->full_url = $newfile->getSrc('full');
                 array_push($results, $newfile);
@@ -109,13 +104,13 @@ class FileController extends BaseController {
     }
 
     public function edit($id) {
-        canAccess($this->cap_edit, $this->model->getAuthorId($id));
+        canAccess($this->cap_edit, FileModel::getAuthorId($id));
         
         Breadcrumb::add(trans('admin::view.edit'));
-        $item = $this->model->findOrFail($id);
+        $item = FileModel::findOrFail($id);
         $users = null;
         if(cando('manage_files')){
-            $users = $this->user->getData()->lists('name', 'id')->toArray();
+            $users = User::getData()->lists('name', 'id')->toArray();
         }
         return view('admin::file.edit', compact('item', 'users'));
     }

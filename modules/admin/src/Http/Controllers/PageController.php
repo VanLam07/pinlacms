@@ -14,12 +14,10 @@ use Breadcrumb;
 
 class PageController extends BaseController
 {
-    protected $model;
     protected $templates = [];
 
-    public function __construct(PostType $page) {
+    public function __construct() {
         parent::__construct();
-        $this->model = $page;
         $this->templates = ['' => trans('admin::view.selection')];
         
         $view_path = config('view.paths')[0].'\front\templates';
@@ -35,7 +33,7 @@ class PageController extends BaseController
     public function index(Request $request) {
         canAccess('view_post');
         
-        $items = $this->model->getData('page', $request->all());
+        $items = PostType::getData('page', $request->all());
         return view('admin::page.index', ['items' => $items]);
     }
 
@@ -51,7 +49,7 @@ class PageController extends BaseController
         
         DB::beginTransaction();
         try {
-            $this->model->insertData($request->all(), 'page');
+            PostType::insertData($request->all(), 'page');
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (ValidationException $ex) {
@@ -64,20 +62,20 @@ class PageController extends BaseController
     }
 
     public function edit($id, Request $request) {
-        canAccess('edit_post', $this->model->getAuthorId($id));
+        canAccess('edit_post', PostType::getAuthorId($id));
 
         Breadcrumb::add(trans('admin::view.edit'));
         $lang = $request->get('lang');
         if(!$lang){
             $lang = currentLocale();
         }
-        $item = $this->model->findByLang($id, ['posts.*', 'pd.*'], $lang);
+        $item = PostType::findByLang($id, ['posts.*', 'pd.*'], $lang);
         $templates = $this->templates;
         return view('admin::page.edit', compact('item', 'templates', 'lang'));
     }
 
     public function update($id, Request $request) {
-        canAccess('edit_post', $this->model->getAuthorId($id));
+        canAccess('edit_post', PostType::getAuthorId($id));
         
         return parent::update($id, $request);
     }

@@ -13,11 +13,11 @@ class Media extends BaseModel {
     
     use SoftDeletes;
     
-    public function isUseSoftDelete() {
+    public static function isUseSoftDelete() {
         return true;
     }
 
-    public function joinLang($lang = null) {
+    public static function joinLang($lang = null) {
         if (!$lang) {
             $lang = currentLocale();
         }
@@ -27,20 +27,20 @@ class Media extends BaseModel {
                 });
     }
 
-    public function langs() {
+    public static function langs() {
         return $this->belongsToMany('\App\Models\Lang', 'media_desc', 'media_id', 'lang_code');
     }
 
-    public function author() {
+    public static function author() {
         return $this->belongsTo('\App\User', 'author_id', 'id')
                         ->select('id', 'name');
     }
 
-    public function albums() {
+    public static function albums() {
         return $this->belongsToMany('\App\Models\Tax', 'media_tax', 'media_id', 'tax_id');
     }
 
-    public function getAlbums($lang = null) {
+    public static function getAlbums($lang = null) {
         $lang = $lang ? $lang : current_locale();
         return $this->belongsToMany('\App\Models\Tax', 'media_tax', 'media_id', 'tax_id')
                         ->join('tax_desc as td', 'taxs.id', '=', 'td.tax_id')
@@ -52,25 +52,25 @@ class Media extends BaseModel {
                         ->where('taxs.type', 'album');
     }
     
-    public function thumbnail(){
+    public static function thumbnail(){
         return $this->belongsTo('\App\Models\File', 'thumb_id', 'id');
     }
     
-    public function getThumbnailSrc($size = 'thumbnail') {
+    public static function getThumbnailSrc($size = 'thumbnail') {
         if ($this->thumbnail) {
             return $this->thumbnail->getSrc($size);
         }
         return null;
     }
     
-    public function getThumbnail($size = 'thumbnail', $class = 'null') {
+    public static function getThumbnail($size = 'thumbnail', $class = 'null') {
         if ($this->thumb_type == 'image' && $this->thumbnail) {
             return $this->thumbnail->getImage($size, $class);
         }
         return null;
     }
     
-    public function rules($update = false) {
+    public static function rules($update = false) {
         if (!$update) {
             $code = currentLocale();
             return [
@@ -83,7 +83,7 @@ class Media extends BaseModel {
         ];
     }
 
-    public function getData($args = []) {
+    public static function getData($args = []) {
         $opts = [
             'type' => 'inherit',
             'fields' => ['medias.*', 'md.*'],
@@ -99,7 +99,7 @@ class Media extends BaseModel {
 
         $opts = array_merge($opts, $args);
 
-        $result = $this->joinLang()
+        $result = self::joinLang()
                 ->whereNotNull('md.name');
         
         if ($opts['albums']){
@@ -139,7 +139,7 @@ class Media extends BaseModel {
         return $result->get();
     }
 
-    public function insertData($data, $type = 'inherit') {
+    public static function insertData($data, $type = 'inherit') {
         $this->validator($data, $this->rules());
 
         $data['author_id'] = auth()->id();
@@ -173,8 +173,8 @@ class Media extends BaseModel {
         return $item;
     }
 
-    public function findByLang($id, $fields = ['medias.*', 'md.*'], $lang = null) {
-        $item = $this->joinLang($lang)
+    public static function findByLang($id, $fields = ['medias.*', 'md.*'], $lang = null) {
+        $item = self::joinLang($lang)
                 ->find($id, $fields);
         if (!$item) {
             $item = $this->findOrFail($id);
@@ -182,7 +182,7 @@ class Media extends BaseModel {
         return $item;
     }
 
-    public function updateData($id, $data) {
+    public static function updateData($id, $data) {
         $this->validator($data, $this->rules(true));
 
         if(isset($data['file_ids']) && $data['file_ids']){
@@ -208,7 +208,7 @@ class Media extends BaseModel {
         $item->langs()->sync([$data['lang'] => $lang_data], false);
     }
 
-    public function destroyData($ids) {
+    public static function destroyData($ids) {
         if (!is_array($ids)) {
             $ids = [$ids];
         }

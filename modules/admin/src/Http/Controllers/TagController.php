@@ -13,21 +13,19 @@ use Breadcrumb;
 
 class TagController extends BaseController
 {
-    protected $model;
     protected $cap_accept = 'manage_tags';
 
-    public function __construct(Tax $tag) {
+    public function __construct() {
         parent::__construct();
         PlMenu::setActive('tags');
         Breadcrumb::add(trans('admin::view.tags'), route('admin::tag.index'));
-        $this->model = $tag;
     }
 
     public function index(Request $request) {
         canAccess($this->cap_accept);
         
         $data = $request->all();
-        $tags = $this->model->getData('tag', $data);
+        $tags = Tax::getData('tag', $data);
         return view('admin::tag.index', ['items' => $tags]);
     }
 
@@ -43,7 +41,7 @@ class TagController extends BaseController
         
         DB::beginTransaction();
         try {
-            $this->model->insertData($request->all(), 'tag');
+            Tax::insertData($request->all(), 'tag');
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (ValidationException $ex) {
@@ -63,7 +61,7 @@ class TagController extends BaseController
         if(!$lang){
             $lang = currentLocale();
         }
-        $item = $this->model->findByLang($id, ['taxs.*', 'td.*'], $lang);
+        $item = Tax::findByLang($id, ['taxs.*', 'td.*'], $lang);
         return view('admin::tag.edit', compact('item', 'lang'));
     }
 

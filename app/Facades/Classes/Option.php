@@ -6,14 +6,8 @@ use App\Models\Option as OptionModel;
 
 class Option{
     
-    protected $option;
-    
-    public function __construct(OptionModel $option) {
-        $this->option = $option;
-    }
-    
     public function update($key, $value, $lang = null){
-        $option = $this->option->where('option_key', $key);
+        $option = OptionModel::where('option_key', $key);
         if ($lang) {
             $option->where('lang_code', $lang);
         } else {
@@ -21,7 +15,7 @@ class Option{
         }
         $option = $option->first();
         if (!$option) {
-            $option = new $this->option;
+            $option = new OptionModel();
         }
         $option->option_key = $key;
         $option->value = $value;
@@ -30,7 +24,7 @@ class Option{
     }
     
     public function get($key, $lang = null, $default = null){
-       $value =  $this->option->getOption($key, $lang);
+       $value =  OptionModel::getOption($key, $lang);
        if (!$value) {
            return $default;
        }

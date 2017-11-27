@@ -13,15 +13,10 @@ use PlMenu;
 
 class SlideController extends BaseController
 {
-    protected $model;
-    protected $slider;
     protected $cap_accept = 'manage_cats';
 
-    public function __construct(Media $slide, Tax $slider) {
+    public function __construct() {
         PlMenu::setActive('sliders');
-        
-        $this->model = $slide;
-        $this->slider = $slider;
     }
 
     public function index(Request $request) {
@@ -32,8 +27,8 @@ class SlideController extends BaseController
             abort(404);
         }
         $data = $request->all();
-        $slider = $this->slider->findByLang($slider_id);
-        $items = $this->model->getData($data);
+        $slider = Tax::findByLang($slider_id);
+        $items = Media::getData($data);
         return view('admin::slide.index', compact('items', 'slider_id', 'slider'));
     }
 
@@ -44,7 +39,7 @@ class SlideController extends BaseController
         if (!$slider_id) {
             abort(404);
         }
-        $slider = $this->slider->findByLang($slider_id);
+        $slider = Tax::findByLang($slider_id);
         return view('admin::slide.create', compact('slider_id', 'slider'));
     }
 
@@ -53,7 +48,7 @@ class SlideController extends BaseController
         
         DB::beginTransaction();
         try {
-            $this->model->insertData($request->all(), 'slide');
+            Media::insertData($request->all(), 'slide');
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (ValidationException $ex) {
@@ -72,8 +67,8 @@ class SlideController extends BaseController
         if (!$lang) {
             $lang = currentLocale();
         }
-        $item = $this->model->findByLang($id, ['medias.*', 'md.*'], $lang);
-        $slider = $this->slider->findByLang($item->slider_id);
+        $item = Media::findByLang($id, ['medias.*', 'md.*'], $lang);
+        $slider = Tax::findByLang($item->slider_id);
         return view('admin::slide.edit', compact('item', 'lang', 'slider'));
     }
 

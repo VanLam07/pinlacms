@@ -132,7 +132,7 @@ class User extends Authenticatable
         return '<img  class="img-responsive" src="/images/icon/user-icon.png" alt=" ">';
     }
     
-    public function getData($data) {
+    public static function getData($data) {
         $opts = [
             'fields' => ['*'],
             'orderby' => 'created_at',

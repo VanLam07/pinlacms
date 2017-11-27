@@ -19,13 +19,13 @@ class Lang extends BaseModel {
     const KC_LANGS = 'all_key_langs';
     const KC_CURRENT = 'current_key_langs';
     
-    public function getAllCodes() {
+    public static function getAllCodes() {
         
         if (($allCodes = Cache::get(self::KC_CODES)) !== null) {
             return $allCodes;
         }
         
-        $allCodes = DB::table($this->table)
+        $allCodes =self::where('status', AdConst::STT_PUBLISH)
                 ->select('code')
                 ->pluck('code')
                 ->toArray();
@@ -35,7 +35,7 @@ class Lang extends BaseModel {
         return $allCodes;
     }
     
-    public function getData($args = []) {
+    public static function getData($args = []) {
         $data = [
             'orderby' => 'order',
             'order' => 'asc',
@@ -45,12 +45,12 @@ class Lang extends BaseModel {
         return parent::getData($data);
     }
     
-    public function allLangs()
+    public static function allLangs()
     {
         if (($allLangs = Cache::get(self::KC_LANGS)) !== null) {
             return $allLangs;
         }
-        $allLangs = $this->getData([
+        $allLangs = self::getData([
             'fields' => ['code', 'icon', 'name'],
             'per_page' => -1,
             'to_array' => true
@@ -95,7 +95,7 @@ class Lang extends BaseModel {
         return 'No';
     }
     
-    public function rules($update = false) {
+    public static function rules($update = false) {
         if (!$update) {
             return [
                 'name' => 'required',
@@ -111,15 +111,15 @@ class Lang extends BaseModel {
         ];
     }
 
-    function findByName($name, $fields = ['*']) {
+    public static function findByName($name, $fields = ['*']) {
         return self::where('name', $name)->first($fields);
     }
     
-    public function findByCode($code, $fields=['*']){
+    public static function findByCode($code, $fields=['*']){
         return self::where('code', $code)->first($fields);
     }
     
-    public function getCurrent($fields = ['*']){
+    public static function getCurrent($fields = ['*']){
         $current_locale = app()->getLocale();
         return self::where('code', $current_locale)->first($fields);
     }

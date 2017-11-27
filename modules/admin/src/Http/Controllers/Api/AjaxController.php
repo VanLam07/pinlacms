@@ -9,11 +9,9 @@ use App\Models\File as FileModel;
 class AjaxController extends Controller
 {
     protected $request;
-    protected $file;
 
-    public function __construct(Request $request, FileModel $file) {
+    public function __construct(Request $request) {
         $this->request = $request;
-        $this->file = $file;
     }
     
     public function action(){
@@ -21,7 +19,7 @@ class AjaxController extends Controller
         $result = '';
         switch ($action) {
             case 'load_files':
-                $files = $this->file->getData($this->request->all());
+                $files = FileModel::getData($this->request->all());
                 if(!$files->isEmpty()){
                     foreach ($files as $file) {
                         $result .= '<li><a href="'.$file->getSrc('full').'" data-id="'.$file->id.'">';

@@ -16,11 +16,11 @@ class Comment extends BaseModel {
 
     use SoftDeletes;
     
-    public function isUseSoftDelete() {
+    public static function isUseSoftDelete() {
         return true;
     }
 
-    public function post() {
+    public  function post() {
         return $this->belongsTo('\App\Models\PostType', 'post_id', 'id');
     }
     
@@ -39,14 +39,14 @@ class Comment extends BaseModel {
         return trans('manage.disable');
     }
     
-    public function rules($update = false) {
+    public static function rules($update = false) {
         return [
             'content' => 'required',
             'post_id' => 'required'
         ];
     }
 
-    public function getData($args = []) {
+    public static function getData($args = []) {
         $opts = [
             'fields' => ['*'],
             'status' => [AdConst::STT_PUBLISH],
@@ -98,7 +98,7 @@ class Comment extends BaseModel {
         return $result->get();
     }
 
-    public function insertData($data) {
+    public static function insertData($data) {
         $this->validator($data, $this->rules());
 
         if (isset($data['author_id'])) {
@@ -125,7 +125,7 @@ class Comment extends BaseModel {
         return $item->post()->increment('comment_count');
     }
 
-    public function updateData($id, $data) {
+    public static function updateData($id, $data) {
         $this->validator($data, $this->rules($id));
 
         if (isset($data['time'])) {
@@ -148,7 +148,7 @@ class Comment extends BaseModel {
         return self::where('id', $id)->update($data);
     }
     
-    public function forceDeleteData($ids) {
+    public static function forceDeleteData($ids) {
         if (!is_array($ids)) {
             $ids = [$ids];
         }

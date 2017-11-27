@@ -23,7 +23,7 @@ class BaseController extends Controller {
         try {
             $this->multiPermissAction($request->get('item_ids'), $request->input('action'));
             
-            $this->model->actions($request);
+            $this->model::actions($request);
             return redirect()->back()->with('succ_mess', trans('admin::message.do_success'));
         } catch (ValidationException $ex) {
             return redirect()->back()->withErrors($ex->errors());
@@ -39,7 +39,7 @@ class BaseController extends Controller {
         
         DB::beginTransaction();
         try {
-            $this->model->insertData($request->all());
+            $this->model::insertData($request->all());
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (ValidationException $ex) {
@@ -58,7 +58,7 @@ class BaseController extends Controller {
         
         DB::beginTransaction();
         try {
-            $this->model->updateData($id, $request->all());
+            $this->model::updateData($id, $request->all());
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
         } catch (ValidationException $ex) {
@@ -77,7 +77,7 @@ class BaseController extends Controller {
         if (!$ids) {
             return;
         }
-        $items = $this->model->whereIn('id', $ids)->get();
+        $items = $this->model::whereIn('id', $ids)->get();
         if ($items->isEmpty()) {
             return;
         }

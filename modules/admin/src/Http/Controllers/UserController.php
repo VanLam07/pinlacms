@@ -12,17 +12,12 @@ use Breadcrumb;
 
 class UserController extends BaseController
 {
-    protected $model;
-    protected $role;
-    
     protected $cap_create = 'publish_user';
     protected $cap_edit = 'edit_user';
     protected $cap_remove = 'remove_user';
 
-    public function __construct(User $user, Role $role) {
+    public function __construct() {
         parent::__construct();
-        $this->model = $user;
-        $this->role = $role;
         Breadcrumb::add(trans('admin::view.users'), route('admin::user.index'));
         PlMenu::setActive('users');
     }
@@ -30,7 +25,7 @@ class UserController extends BaseController
     public function index(Request $request){
         canAccess('view_user');
         
-        $items = $this->model->getData($request->all());
+        $items = User::getData($request->all());
         return view('admin::user.index', compact('items'));
     }
     
@@ -38,14 +33,14 @@ class UserController extends BaseController
         canAccess($this->cap_create);
         
         Breadcrumb::add(trans('admin::view.create'));
-        $roles = $this->role->getData(['orderby' => 'id', 'order' => 'asc', 'per_page' => -1])->pluck('label', 'id'); 
+        $roles = Role::getData(['orderby' => 'id', 'order' => 'asc', 'per_page' => -1])->pluck('label', 'id'); 
         return view('admin::user.create', compact('roles'));
     }
     
     public function store(Request $request){
         canAccess($this->cap_create);
         
-        $valid = Validator::make($request->all(), $this->model->rules());
+        $valid = Validator::make($request->all(), User::rules());
         
         if ($valid->fails()) {
             return redirect()->back()->withInput()->withErrors($valid->errors());
@@ -54,10 +49,10 @@ class UserController extends BaseController
         $data = $request->all();
         $data['password'] = bcrypt($data['password']);
         $data['slug'] = str_slug($data['name']);
-        $user = $this->model->create($data);
+        $user = User::create($data);
         
         if (!isset($data['role_ids']) || !$data['role_ids']) {
-            $data['role_ids'] = [$this->role->getDefaultId()];
+            $data['role_ids'] = [Role::getDefaultId()];
         }
         $user->roles()->attach($data['role_ids']);
         
@@ -68,21 +63,21 @@ class UserController extends BaseController
         canAccess($this->cap_edit, $id);
         
         Breadcrumb::add(trans('admin::view.edit'));
-        $item = $this->model->findOrFail($id);
-        $roles = $this->role->getData(['orderby' => 'id', 'order' => 'asc', 'per_page' => -1])->pluck('label', 'id');
+        $item = User::findOrFail($id);
+        $roles = Role::getData(['orderby' => 'id', 'order' => 'asc', 'per_page' => -1])->pluck('label', 'id');
         return view('admin::user.edit', ['item' => $item, 'roles' => $roles]);
     }
     
     public function update($id, Request $request){
         canAccess($this->cap_edit, $id);
         
-        $valid = Validator::make($request->all(), $this->model->rules($id));
+        $valid = Validator::make($request->all(), User::rules($id));
         if ($valid->fails()) {
             return redirect()->back()->withInput()->withErrors($valid->errors());
         }
         
         $data = $request->all();
-        $fillable = $this->model->getFillable();
+        $fillable = User::getFillable();
         if (isset($data['password']) && ($data['password'])) {
             $data['password'] = bcrypt($data['password']);
         } else {
@@ -97,9 +92,9 @@ class UserController extends BaseController
             $data['image_url'] = cutImgPath($data['image_id']);
         }
         
-        $user = $this->model->findOrFail($id);
+        $user = User::findOrFail($id);
         if (!isset($data['role_ids']) || !$data['role_ids']) {
-            $data['role_ids'] = [$this->role->getDefaultId()];
+            $data['role_ids'] = [Role::getDefaultId()];
         }
         $user->roles()->sync($data['role_ids']);
         
@@ -113,7 +108,7 @@ class UserController extends BaseController
     public function destroy($id){
         canAccess('remove_user', $id);
         
-        $this->model->destroyData($id);
+        User::destroyData($id);
         return redirect()->back()->with('succ_mess', trans('admin::message.destroy_success'));
     }
 

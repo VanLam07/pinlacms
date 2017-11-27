@@ -13,26 +13,21 @@ use Breadcrumb;
 
 class MediaController extends BaseController
 {
-    protected $model;
-    protected $user;
     
     protected $cap_create = 'publish_post';
     protected $cap_edit = 'edit_post';
     protected $cap_remove = 'remove_post';
 
-    public function __construct(Media $media, Tax $album, User $user) {
+    public function __construct() {
         parent::__construct();
         PlMenu::setActive('medias');
         Breadcrumb::add(trans('admin::view.medias'), route('admin::media.index'));
-        $this->model = $media;
-        $this->album = $album;
-        $this->user = $user;
     }
 
     public function index(Request $request) {
         canAccess('view_post');
         
-        $items = $this->model->getData($request->all());
+        $items = Media::getData($request->all());
         return view('admin::media.index', ['items' => $items]);
     }
 
@@ -40,7 +35,7 @@ class MediaController extends BaseController
         canAccess($this->cap_create);
 
         Breadcrumb::add(trans('admin::view.create'));
-        $albums = $this->album->getData('album', [
+        $albums = Tax::getData('album', [
             'orderby' => 'name',
             'order' => 'asc',
             'per_page' => -1,
@@ -49,7 +44,7 @@ class MediaController extends BaseController
         
         $users = null;
         if (canDo('edit_post', null, AdConst::CAP_OTHER)) {
-            $users = $this->user->getData([
+            $users = User::getData([
                 'orderby' => 'name',
                 'order' => 'asc',
                 'per_page' => -1,
@@ -66,14 +61,14 @@ class MediaController extends BaseController
     }
 
     public function edit($id, Request $request) {
-        canAccess('edit_post', $this->model->getAuthorId($id));
+        canAccess('edit_post', Media::getAuthorId($id));
 
         Breadcrumb::add(trans('admin::view.edit'));
         $lang = $request->get('lang');
         if (!$lang) {
             $lang = currentLocale();
         }
-        $albums = $this->album->getData('album', [
+        $albums = Tax::getData('album', [
             'orderby' => 'name',
             'order' => 'asc',
             'per_page' => -1,
@@ -81,20 +76,20 @@ class MediaController extends BaseController
         ]);
         $users = null;
         if (cando('edit_post', null, \Admin\Facades\AdConst::CAP_OTHER)) {
-            $users = $this->user->getData([
+            $users = User::getData([
                 'orderby' => 'name',
                 'order' => 'asc',
                 'per_page' => -1,
                 'fields' => ['name', 'id']
             ])->pluck('name', 'id')->toArray();
         }
-        $item = $this->model->findByLang($id, ['medias.*', 'md.*'], $lang);
+        $item = Media::findByLang($id, ['medias.*', 'md.*'], $lang);
         $currAlbums = $item->albums->pluck('id')->toArray();
         return view('admin::media.edit', compact('item', 'albums', 'users', 'currAlbums', 'lang'));
     }
 
     public function update($id, Request $request) {
-        canAccess($this->cap_edit, $this->model->getAuthorId($id));
+        canAccess($this->cap_edit, Media::getAuthorId($id));
         
         return parent::update($id, $request);
     }

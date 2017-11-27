@@ -8,18 +8,18 @@ use Admin\Facades\AdConst;
 class Tax extends BaseModel
 {
     protected $table = 'taxs';
-    protected $tblDesc = 'tax_desc';
+    protected static $tblDesc = 'tax_desc';
     protected $fillable = ['image_id', 'type', 'parent_id', 'order', 'count', 'status'];
 
-    public function joinLang($code = null) {
+    public static function joinLang($code = null) {
         if (!$code) {
             $code = currentLocale();
         }
-        return $this->join($this->tblDesc . ' as td', 'taxs.id', '=', 'td.tax_id')
+        return self::join(self::$tblDesc . ' as td', 'taxs.id', '=', 'td.tax_id')
                     ->where('td.lang_code', '=', $code);
     }
     
-    public function rules($update = false) {
+    public static function rules($update = false) {
         if ($update) {
             return [
                 'locale.name' => 'required',
@@ -33,7 +33,7 @@ class Tax extends BaseModel
     }
     
     public function getName($lang=null){
-        $item = $this->joinLang($lang)
+        $item = self::joinLang($lang)
                 ->find($this->id, ['td.name']);
         if($item){
             return $item->name;
@@ -42,7 +42,7 @@ class Tax extends BaseModel
     }
     
     public function parentName() {
-        $item = $this->joinLang()
+        $item = self::joinLang()
                 ->where('taxs.id', $this->parent_id)
                 ->first(['td.name']);
 
@@ -79,7 +79,7 @@ class Tax extends BaseModel
         return $this->hasMany('\App\Models\Menu', 'group_id');
     }
 
-    public function getData($type = 'cat', $args = []) {
+    public static function getData($type = 'cat', $args = []) {
         $opts = [
             'fields' => ['taxs.*', 'td.*'],
             'orderby' => 'td.name',
@@ -94,7 +94,7 @@ class Tax extends BaseModel
         
         $opts = array_merge($opts, $args);
 
-        $result = $this->joinLang()
+        $result = self::joinLang()
                 ->where('type', $type)
                 ->whereNotNull('td.name');
         if ($opts['exclude']) {
@@ -120,7 +120,7 @@ class Tax extends BaseModel
         return $result->get();
     }
 
-    public function insertData($data, $type = 'cat') {
+    public static function insertData($data, $type = 'cat') {
         $this->validator($data, $this->rules());
 
         if(isset($data['parent_id']) && $data['parent_id'] == 0){
@@ -149,8 +149,8 @@ class Tax extends BaseModel
         return $item;
     }
 
-    public function findByLang($id, $fields = ['taxs.*', 'td.*'], $lang = null) {
-        $item = $this->joinLang($lang)
+    public static function findByLang($id, $fields = ['taxs.*', 'td.*'], $lang = null) {
+        $item = self::joinLang($lang)
                 ->find($id, $fields);
         if($item){
             return $item;
@@ -158,7 +158,7 @@ class Tax extends BaseModel
         return self::findOrFail($id);
     }
 
-    public function updateData($id, $data) {
+    public static function updateData($id, $data) {
         $this->validator($data, $this->rules(true));
 
         if(isset($data['file_ids']) && $data['file_ids']){
@@ -183,7 +183,7 @@ class Tax extends BaseModel
         $item->langs()->sync([$data['lang'] => $langData], false);
     }
     
-    public function tableCats($items, $parent = 0, $depth = 0) {
+    public static function tableCats($items, $parent = 0, $depth = 0) {
         $html = '';
         $indent = str_repeat("-- ", $depth);
         foreach ($items as $item) {
@@ -209,7 +209,7 @@ class Tax extends BaseModel
         return $html;
     }
     
-    public function toNested($items, $parent = 0) {
+    public static function toNested($items, $parent = 0) {
         $results = [];
         foreach ($items as $item) {
             if ($item->parent_id == $parent) {
@@ -222,7 +222,7 @@ class Tax extends BaseModel
         return $results;
     }
 
-    public function nestedMenus($lists, $parent) {
+    public static function nestedMenus($lists, $parent) {
         $output = '';
         foreach ($lists as $key => $item) {
             if ($item->parent_id == $parent) {

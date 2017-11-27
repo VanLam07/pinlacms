@@ -49,13 +49,13 @@ class File extends BaseModel
         return '<img '. $attrsText .' class="img-responsive '.$class.'" src="/images/default.jpg" alt="No image">';
     }
     
-    public function rules() {
+    public static function rules() {
         return [
             'file' => 'mimes:jpeg,png,gif,bmp,svg|max:10240'
         ];
     }
 
-    public function getData($args = []) {
+    public static function getData($args = []) {
         $opts = [
             'fields' => ['*'],
             'orderby' => 'created_at',
@@ -97,7 +97,7 @@ class File extends BaseModel
         return $result->paginate($opts['per_page']);
     }
 
-    public function insertData($file) {
+    public static function insertData($file) {
         $this->validator(['file' => $file], $this->rules());
 
         $name = $file->getClientOriginalName();
@@ -184,7 +184,7 @@ class File extends BaseModel
         return $item;
     }
     
-    public function checkRename($originalName) {
+    public static function checkRename($originalName) {
         $upload_dir = trim(config('image.upload_dir', 'uploads'), '/'); 
         $cut_name = $this->cutName($originalName);
         $base_name = $cut_name['name'];
@@ -197,7 +197,7 @@ class File extends BaseModel
         return $re_name;
     }
     
-    public function cutName($originalName){
+    public static function cutName($originalName){
         $name_str = explode('.', $originalName);
         $extension = array_pop($name_str);
         return [
@@ -206,7 +206,7 @@ class File extends BaseModel
         ];
     }
 
-    public function destroyData($ids) {
+    public static function destroyData($ids) {
         if (!is_array($ids)) {
             $ids = [$ids];
         }
