@@ -3,7 +3,6 @@
 namespace App\Exceptions;
 
 use Exception;
-use Illuminate\Support\MessageBag;
 
 class PlException extends Exception
 {
@@ -12,20 +11,18 @@ class PlException extends Exception
 
     public function __construct($error, $code = 0, $previous = null) {
         $this->error = $error;
-        parent::__construct($message, $code, $previous);
+        parent::__construct(is_string($error) ? $error : '', $code, $previous);
     }
     
-    public function getMessage(){
+    public function getError(){
         $message = $this->error;
-        if ($message instanceof MessageBag) {
+        if (is_object($message)) {
             $htmlError = '<ul>';
-            foreach ($message as $arrMess) {
-                foreach ($arrMess as $mess) {
-                    $htmlError .= '<li>'. $mess .'</li>';
-                }
+            foreach ($message->all() as $mess) {
+                $htmlError .= '<li>'. $mess .'</li>';
             }
-            $htmlError = '</ul>';
-            $messsage = $htmlError;
+            $htmlError .= '</ul>';
+            return $htmlError;
         }
         return $message;
     }

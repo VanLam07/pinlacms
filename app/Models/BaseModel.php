@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Admin\Facades\AdConst;
-use Illuminate\Validation\ValidationException;
+use App\Exceptions\PlException;
 use Exception;
 use Validator;
 use PlOption;
@@ -15,19 +15,19 @@ class BaseModel extends Model {
     protected $capCreate = 'publish_post';
     protected $capEdit = 'edit_post';
     protected $capRemove = 'remove_post';
-    
-    const CACHE_TIME = 3600; //minutes
 
-    public function isUseSoftDelete() {
+    const CACHE_TIME = 3600; //minutes
+    
+    public static function isUseSoftDelete() {
         return false;
     }
     
     public static function validator(array $attrs, array $rule = [], array $message = []) {
         $valid = Validator::make($attrs, 
-                $rule ? $rule : $this->rules(), 
+                $rule ? $rule : self::rules(), 
                 $message);
         if ($valid->fails()) {
-            throw new ValidationException($valid, 422);
+            throw new PlException($valid->messages(), 422);
         }
         return true;
     }
@@ -100,7 +100,7 @@ class BaseModel extends Model {
     }
 
     public static function insertData($data) {
-        self::validator($data, $this->rules());
+        self::validator($data, self::rules());
         
         return self::create($data);
     }
@@ -119,7 +119,7 @@ class BaseModel extends Model {
             unset($data['status']);
             $hasDel = true;
         }
-        $fillable = self::getFillable();
+        $fillable = $itemUpdate->getFillable();
         $data = array_only($data, $fillable);
         $itemUpdate->update($data);
         if ($hasDel) {
@@ -171,7 +171,7 @@ class BaseModel extends Model {
             'item_ids.*' => 'required' 
         ]);
         if ($valid->fails()) {
-            throw new ValidationException($valid, 422);
+            throw new PlException($valid->message(), 422);
         }
 
         $item_ids = $request->input('item_ids');
@@ -193,10 +193,10 @@ class BaseModel extends Model {
                 self::destroyData($item_ids);
                 break;
             case 'delete':
-                if ($this->isUseSoftDelete()) {
-                    $this->forceDeleteData($item_ids);
+                if (self::isUseSoftDelete()) {
+                    self::forceDeleteData($item_ids);
                 } else {
-                    $this->destroyData($item_ids);
+                    self::destroyData($item_ids);
                 }
                 break;
             case defalt:

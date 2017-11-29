@@ -110,7 +110,7 @@ class Tax extends BaseModel
                 ->orderBy($opts['orderby'], $opts['order']);
         
         if ($opts['filters']) {
-            $this->filterData($result, $opts['filters']);
+            self::filterData($result, $opts['filters']);
         }
 
         if ($opts['per_page'] > -1) {
@@ -121,7 +121,7 @@ class Tax extends BaseModel
     }
 
     public static function insertData($data, $type = 'cat') {
-        $this->validator($data, $this->rules());
+        self::validator($data, self::rules());
 
         if(isset($data['parent_id']) && $data['parent_id'] == 0){
             $data['parent_id'] = null;
@@ -133,9 +133,7 @@ class Tax extends BaseModel
         if (!isset($data['order']) || !$data['order']) {
             $data['order'] = 0;
         }
-        $fillable = $this->getFillable();
-        $fillData = array_only($data, $fillable);
-        $item = self::create($fillData);
+        $item = self::create($data);
 
         $allLangs = getLangs();
         foreach ($allLangs as $lang) {
@@ -159,7 +157,7 @@ class Tax extends BaseModel
     }
 
     public static function updateData($id, $data) {
-        $this->validator($data, $this->rules(true));
+        self::validator($data, self::rules(true));
 
         if(isset($data['file_ids']) && $data['file_ids']){
             $data['image_id'] = $data['file_ids'][0];
@@ -170,9 +168,10 @@ class Tax extends BaseModel
         if (!isset($data['order']) || !$data['order']) {
             $data['order'] = 0;
         }
-        $fillable = $this->getFillable();
+        
+        $item = self::findOrFail($id);
+        $fillable = $item->getFillable();
         $fillData = array_only($data, $fillable);
-        $item = $this->findOrFail($id);
         $item->update($fillData);
 
         $langData = $data['locale'];
@@ -203,7 +202,7 @@ class Tax extends BaseModel
                     </a>
                 </td>';
                 $html .= '</tr>';
-                $html .= $this->tableCats($items, $item->id, $depth + 1);
+                $html .= self::tableCats($items, $item->id, $depth + 1);
             }
         }
         return $html;
@@ -214,7 +213,7 @@ class Tax extends BaseModel
         foreach ($items as $item) {
             if ($item->parent_id == $parent) {
                 $nitem = $item;
-                $childs = $this->toNested($items, $item->id);
+                $childs = self::toNested($items, $item->id);
                 $nitem['childs'] = $childs;
                 $results[] = $nitem;
             }
@@ -245,7 +244,7 @@ class Tax extends BaseModel
                         . Form::text('menus[' . $item->id . '][icon]', $item->icon, ['class' => 'form-control'])
                         . '</div>'
                         . '</div>';
-                $output2 = $this->nestedMenus($lists, $item->id);
+                $output2 = self::nestedMenus($lists, $item->id);
                 if ($output2 != '') {
                     $output .= '<ol class="childs dd-list">' . $output2 . '</ol>';
                 }

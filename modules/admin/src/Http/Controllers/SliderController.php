@@ -4,8 +4,7 @@ namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
-use Illuminate\Validation\ValidationException;
-use Exception;
+use App\Exceptions\PlException;
 use App\Models\Tax;
 use Illuminate\Support\Facades\DB;
 use PlMenu;
@@ -13,9 +12,11 @@ use PlMenu;
 class SliderController extends BaseController
 {
    protected $cap_accept = 'manage_cats';
+   protected $model;
 
     public function __construct() {
         PlMenu::setActive('sliders');
+        $this->model = Tax::class;
     }
 
     public function index(Request $request) {
@@ -40,12 +41,9 @@ class SliderController extends BaseController
             Tax::insertData($request->all(), 'slider');
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
-        } catch (ValidationException $ex) {
+        } catch (PlException $ex) {
             DB::rollback();
-            return redirect()->back()->withInput()->withErrors($ex->errors());
-        } catch (Exception $ex) {
-            DB::rollback();
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
+            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }
     }
 

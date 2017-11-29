@@ -5,7 +5,7 @@ namespace Admin\Http\Controllers;
 use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
 use App\Models\File as FileModel;
-use Illuminate\Validation\ValidationException;
+use App\Exceptions\PlException;
 use App\User;
 use PlMenu;
 use Breadcrumb;
@@ -15,11 +15,13 @@ class FileController extends BaseController {
     protected $cap_create = 'publish_file';
     protected $cap_edit = 'edit_file';
     protected $cap_remove = 'remove_file';
+    protected $model;
 
     public function __construct() {
         parent::__construct();
         PlMenu::setActive('files');
         Breadcrumb::add(trans('admin::view.files'), route('admin::file.index'));
+        $this->model = FileModel::class;
     }
 
     public function index(Request $request) {
@@ -86,15 +88,11 @@ class FileController extends BaseController {
                 $newfile->full_url = $newfile->getSrc('full');
                 array_push($results, $newfile);
             }
-        } catch (ValidationException $ex) {
+        } catch (PlException $ex) {
             if ($request->wantsJson() || $request->ajax()) {
-                return response()->json($ex->getMessage(), 422);
+                return response()->json($ex->getError(), 422);
             }
             return redirect()->back()->withInput()->withErrors($ex);
-        } catch (\Exception $ex) {
-            if ($request->wantsJson() || $request->ajax()) {
-                return response()->json($ex->getMessage(), 500);
-            }
         }
             
         if($request->wantsJson() || $request->ajax()){

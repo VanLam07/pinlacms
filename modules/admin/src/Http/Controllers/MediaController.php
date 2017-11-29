@@ -13,7 +13,7 @@ use Breadcrumb;
 
 class MediaController extends BaseController
 {
-    
+    protected $model;
     protected $cap_create = 'publish_post';
     protected $cap_edit = 'edit_post';
     protected $cap_remove = 'remove_post';
@@ -22,6 +22,7 @@ class MediaController extends BaseController
         parent::__construct();
         PlMenu::setActive('medias');
         Breadcrumb::add(trans('admin::view.medias'), route('admin::media.index'));
+        $this->model = Media::class;
     }
 
     public function index(Request $request) {

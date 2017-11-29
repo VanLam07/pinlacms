@@ -87,7 +87,7 @@ class Comment extends BaseModel {
         }
         
         if ($opts['filters']) {
-            $this->filterData($result, $opts['filters']);
+            self::filterData($result, $opts['filters']);
         }
         
         $result->orderBy($opts['orderby'], $opts['order']);
@@ -99,7 +99,7 @@ class Comment extends BaseModel {
     }
 
     public static function insertData($data) {
-        $this->validator($data, $this->rules());
+        self::validator($data, self::rules());
 
         if (isset($data['author_id'])) {
             $author = User::find($data['author_id']);
@@ -126,7 +126,7 @@ class Comment extends BaseModel {
     }
 
     public static function updateData($id, $data) {
-        $this->validator($data, $this->rules($id));
+        self::validator($data, self::rules($id));
 
         if (isset($data['time'])) {
             $time = $data['time'];
@@ -143,9 +143,10 @@ class Comment extends BaseModel {
         if (!isset($data['parent_id']) || !$data['parent_id']) {
             $data['parent_id'] = null;
         }
-        $fillable = $this->getFillable();
+        $item = self::findOrFail($id);
+        $fillable = $item->getFillable();
         $data = array_only($data, $fillable);
-        return self::where('id', $id)->update($data);
+        return $item->update($data);
     }
     
     public static function forceDeleteData($ids) {

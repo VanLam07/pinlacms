@@ -12,11 +12,13 @@ use Breadcrumb;
 class RoleController extends BaseController
 {
     protected $cap_accept = 'manage_roles';
+    protected $model;
 
     public function __construct() {
         parent::__construct();
         PlMenu::setActive('roles');
         Breadcrumb::add(trans('admin::view.roles'), route('admin::role.index'));
+        $this->model = Role::class;
     }
     
     public function index(Request $request){

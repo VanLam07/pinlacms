@@ -69,7 +69,7 @@ class PostController extends BaseController {
             return parent::store($request);
         } catch (\App\Exceptions\PlException $ex) {
             return redirect()->back()->withInput()
-                    ->with('error_mess', $ex->getMessage());
+                    ->with('error_mess', $ex->getError());
         }
     }
 

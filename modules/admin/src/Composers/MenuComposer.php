@@ -25,7 +25,7 @@ class MenuComposer {
                     [
                         'name' => trans('admin::view.all'),
                         'url' => route('admin::post.index', ['status' => AdConst::STT_PUBLISH]),
-                        'active' => 'post_all',
+                        'active' => 'posts',
                         'cap' => 'view_post'
                     ],
                     [
@@ -46,7 +46,7 @@ class MenuComposer {
                     [
                         'name' => trans('admin::view.all'),
                         'url' => route('admin::page.index', ['status' => AdConst::STT_PUBLISH]),
-                        'active' => 'page_all',
+                        'active' => 'pages',
                         'cap' => 'view_post'
                     ],
                     [
@@ -108,7 +108,7 @@ class MenuComposer {
             ],
             [
                 'name' => trans('admin::view.sliders'), 
-                'url' => route('admin::slider.index'), 
+                'url' => route('admin::slider.index', ['status' => AdConst::STT_PUBLISH]), 
                 'active' => 'sliders',
                 'cap' => 'manage_cats', 
                 'icon' => 'fa-sliders'

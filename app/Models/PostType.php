@@ -17,7 +17,7 @@ class PostType extends BaseModel
     
     use SoftDeletes;
     
-    public function isUseSoftDelete() {
+    public static function isUseSoftDelete() {
         return true;
     }
 

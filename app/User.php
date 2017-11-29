@@ -5,11 +5,10 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Admin\Facades\AdConst;
-use Illuminate\Validation\ValidationException;
+use App\Exceptions\PlException;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Session;
 use Validator;
-use Exception;
 
 class User extends Authenticatable
 {
@@ -26,7 +25,7 @@ class User extends Authenticatable
     protected $dates = ['birth'];
     
     
-    public function isUseSoftDelete() {
+    public static function isUseSoftDelete() {
         return true;
     }
     
@@ -34,7 +33,7 @@ class User extends Authenticatable
         return 'user_cap_'.$this->name.'_'.sha1($this->id);
     }
     
-    public function rules($id = null) {
+    public static function rules($id = null) {
         if (!$id) {
             return [
                 'name' => 'required',
@@ -162,7 +161,7 @@ class User extends Authenticatable
             $result->whereNotIn($opts['exclude_key'], $opts['exclude']);
         }
         if ($opts['filters']) {
-            $this->filterData($result, $opts['filters']);
+            self::filterData($result, $opts['filters']);
         }
         $result->orderby($opts['orderby'], $opts['order']);
         
@@ -198,14 +197,14 @@ class User extends Authenticatable
         return trim($result, ', ');
     }
     
-    public function changeStatus($ids, $status) {
+    public static function changeStatus($ids, $status) {
         if (!is_array($ids)) {
             $ids = [$ids];
         }
         return self::whereIn('id', $ids)->update(['status' => $status]);
     }
     
-    public function forceDeleteData($ids) {
+    public static function forceDeleteData($ids) {
         if (!is_array($ids)) {
             $ids = [$ids];
         }
@@ -218,14 +217,14 @@ class User extends Authenticatable
         }
     }
     
-    public function destroyData($ids) {
+    public static function destroyData($ids) {
         if (!is_array($ids)) {
             $ids = [$ids];
         }
         return self::destroy($ids);
     }
     
-    public function restoreData($ids) {
+    public static function restoreData($ids) {
         if (!is_array($ids)) {
             $ids = [$ids];
         }
@@ -233,7 +232,7 @@ class User extends Authenticatable
                 ->restore();
     }
 
-    public function actions($request) {
+    public static function actions($request) {
         $valid = Validator::make($request->all(), [
             'action' => 'required',
             'item_ids.*' => 'required' 
@@ -249,20 +248,20 @@ class User extends Authenticatable
         $action = $request->input('action');
         switch ($action) {
             case 'restore':
-                $this->restoreData($item_ids);
+                self::restoreData($item_ids);
                 break;
             case 'publish':
-                $this->changeStatus($item_ids, AdConst::STT_PUBLISH);
+                self::changeStatus($item_ids, AdConst::STT_PUBLISH);
                 break;
             case 'draft': 
-                $this->changeStatus($item_ids, AdConst::STT_DRAFT);
+                self::changeStatus($item_ids, AdConst::STT_DRAFT);
                 break;
             case 'trash':
-                $this->destroyData($item_ids);
+                self::destroyData($item_ids);
                 break;
                 break;
             case 'delete':
-                $this->forceDeleteData($item_ids);
+                self::forceDeleteData($item_ids);
                 break;
             case defalt:
                 break;

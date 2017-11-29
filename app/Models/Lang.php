@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\DB;
+use App\Helper\CacheFunc;
 use Admin\Facades\AdConst;
 
 class Lang extends BaseModel {
@@ -21,7 +19,7 @@ class Lang extends BaseModel {
     
     public static function getAllCodes() {
         
-        if (($allCodes = Cache::get(self::KC_CODES)) !== null) {
+        if (($allCodes = CacheFunc::get(self::KC_CODES)) !== null) {
             return $allCodes;
         }
         
@@ -30,7 +28,7 @@ class Lang extends BaseModel {
                 ->pluck('code')
                 ->toArray();
         
-        Cache::put(self::KC_CODES, $allCodes, self::CACHE_TIME);
+        CacheFunc::put(self::KC_CODES, $allCodes);
         
         return $allCodes;
     }
@@ -47,7 +45,7 @@ class Lang extends BaseModel {
     
     public static function allLangs()
     {
-        if (($allLangs = Cache::get(self::KC_LANGS)) !== null) {
+        if (($allLangs = CacheFunc::get(self::KC_LANGS)) !== null) {
             return $allLangs;
         }
         $allLangs = self::getData([
@@ -55,7 +53,7 @@ class Lang extends BaseModel {
             'per_page' => -1,
             'to_array' => true
         ]);
-        Cache::put(self::KC_LANGS, $allLangs, self::CACHE_TIME);
+        CacheFunc::put(self::KC_LANGS, $allLangs);
         return $allLangs;
     }
 
@@ -96,19 +94,21 @@ class Lang extends BaseModel {
     }
     
     public static function rules($update = false) {
-        if (!$update) {
-            return [
-                'name' => 'required',
-                'code' => 'required',
-                'icon' => 'required',
-                'folder' => 'required',
-                'unit' => 'required',
-                'ratio_currency' => 'required|numeric'
-            ];
-        }
         return [
-            'code' => 'required'
+            'name' => 'required',
+            'code' => 'required|max:2',
+            'icon' => 'required',
+            'folder' => 'required',
+            'unit' => 'required',
+            'ratio_currency' => 'required|numeric'
         ];
+    }
+    
+    public static function insertData($data) {
+        if (!isset($data['order'])) {
+            $data['order'] = 0;
+        }
+        return parent::insertData($data);
     }
 
     public static function findByName($name, $fields = ['*']) {
@@ -125,7 +125,7 @@ class Lang extends BaseModel {
     }
     
     public function save(array $options = array()) {
-        Cache::forget(self::KC_CODES);
+        CacheFunc::forget(self::KC_CODES);
         parent::save($options);
     }
 

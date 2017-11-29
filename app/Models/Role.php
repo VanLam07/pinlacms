@@ -32,7 +32,7 @@ class Role extends BaseModel {
     }
 
     public static function updateData($id, $data) {
-        $this->validator($data, $this->rules($id));
+        self::validator($data, self::rules($id));
 
         $item = self::findOrFail($id);
         if (isset($data['caps_level']) && $data['caps_level']) {
@@ -48,7 +48,7 @@ class Role extends BaseModel {
         }
         $item->updateListCaps();
         
-        $fillable = self::getFillable();
+        $fillable = $item->getFillable();
         $data = array_only($data, $fillable);
         return self::where('id', $id)->update($data);
     }

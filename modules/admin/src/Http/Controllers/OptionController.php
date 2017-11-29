@@ -5,20 +5,19 @@ namespace Admin\Http\Controllers;
 use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
 use App\Models\Option;
-use App\Models\File;
-use Illuminate\Validation\ValidationException;
-use Exception;
 use PlMenu;
 use Breadcrumb;
 
 class OptionController extends BaseController
 {
     protected $cap_accept = 'manage_options';
+    protected $model;
 
     public function __construct() {
         parent::__construct();
         PlMenu::setActive('options');
         Breadcrumb::add(trans('admin::view.options'), route('admin::option.index'));
+        $this->model = Option::class;
     }
     
     public function index(Request $request){

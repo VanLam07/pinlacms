@@ -2,6 +2,10 @@
 
 @section('title', trans('admin::view.man_tags'))
 
+<?php
+use Admin\Facades\AdConst;
+?>
+
 @section('content')
 
 <div class="row">
@@ -53,7 +57,7 @@
             {!! Form::select('status', AdView::getStatusLabel(false), old('status'), ['class' => 'form-control']) !!}
         </div>
 
-        <a href="{{route('admin::tag.index')}}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
+        <a href="{{ route('admin::tag.index', ['status' => AdConst::STT_PUBLISH]) }}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{trans('admin::view.back')}}</a>
         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{trans('admin::view.create')}}</button>
 
         {!! Form::close() !!}

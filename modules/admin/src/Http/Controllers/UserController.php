@@ -15,11 +15,13 @@ class UserController extends BaseController
     protected $cap_create = 'publish_user';
     protected $cap_edit = 'edit_user';
     protected $cap_remove = 'remove_user';
+    protected $model;
 
     public function __construct() {
         parent::__construct();
         Breadcrumb::add(trans('admin::view.users'), route('admin::user.index'));
         PlMenu::setActive('users');
+        $this->model = User::class;
     }
     
     public function index(Request $request){
@@ -76,8 +78,9 @@ class UserController extends BaseController
             return redirect()->back()->withInput()->withErrors($valid->errors());
         }
         
+        $user = User::findOrFail($id);
         $data = $request->all();
-        $fillable = User::getFillable();
+        $fillable = $user->getFillable();
         if (isset($data['password']) && ($data['password'])) {
             $data['password'] = bcrypt($data['password']);
         } else {
@@ -92,7 +95,6 @@ class UserController extends BaseController
             $data['image_url'] = cutImgPath($data['image_id']);
         }
         
-        $user = User::findOrFail($id);
         if (!isset($data['role_ids']) || !$data['role_ids']) {
             $data['role_ids'] = [Role::getDefaultId()];
         }

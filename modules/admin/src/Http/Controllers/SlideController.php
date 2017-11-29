@@ -4,7 +4,7 @@ namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
-use Illuminate\Validation\ValidationException;
+use App\Exceptions\PlException;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Models\Media;
@@ -14,9 +14,11 @@ use PlMenu;
 class SlideController extends BaseController
 {
     protected $cap_accept = 'manage_cats';
+    protected $model;
 
     public function __construct() {
         PlMenu::setActive('sliders');
+        $this->model = Media::class;
     }
 
     public function index(Request $request) {
@@ -51,12 +53,9 @@ class SlideController extends BaseController
             Media::insertData($request->all(), 'slide');
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
-        } catch (ValidationException $ex) {
+        } catch (PlException $ex) {
             DB::rollback();
-            return redirect()->back()->withInput()->withErrors($ex->errors());
-        } catch (Exception $ex) {
-            DB::rollback();
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
+            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }
     }
 

@@ -5,7 +5,7 @@ namespace Admin\Http\Controllers;
 use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
 use App\Models\PostType;
-use Illuminate\Validation\ValidationException;
+use App\Exceptions\PlException;
 use File;
 use DB;
 use Exception;
@@ -15,10 +15,12 @@ use Breadcrumb;
 class PageController extends BaseController
 {
     protected $templates = [];
+    protected $model;
 
     public function __construct() {
         parent::__construct();
         $this->templates = ['' => trans('admin::view.selection')];
+        $this->model = PostType::class;
         
         $view_path = config('view.paths')[0].'\front\templates';
         $files = File::files($view_path);
@@ -41,6 +43,8 @@ class PageController extends BaseController
         canAccess('publish_post');
 
         Breadcrumb::add(trans('admin::view.create'));
+        PlMenu::setActive('page_create');
+        
         return view('admin::page.create', ['templates' => $this->templates]);
     }
 
@@ -52,12 +56,9 @@ class PageController extends BaseController
             PostType::insertData($request->all(), 'page');
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
-        } catch (ValidationException $ex) {
+        } catch (PlException $ex) {
             DB::rollback();
-            return redirect()->back()->withInput()->withErrors($ex->errors());
-        } catch (Exception $ex) {
-            DB::rollback();
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
+            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }
     }
 

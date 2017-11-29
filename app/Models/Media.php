@@ -21,26 +21,26 @@ class Media extends BaseModel {
         if (!$lang) {
             $lang = currentLocale();
         }
-        return $this->join('media_desc as md', function($join) use ($lang) {
+        return self::join('media_desc as md', function($join) use ($lang) {
                     $join->on('medias.id', '=', 'md.media_id')
                             ->where('md.lang_code', '=', $lang);
                 });
     }
 
-    public static function langs() {
+    public function langs() {
         return $this->belongsToMany('\App\Models\Lang', 'media_desc', 'media_id', 'lang_code');
     }
 
-    public static function author() {
+    public function author() {
         return $this->belongsTo('\App\User', 'author_id', 'id')
                         ->select('id', 'name');
     }
 
-    public static function albums() {
+    public function albums() {
         return $this->belongsToMany('\App\Models\Tax', 'media_tax', 'media_id', 'tax_id');
     }
 
-    public static function getAlbums($lang = null) {
+    public function getAlbums($lang = null) {
         $lang = $lang ? $lang : current_locale();
         return $this->belongsToMany('\App\Models\Tax', 'media_tax', 'media_id', 'tax_id')
                         ->join('tax_desc as td', 'taxs.id', '=', 'td.tax_id')
@@ -52,18 +52,18 @@ class Media extends BaseModel {
                         ->where('taxs.type', 'album');
     }
     
-    public static function thumbnail(){
+    public function thumbnail(){
         return $this->belongsTo('\App\Models\File', 'thumb_id', 'id');
     }
     
-    public static function getThumbnailSrc($size = 'thumbnail') {
+    public function getThumbnailSrc($size = 'thumbnail') {
         if ($this->thumbnail) {
             return $this->thumbnail->getSrc($size);
         }
         return null;
     }
     
-    public static function getThumbnail($size = 'thumbnail', $class = 'null') {
+    public function getThumbnail($size = 'thumbnail', $class = 'null') {
         if ($this->thumb_type == 'image' && $this->thumbnail) {
             return $this->thumbnail->getImage($size, $class);
         }
@@ -128,7 +128,7 @@ class Media extends BaseModel {
             $result->whereNotIn('medias.id', $opts['exclude']);
         }
         if ($opts['filters']) {
-            $this->filterData($result, $opts['filters']);
+            self::filterData($result, $opts['filters']);
         }
         $result->select($opts['fields'])
                 ->orderBy($opts['orderby'], $opts['order']);
@@ -140,7 +140,7 @@ class Media extends BaseModel {
     }
 
     public static function insertData($data, $type = 'inherit') {
-        $this->validator($data, $this->rules());
+        self::validator($data, self::rules());
 
         $data['author_id'] = auth()->id();
         if (isset($data['time'])) {
@@ -177,20 +177,21 @@ class Media extends BaseModel {
         $item = self::joinLang($lang)
                 ->find($id, $fields);
         if (!$item) {
-            $item = $this->findOrFail($id);
+            $item = self::findOrFail($id);
         }
         return $item;
     }
 
     public static function updateData($id, $data) {
-        $this->validator($data, $this->rules(true));
+        self::validator($data, self::rules(true));
 
         if(isset($data['file_ids']) && $data['file_ids']){
             $data['thumb_id'] = $data['file_ids'][0];
         }
-        $fillable = $this->getFillable();
+        
+        $item = self::findOrFail($id);
+        $fillable = $item->getFillable();
         $fill_data = array_only($data, $fillable);
-        $item = $this->find($id);
         $item->update($fill_data);
         
         if (isset($data['cat_ids'])) {

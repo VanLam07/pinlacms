@@ -4,7 +4,7 @@ namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
-use Illuminate\Validation\ValidationException;
+use App\Exceptions\PlException;
 use App\Models\Menu;
 use App\Models\Tax;
 use App\Models\PostType;
@@ -13,6 +13,12 @@ use Admin\Facades\AdConst;
 class MenuController extends BaseController {
 
     protected $cap_accept = 'manage_menus';
+    protected $model;
+    
+    public function __construct() {
+        parent::__construct();
+        $this->model = Menu::class;
+    }
 
     public function index(Request $request) {
         canAccess($this->cap_accept);
@@ -41,10 +47,8 @@ class MenuController extends BaseController {
         try {
             Menu::insertData($request->all());
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
-        } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
-        } catch (DbException $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMess());
+        } catch (PlException $ex) {
+            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }
     }
 
@@ -61,8 +65,8 @@ class MenuController extends BaseController {
         try {
             Menu::updateData($id, $request->all());
             return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
-        } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->validator);
+        } catch (PlException $ex) {
+            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }
     }
 
@@ -90,8 +94,8 @@ class MenuController extends BaseController {
         try {
             Menu::actions($request);
             return redirect()->back()->withInput()->with('succ_mess', trans('message.action_success'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
+        } catch (PlException $ex) {
+            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }
     }
 

@@ -34,9 +34,10 @@ class Cap extends BaseModel
     }
     
     public static function updateData($name, $data) {
-        $fillable = self::getFillable();
+        $item = self::findOrFail($name);
+        $fillable = $item->getFillable();
         $data = array_only($data, $fillable);
-        return self::where('name', $name)->update($data);
+        return $item->update($data);
     }
     
     public static function findByName($name) {

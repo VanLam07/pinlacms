@@ -12,6 +12,8 @@ use Breadcrumb;
 class LangController extends BaseController
 {
     
+    protected $cap_accept = 'manage_langs';
+
     public function __construct(Lang $lang) {
         parent::__construct();
         PlMenu::setActive('langs');

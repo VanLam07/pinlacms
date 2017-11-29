@@ -15,30 +15,30 @@ class Menu extends BaseModel {
         if (!$lang) {
             $lang = currentLocale();
         }
-        return $this->join('menu_desc as md', 'menus.id', '=', 'md.menu_id')
+        return self::join('menu_desc as md', 'menus.id', '=', 'md.menu_id')
                         ->where('md.lang_code', '=', $lang);
     }
 
-    public static function langs() {
+    public function langs() {
         return $this->belongsToMany('\App\Models\Lang', 'menu_desc', 'menu_id', 'lang_code');
     }
 
-    public static function group() {
+    public function group() {
         return $this->belongsTo('App\Models\MenuCat', 'group_id', 'id');
     }
 
-    public static function getObject() {
+    public function getObject() {
         switch ($this->menu_type) {
             case AdConst::MENU_TYPE_CAT:
             case AdConst::MENU_TYPE_TAX:
-                $object = $this->join('tax_desc as td', 'menus.type_id', '=', 'td.tax_id')
+                $object = self::join('tax_desc as td', 'menus.type_id', '=', 'td.tax_id')
                         ->where('td.lang_code', '=', currentLocale())
                         ->where('td.tax_id', '=', $this->type_id)
                         ->first(['td.name as title', 'td.slug']);
                 break;
             case AdConst::MENU_TYPE_POST:
             case AdConst::MENU_TYPE_PAGE:
-                $object = $this->join('post_desc as pd', 'menus.type_id', '=', 'pd.post_id')
+                $object = self::join('post_desc as pd', 'menus.type_id', '=', 'pd.post_id')
                         ->where('pd.lang_code', '=', currentLocale())
                         ->where('pd.post_id', '=', $this->type_id)
                         ->first(['pd.title', 'pd.slug']);
@@ -51,7 +51,7 @@ class Menu extends BaseModel {
         return $object;
     }
 
-    public static function getItemRoute() {
+    public function getItemRoute() {
         $route = null;
         switch ($this->menu_type) {
             case AdConst::MENU_TYPE_TAX:
@@ -73,14 +73,14 @@ class Menu extends BaseModel {
         return $route;
     }
 
-    public static function str_status() {
+    public function str_status() {
         if ($this->status == 1) {
             return trans('manage.active');
         }
         return trans('manage.disable');
     }
 
-    public static function str_open_type() {
+    public function str_open_type() {
         if ($this->open_type) {
             return trans('manage.newtab_tab');
         }
@@ -107,7 +107,7 @@ class Menu extends BaseModel {
             $result->whereNotIn('menus.id', $opts['exclude']);
         }
         if ($opts['filters']) {
-            $this->filterData($result, $opts['filters']);
+            self::filterData($result, $opts['filters']);
         }
         if ($opts['group_id'] > -1) {
             $result = $result->where('group_id', $opts['group_id']);
@@ -146,9 +146,9 @@ class Menu extends BaseModel {
 
     public static function updateData($id, $data) {
 
-        $fillable = $this->getFillable();
+        $item = self::findOrFail($id);
+        $fillable = $item->getFillable();
         $fill_data = array_only($data, $fillable);
-        $item = self::find($id);
         $item->update($fill_data);
 
         $lang_data = $data['locale'];

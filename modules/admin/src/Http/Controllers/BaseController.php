@@ -4,7 +4,7 @@ namespace Admin\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Validation\ValidationException;
+use App\Exceptions\PlException;
 use Exception;
 use DB;
 use Breadcrumb;
@@ -25,10 +25,8 @@ class BaseController extends Controller {
             
             $this->model::actions($request);
             return redirect()->back()->with('succ_mess', trans('admin::message.do_success'));
-        } catch (ValidationException $ex) {
-            return redirect()->back()->withErrors($ex->errors());
-        } catch (Exception $ex) {
-            return redirect()->back()->with('error_mess', $ex->getMessage());
+        } catch (PlException $ex) {
+            return redirect()->back()->with('error_mess', $ex->getError());
         }
     }
     
@@ -42,12 +40,9 @@ class BaseController extends Controller {
             $this->model::insertData($request->all());
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
-        } catch (ValidationException $ex) {
+        } catch (PlException $ex) {
             DB::rollback();
-            return redirect()->back()->withInput()->withErrors($ex->errors());
-        } catch (Exception $ex) {
-            DB::rollback();
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
+            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }
     }
     
@@ -61,12 +56,9 @@ class BaseController extends Controller {
             $this->model::updateData($id, $request->all());
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
-        } catch (ValidationException $ex) {
+        } catch (PlException $ex) {
             DB::rollback();
-            return redirect()->back()->withInput()->withErrors($ex->errors());
-        } catch (Exception $ex) {
-            DB::rollback();
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
+            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }
     }
     
@@ -89,7 +81,7 @@ class BaseController extends Controller {
                 }
                 foreach ($items as $item) {
                     if (!canDo($this->cap_edit, $item->authorId())) {
-                        throw new Exception (trans('admin::view.authorize'));
+                        throw new PlException (trans('admin::view.authorize'));
                     }
                 }
                 break;
@@ -101,7 +93,7 @@ class BaseController extends Controller {
                 }
                 foreach ($items as $item) {
                     if (!canDo($this->cap_edit, $item->authorId())) {
-                        throw new Exception (trans('admin::view.authorize'));
+                        throw new PlException (trans('admin::view.authorize'));
                     }
                 }
                 break;

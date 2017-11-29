@@ -6,18 +6,20 @@ use Illuminate\Http\Request;
 
 use Admin\Http\Controllers\BaseController;
 use App\Models\Cap;
-use Exception;
+use App\Exceptions\PlException;
 use PlMenu;
 use Breadcrumb;
 
 class CapController extends BaseController
 {
     protected $cap_accept = 'manage_cap';
+    protected $model;
 
     public function __construct() {
         parent::__construct();
         Breadcrumb::add(trans('admin::view.caps'), route('admin::cap.index'));
         PlMenu::setActive('caps');
+        $this->model = Cap::class;
     }
     
     public function index(Request $request){
@@ -40,8 +42,8 @@ class CapController extends BaseController
         try{
             Cap::insertData($request->all());
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
-        } catch (Exception $ex) {
-            return redirect()->back()->withInput()->withErrors(Cap::getError());
+        } catch (PlException $ex) {
+            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }
     }
     

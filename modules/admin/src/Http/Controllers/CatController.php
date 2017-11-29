@@ -12,12 +12,14 @@ class CatController extends BaseController {
 
     protected $locale;
     protected $cap_accept = 'manage_cats';
+    protected $model;
 
     public function __construct() {
         PlMenu::setActive('cats');
         parent::__construct();
         Breadcrumb::add(trans('admin::view.categories'), route('admin::cat.index'));
         $this->locale = currentLocale();
+        $this->model = Tax::class;
     }
 
     public function index(Request $request) {

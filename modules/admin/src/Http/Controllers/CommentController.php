@@ -13,11 +13,13 @@ class CommentController extends BaseController
     protected $cap_create = 'publish_comment';
     protected $cap_edit = 'edit_comment';
     protected $cap_remove = 'remove_comment';
+    protected $model;
 
     public function __construct() {
         parent::__construct();
         Breadcrumb::add(trans('admin::view.comments'), route('admin::comment.index'));
         PlMenu::setActive('comments');
+        $this->model = Comment::class;
     }
     
     public function index(Request $request){

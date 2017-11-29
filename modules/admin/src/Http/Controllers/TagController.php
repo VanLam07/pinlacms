@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
 use App\Models\Tax;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
+use App\Exceptions\PlException;
 use Exception;
 use PlMenu;
 use Breadcrumb;
@@ -14,11 +14,13 @@ use Breadcrumb;
 class TagController extends BaseController
 {
     protected $cap_accept = 'manage_tags';
+    protected $model;
 
     public function __construct() {
         parent::__construct();
         PlMenu::setActive('tags');
         Breadcrumb::add(trans('admin::view.tags'), route('admin::tag.index'));
+        $this->model = Tax::class;
     }
 
     public function index(Request $request) {
@@ -44,12 +46,9 @@ class TagController extends BaseController
             Tax::insertData($request->all(), 'tag');
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
-        } catch (ValidationException $ex) {
+        } catch (PlException $ex) {
             DB::rollback();
-            return redirect()->back()->withInput()->withErrors($ex->errors());
-        } catch (Exception $ex) {
-            DB::rollback();
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
+            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }
     }
 

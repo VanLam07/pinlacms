@@ -15,7 +15,7 @@ class File extends BaseModel
     
     use SoftDeletes;
     
-    public function isUseSoftDelete() {
+    public static function isUseSoftDelete() {
         return true;
     }
     
@@ -49,10 +49,14 @@ class File extends BaseModel
         return '<img '. $attrsText .' class="img-responsive '.$class.'" src="/images/default.jpg" alt="No image">';
     }
     
-    public static function rules() {
-        return [
+    public static function rules($id = null) {
+        $result = [
             'file' => 'mimes:jpeg,png,gif,bmp,svg|max:10240'
         ];
+        if ($id) {
+            $result['url'] = 'required';
+        }
+        return $result;
     }
 
     public static function getData($args = []) {
@@ -98,13 +102,13 @@ class File extends BaseModel
     }
 
     public static function insertData($file) {
-        $this->validator(['file' => $file], $this->rules());
+        self::validator(['file' => $file], self::rules());
 
         $name = $file->getClientOriginalName();
         $mimetype = $file->getClientMimeType();
         $extension = strtolower($file->getClientOriginalExtension());
         $type = $extension;
-        $cut_name = $this->checkRename($name);
+        $cut_name = self::checkRename($name);
 
         $upload_dir = config('image.upload_dir', 'uploads/');
 
@@ -186,7 +190,7 @@ class File extends BaseModel
     
     public static function checkRename($originalName) {
         $upload_dir = trim(config('image.upload_dir', 'uploads'), '/'); 
-        $cut_name = $this->cutName($originalName);
+        $cut_name = self::cutName($originalName);
         $base_name = $cut_name['name'];
         $re_name = $base_name;
         $i = 1;

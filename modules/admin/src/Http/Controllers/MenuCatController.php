@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
 use App\Models\Menu;
 use App\Models\Tax;
-use Illuminate\Validation\ValidationException;
+use App\Exceptions\PlException;
 use Illuminate\Support\Facades\DB;
 use PlMenu;
 use Breadcrumb;
@@ -14,11 +14,13 @@ use Breadcrumb;
 class MenuCatController extends BaseController {
 
     protected $cap_accept = 'manage_menus';
+    protected $model;
 
     public function __construct() {
         parent::__construct();
         PlMenu::setActive('group-menus');
         Breadcrumb::add(trans('admin::view.menucats'), route('admin::menucat.index'));
+        $this->model = Tax::class;
     }
 
     public function index(Request $request) {
@@ -42,10 +44,8 @@ class MenuCatController extends BaseController {
         try {
             Tax::insertData($request->all(), 'menucat');
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
-        } catch (ValidationException $ex) {
-            return redirect()->back()->withInput()->withErrors($ex->errors());
-        } catch (\Exception $ex) {
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
+        } catch (PlException $ex) {
+            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }
     }
     
@@ -97,12 +97,9 @@ class MenuCatController extends BaseController {
             }
             DB::commit();
             return redirect()->back()->with('succ_mess', trans('admin::message.update_success'));
-        } catch (ValidationException $ex) {
+        } catch (PlException $ex) {
             DB::rollback();
-            return redirect()->back()->withInput()->withErrors($ex->errors());
-        } catch (\Exception $ex) {
-            DB::rollback();
-            return redirect()->back()->withInput()->with('error_mess', $ex->getMessage());
+            return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }
     }
     
