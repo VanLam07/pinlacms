@@ -8,6 +8,9 @@ and open the template in the editor.
     <head>
         <meta charset="UTF-8">
         <title>@yield('title', 'Welcome') - {{ PlOption::get('blog_title', app()->getLocale()) }}</title>
+        
+        <meta name="keywords" content="@yield('keywords', PlOption::get('blog_keywords'))">
+        <meta name="description" content="@yield('description', PlOption::get('blog_description'))">
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900&amp;subset=latin-ext,vietnamese" rel="stylesheet">
 

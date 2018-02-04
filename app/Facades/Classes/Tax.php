@@ -15,7 +15,9 @@ class Tax {
     {
         return TaxModel::getData('cat', [
             'fields' => ['taxs.id', 'td.name', 'td.slug', 'taxs.image_id'],
-            'per_page' => -1
+            'per_page' => -1,
+            'orderby' => 'order',
+            'order' => 'asc'
         ]);
     }
     

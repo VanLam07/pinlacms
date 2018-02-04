@@ -2,6 +2,9 @@
 
 @section('title', $page->title)
 
+@section('keywords', $page->meta_keyword)
+@section('description', $page->meta_desc)
+
 @section('content_col')
 
 <div class="post-container">

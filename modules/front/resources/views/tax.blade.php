@@ -2,6 +2,9 @@
 
 @section('title', $tax->name)
 
+@section('keywords', $tax->meta_keyword)
+@section('description', $tax->meta_desc)
+
 @section('content_col')
 
 <?php
