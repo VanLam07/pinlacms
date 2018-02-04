@@ -44,7 +44,7 @@ class PostType extends BaseModel
         return $this->belongsToMany('\App\Models\Tax', 'post_tax', 'post_id', 'tax_id')
                         ->join('tax_desc as td', 'taxs.id', '=', 'td.tax_id')
                         ->where('td.lang_code', '=', $lang)
-                        ->select(['taxs.id', 'td.slug', 'td.name', 'taxs.parent_id'])
+                        ->select(['taxs.id', 'td.slug', 'td.name', 'taxs.parent_id', 'taxs.type'])
                         ->where('taxs.type', 'cat');
     }
     
@@ -54,11 +54,11 @@ class PostType extends BaseModel
     }
 
     public function getTags($lang = null) {
-        $lang = $lang ? $lang : current_locale();
+        $lang = $lang ? $lang : currentLocale();
         return $this->belongsToMany('\App\Models\Tax', 'post_tax', 'post_id', 'tax_id')
                 ->join('tax_desc as td', 'taxs.id', '=', 'td.tax_id')
                         ->where('td.lang_code', '=', $lang)
-                        ->select(['taxs.id', 'td.slug', 'td.name', 'taxs.parent_id'])
+                        ->select(['taxs.id', 'td.slug', 'td.name', 'taxs.parent_id', 'taxs.type'])
                         ->where('taxs.type', 'tag');
     }
     
@@ -70,6 +70,15 @@ class PostType extends BaseModel
     public function author() {
         return $this->belongsTo('\App\User', 'author_id', 'id')
                         ->select('id', 'name');
+    }
+    
+    public function authorName()
+    {
+        $author = $this->author;
+        if ($author) {
+            return $author->name;
+        }
+        return null;
     }
     
     public function comments(){
@@ -89,7 +98,7 @@ class PostType extends BaseModel
         if ($this->thumbnail) {
             return $this->thumbnail->getImage($size, $class);
         }
-        return null;
+        return '<img class="img-responsive '.$class.'" src="/images/default.png" alt="No image">';
     }
     
     public static function rules($update = false) {
@@ -113,12 +122,16 @@ class PostType extends BaseModel
             'order' => 'desc',
             'per_page' => AdConst::PER_PAGE,
             'exclude_key' => 'posts.id',
+            'is_auth' => 0,
+            'is_feature' => 0,
             'exclude' => [],
             'filters' => [],
             'cats' => [],
             'tags' => [],
             'with_cats' => false,
-            'with_tags' => false
+            'with_tags' => false,
+            'with_thumb' => true,
+            'page_name' => 'page'
         ];
 
         $opts = array_merge($opts, $args);
@@ -126,7 +139,7 @@ class PostType extends BaseModel
         $result = self::joinLang();
 
         if ($opts['cats']) {
-            $cat_ids = $this->inCats($opts['cats']);
+            $cat_ids = self::inCats($opts['cats']);
             $result->join('post_tax as pt', function($join) use ($cat_ids) {
                 $join->on('posts.id', '=', 'pt.post_id')
                         ->whereIn('tax_id', $cat_ids);
@@ -153,6 +166,12 @@ class PostType extends BaseModel
                 $result->whereIn('status', $opts['status']);
             }
         }
+        if ($opts['is_auth']) {
+            $result->where('is_auth', $opts['is_auth']);
+        }
+        if ($opts['is_feature']) {
+            $result->where('is_feature', $opts['is_feature']);
+        }
         if ($opts['exclude']) {
             $result->whereNotIn('posts.id', $opts['exclude']);
         }
@@ -160,6 +179,7 @@ class PostType extends BaseModel
             $this->filterData($result, $opts['filters']);
         }
         $result->select($opts['fields'])
+                ->groupBy('pd.lang_code', 'pd.post_id')
                 ->orderBy($opts['orderby'], $opts['order']);
 
         if ($opts['with_cats']) {
@@ -168,11 +188,28 @@ class PostType extends BaseModel
         if ($opts['with_tags']) {
             $result->with('tags');
         }
+        if ($opts['with_thumb']) {
+            $result->with('thumbnail');
+        }
 
         if ($opts['per_page'] > -1) {
-            return $result->paginate($opts['per_page']);
+            return $result->paginate($opts['per_page'], ['*'], $opts['page_name']);
         }
         return $result->get();
+    }
+    
+    public function getRelated($number = 5, $type = 'post')
+    {
+        $cats = $this->cats->pluck('id')->toArray();
+        return self::getData($type, [
+            'fields' => ['posts.id', 'posts.author_id', 'posts.created_at', 'posts.thumb_id', 'posts.views',
+                'pd.title', 'pd.slug', 'pd.excerpt', 'pd.content'],
+            'orderby' => 'posts.created_at',
+            'order' => 'desc',
+            'cats' => $cats,
+            'exclude' => [$this->id],
+            'per_page' => $number
+        ]);
     }
 
     public static function insertData($data, $type = 'post') {
@@ -334,11 +371,32 @@ class PostType extends BaseModel
     }
 
     public static function inCats($cat_ids){
-        $ids = Tax::whereIn('parent_id', $cat_ids)->lists('id')->toArray();
+        $ids = Tax::whereIn('parent_id', $cat_ids)->pluck('id')->toArray();
         $result = array_merge($cat_ids, $ids);
         if($ids){
-            $result = array_unique(array_merge($result, $this->inCats($ids)));
+            $result = array_unique(array_merge($result, self::inCats($ids)));
         }
         return $result;
+    }
+    
+    public function getLink()
+    {
+        switch ($this->post_type) {
+            case 'post':
+                return route('front::post.view', ['id' => $this->id, 'slug' => $this->slug]);
+            case 'page':
+                return route('front::page.view', ['id' => $this->id, 'slug' => $this->slug]);
+            default:
+                return null;
+        }
+    }
+    
+    public function getExcerpt($limit = 15, $more = '[...]')
+    {
+        $excerpt = $this->excerpt;
+        if (!$excerpt) {
+            $excerpt = $this->content;
+        }
+        return trimWords($excerpt, $limit, $more);
     }
 }

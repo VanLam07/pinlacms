@@ -41,7 +41,7 @@ class Option extends BaseModel
         
         $collection = self::select($opts['field']);
         if ($opts['filters']) {
-            $this->filterData($collection, $opts['filters']);
+            self::filterData($collection, $opts['filters']);
         }
         $collection->orderBy($opts['orderby'], $opts['order']);
         if ($opts['per_page'] > 1) {
@@ -53,7 +53,7 @@ class Option extends BaseModel
     public static function getOption($key, $lang = null) {
         $allValues = Cache::get(self::KC_ALL);
         $allValues = $allValues ? $allValues : [];
-        if (isset($allValues[$key])) {
+        if (isset($allValues[$key]) && $allValues[$key]) {
             return $allValues[$key];
         }
         

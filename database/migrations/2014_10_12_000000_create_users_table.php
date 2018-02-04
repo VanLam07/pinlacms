@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('type', 32)->default('normal');
             $table->string('name');
             $table->string('slug');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->string('password');
             $table->tinyInteger('gender')->nullable();
             $table->timestamp('birth')->nullable();

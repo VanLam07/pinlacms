@@ -51,7 +51,7 @@ use Admin\Facades\AdConst;
                     <div class="panel-body">
                         <div class="max-mdh" ng-if="pages.length > 0">
                             <div ng-repeat="page in pages">
-                                <label><input type="checkbox" ng-click="addMenu(page, 2)"> <span ng-bind="page.title"></span></label>
+                                <label><input type="checkbox" ng-click="addMenu(page, {{ AdConst::MENU_TYPE_PAGE }})"> <span ng-bind="page.title"></span></label>
                             </div>
                         </div>
                     </div>
@@ -69,7 +69,7 @@ use Admin\Facades\AdConst;
                     <div class="panel-body">
                         <div class="max-mdh" ng-if="cats.length > 0">
                             <div ng-repeat="cat in cats">
-                                <label><input type="checkbox" ng-click="addMenu(cat, 3)"> <span ng-bind="cat.name"></span></label>
+                                <label><input type="checkbox" ng-click="addMenu(cat, {{ AdConst::MENU_TYPE_CAT }})"> <span ng-bind="cat.name"></span></label>
                             </div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@ use Admin\Facades\AdConst;
                     <div class="panel-body">
                         <div class="max-mdh" ng-if="posts.length > 0">
                             <div ng-repeat="post in posts">
-                                <label><input type="checkbox" ng-click="addMenu(post, 1)"> <span ng-bind="post.title"></span></label>
+                                <label><input type="checkbox" ng-click="addMenu(post, {{ AdConst::MENU_TYPE_POST }})"> <span ng-bind="post.title"></span></label>
                             </div>
                         </div>
                     </div>

@@ -7,6 +7,7 @@ return [
     'avatar' =>                     'Ảnh đại diện',
     'back' =>                       'Quay lại',
     'birth' =>                      'Ngày sinh',
+    'contacts' =>                    'Liên hệ',
     'change_pass' =>                'Đổi mật khẩu',
     'email' =>                      'Địa chỉ email',
     'enter_email' =>                'Nhập email tài khoản',
@@ -132,6 +133,7 @@ return [
     'man_sliders' =>                'Quản lý slider',
     'man_slides' =>                 'Slides',
     'man_services' =>               'Quản lý dịch vụ',
+    'man_contact' =>                'Quản lý liên hệ',
     'permission' =>                 'Quyền hạn',
     'publish' =>                    'Publish',
     'draft' =>                      'Draft',
@@ -178,6 +180,7 @@ return [
     'services' =>                   'Dịch vụ',
     'slug' =>                       'Đường dẫn tĩnh',
     'status' =>                     'Trạng thái',
+    'subject' =>                    'Chủ đề',
     'target' =>                     'Trỏ đến',
     'title' =>                      'Tiêu đề',
     'total' =>                      'Tổng',
@@ -212,6 +215,7 @@ return [
     'tag' =>                        'Thẻ',
     'template' =>                   'Giao diện',
     'views' =>                      'Lượt xem',
+    'view' =>                       'Xem',
 //    Files
     'choose_files' =>               'Chọn tệp tin',
     'mimetype' =>                   'Loại file',
@@ -226,4 +230,6 @@ return [
     
     //User
     'members' =>                     'Thành viên',
+    
+    'ip' =>                         'Ip',
 ];

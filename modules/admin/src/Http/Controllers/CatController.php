@@ -23,6 +23,8 @@ class CatController extends BaseController {
     }
 
     public function index(Request $request) {
+        canAccess($this->cap_accept);
+        
         $data = $request->all();
         $data['fields'] = ['taxs.id', 'taxs.image_id', 'taxs.parent_id', 'taxs.order', 'td.name', 'td.slug'];
         $items = Tax::getData('cat', $data);
@@ -32,6 +34,8 @@ class CatController extends BaseController {
     }
 
     public function create() {
+        canAccess($this->cap_accept);
+        
         Breadcrumb::add(trans('admin::view.create'), route('admin::cat.create'));
         
         $parents = Tax::getData('cat', [
@@ -43,6 +47,8 @@ class CatController extends BaseController {
     }
 
     public function edit($id, Request $request) {
+        canAccess($this->cap_accept);
+        
         Breadcrumb::add(trans('admin::view.edit'));
         
         $lang = $request->get('lang');
@@ -60,6 +66,8 @@ class CatController extends BaseController {
     }
 
     public function destroy($id) {
+        canAccess($this->cap_accept);
+        
         if (!Tax::destroy($id)) {
             return redirect()->back()->with('error_mess', trans('admin::message.no_item'));
         }

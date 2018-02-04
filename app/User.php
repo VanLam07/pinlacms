@@ -29,6 +29,11 @@ class User extends Authenticatable
         return true;
     }
     
+    public static function getTableName()
+    {
+        return (new static)->getTable();
+    }
+
     public function getSessionKey() {
         return 'user_cap_'.$this->name.'_'.sha1($this->id);
     }
@@ -121,14 +126,14 @@ class User extends Authenticatable
         return '/images/icon/user-icon.png';
     } 
     
-    public function getAvatar($size='thumbnail', $class='') {
+    public function getAvatar($size = 32, $class='') {
         if ($this->avatar) {
-            return $this->avatar->getImage($size, $class);
+            return $this->avatar->getImage('thumbnail', $class);
         }
         if ($this->image_url) {
-            return '<img class="img-responsive" src="'.$this->image_url.'" alt=" ">';
+            return '<img class="img-responsive" width="'. $size .'" src="'.$this->image_url.'" alt=" ">';
         }
-        return '<img  class="img-responsive" src="/images/icon/user-icon.png" alt=" ">';
+        return '<img  class="img-responsive" width="'. $size .'" src="/images/icon/user-icon.png" alt=" ">';
     }
     
     public static function getData($data) {
@@ -271,4 +276,17 @@ class User extends Authenticatable
     public function authorId() {
         return $this->id;
     }
+    
+//    public function setSlugAttribute($value)
+//    {
+//        $exists = self::where('slug', 'like', $value . '%')
+//                ->get();
+//        $count = $exists->count();
+//        if ($count == 0 || ($count == 1 && $this->id == $exists->first()->id)) {
+//            $slug = $value;
+//        } else {
+//            $slug = $value . '_' . ($exists->count() + 1);
+//        }
+//        $this->attributes['slug'] = $slug;
+//    }
 }

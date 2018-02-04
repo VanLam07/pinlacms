@@ -15,7 +15,7 @@ class CapSeeder extends BaseSeeder
      */
     public function run()
     {
-        if ($this->checkSeeder()) {
+        if ($this->checkSeeder('CapSeeder-v1')) {
             return;
         }
         // name => [[role_ids]]
@@ -49,11 +49,16 @@ class CapSeeder extends BaseSeeder
             'manage_cats' => [1 => $capOther],
             'manage_tags' => [1 => $capOther, 2 => $capOther],
             'manage_menus' => [1 => $capOther],
-            'manage_options' => [1 => $capOther]
+            'manage_options' => [1 => $capOther],
+            'manage_contacts' => [1 => $capOther],
         ];
         
         foreach ($caps as $cap => $arrLevel) {
             $data = ['name' => $cap, 'label' => $this->toLabel($cap)];
+            $capItem = Cap::where('name', $cap)->first();
+            if ($capItem) {
+                continue;
+            }
             $capItem = Cap::create($data);
             $roleAttrs = [];
             foreach ($arrLevel as $roleId => $level) {

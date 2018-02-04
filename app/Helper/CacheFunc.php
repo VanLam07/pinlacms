@@ -3,6 +3,7 @@
 namespace App\Helper;
 
 use Illuminate\Support\Facades\Cache;
+use PlOption;
 
 class CacheFunc
 {
@@ -28,5 +29,18 @@ class CacheFunc
     public static function forget($key)
     {
         Cache::forget(md5($key));
+    }
+    
+    public static function forgetMenus()
+    {
+        $id = PlOption::get('primary_menu'); 
+        if (!$id) {
+            return;
+        }
+        $key = 'menu_items_' . $id . '_';
+        $langs = getLangs();
+        foreach ($langs as $lang) {
+            self::forget($key . $lang->code);
+        }
     }
 }

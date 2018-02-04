@@ -1,0 +1,53 @@
+@import "../mixins.scss";
+
+@media screen and (min-width: 1200px) {
+    .container {
+        max-width: 960px; 
+    }
+}
+
+@media screen and (min-width: 992px) {
+
+}
+
+@media screen and (max-width: 1200px) {
+    
+}
+
+@media screen and (max-width: 992px) {
+    #main_navbar {
+        padding-left: 0;
+        padding-right: 0;
+        ul {
+            li {
+                a {
+                    padding: 0.3rem 1rem 0.3rem 0;
+                    display: inline-block;
+                }
+            }
+        }
+        ul.dropdown-menu {
+            border-bottom: 1px solid rgba(0,0,0,.15);
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    
+}
+
+@media screen and (max-width: 600px) {
+    
+}
+
+@media screen and (max-width: 480px) {
+    
+}
+
+@media screen and (max-width: 420px) {
+    
+}
+
+@media screen and (max-width: 380px) {
+    
+} 

@@ -7,7 +7,7 @@
                 
                 $qProvider.errorOnUnhandledRejections(false);
             })
-            .controller('MenuCtrl', function ($scope, $http) {
+            .controller('MenuCtrl', function ($scope, $http, $timeout) {
                 $scope.menus = [];
 
                 function reloadMenus() {
@@ -29,17 +29,19 @@
                 };
 
                 $scope.posts = [];
+                $timeout(function () {
                 $scope.posts_params = {'fields[]': ['pd.title', 'posts.id']};
-                $http.get(api_url + 'posts', {
-                    params: $scope.posts_params
-                }).then(function (result) {
-                    var data = result.data;
-                    $scope.post_total = data.total;
-                    $scope.post_per_page = data.per_page;
-                    $scope.post_next_page_url = data.next_page_url;
-                    $scope.post_prev_page_url = data.prev_page_url;
-                    $scope.posts = data.data;
-                });
+                    $http.get(api_url + 'posts', {
+                        params: $scope.posts_params
+                    }).then(function (result) {
+                        var data = result.data;
+                        $scope.post_total = data.total;
+                        $scope.post_per_page = data.per_page;
+                        $scope.post_next_page_url = data.next_page_url;
+                        $scope.post_prev_page_url = data.prev_page_url;
+                        $scope.posts = data.data;
+                    });
+                }, 500);
 
                 $scope.postGoUrl = function (url) {
                     if (url) {
@@ -54,21 +56,25 @@
                 };
 
                 $scope.pages = [];
-                $http.get(api_url + 'pages', {
-                    params: {'fields[]': ['pd.title', 'posts.id'], per_page: -1}
-                }).then(function (results) {
-                    $scope.pages = results.data;
-                });
+                $timeout(function () {
+                    $http.get(api_url + 'pages', {
+                        params: {'fields[]': ['pd.title', 'posts.id'], per_page: -1}
+                    }).then(function (results) {
+                        $scope.pages = results.data;
+                    });
+                }, 1000);
 
                 $scope.cats = [];
-                $http.get(api_url + 'cats', {
-                    params: {
-                        'fields[]': ['td.name', 'taxs.id'],
-                        per_page: -1
-                    }
-                }).then(function (results) {
-                    $scope.cats = results.data;
-                });
+                $timeout(function () {
+                    $http.get(api_url + 'cats', {
+                        params: {
+                            'fields[]': ['td.name', 'taxs.id'],
+                            per_page: -1
+                        }
+                    }).then(function (results) {
+                        $scope.cats = results.data;
+                    });
+                }, 1500);
 
                 $scope.newMenus = [];
                 $scope.newcustom = {};
@@ -97,7 +103,6 @@
                             $scope.newMenus = [];
                             reloadMenus();
                             $('.list_types input[type="checkbox"]').prop('checked', false);
-                            console.log(data);
                         }).catch(function (err) {
                             console.log(err);
                         });

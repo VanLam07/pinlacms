@@ -22,11 +22,12 @@ class CreatePostsTbl extends Migration
             $table->integer('author_id')->unsigned()->nullable();
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('comment_status')->default(1);
-            $table->integer('comment_count');
+            $table->integer('comment_count')->default(0);
             $table->string('post_type', 30)->default('post');
             $table->integer('views')->default(0);
             $table->string('template')->nullable();
             $table->boolean('is_auth')->default(0);
+            $table->boolean('is_feature')->default(0);
             $table->index(['id', 'post_type']);
             $table->softDeletes();
             $table->timestamps();

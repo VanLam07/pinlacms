@@ -26,6 +26,7 @@ class AdConst {
     const AC_DELETE = 20;
     
     const PER_PAGE = 20;
+    const SUB_PER_PAGE = 5;
     
     /*
      * comment status

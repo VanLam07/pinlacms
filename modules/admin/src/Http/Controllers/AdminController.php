@@ -36,7 +36,7 @@ class AdminController extends BaseController {
         if (!$key) {
             return redirect()->back();
         }
-        
+        return redirect()->back();
     }
     
 }

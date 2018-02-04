@@ -22,13 +22,15 @@ class Lang extends BaseModel {
         if (($allCodes = CacheFunc::get(self::KC_CODES)) !== null) {
             return $allCodes;
         }
-        
-        $allCodes =self::where('status', AdConst::STT_PUBLISH)
+        try {
+            $allCodes = self::where('status', AdConst::STT_PUBLISH)
                 ->select('code')
                 ->pluck('code')
                 ->toArray();
-        
-        CacheFunc::put(self::KC_CODES, $allCodes);
+            CacheFunc::put(self::KC_CODES, $allCodes);
+        } catch (\Exception $ex) {
+            $allCodes = ['vi'];
+        }
         
         return $allCodes;
     }

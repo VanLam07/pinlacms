@@ -15,8 +15,9 @@ class Tax extends BaseModel
         if (!$code) {
             $code = currentLocale();
         }
-        return self::join(self::$tblDesc . ' as td', 'taxs.id', '=', 'td.tax_id')
-                    ->where('td.lang_code', '=', $code);
+        return self::from(self::getTableName() . ' as taxs')
+                ->join(self::$tblDesc . ' as td', 'taxs.id', '=', 'td.tax_id')
+                ->where('td.lang_code', '=', $code);
     }
     
     public static function rules($update = false) {
@@ -50,6 +51,16 @@ class Tax extends BaseModel
             return $item->name;
         }
         return null;
+    }
+    
+    public function isTag()
+    {
+        return $this->type == 'tag';
+    }
+    
+    public function isCategory()
+    {
+        return $this->type == 'cat';
     }
 
     public function langs(){
@@ -252,5 +263,27 @@ class Tax extends BaseModel
             }
         }
         return $output;
+    }
+    
+    public function getLink($type = 'cat')
+    {
+        if (!$type) {
+            $type = $this->type;
+        }
+        switch ($type) {
+            case 'cat':
+                $preRoute = 'cat.view';
+                break;
+            case 'tag':
+                $preRoute = 'tag.view';
+                break;
+            default:
+                $preRoute = null;
+                break;
+        }
+        if ($preRoute) {
+            return route('front::' . $preRoute, ['id' => $this->id, 'slug' => $this->slug]);
+        }
+        return null;
     }
 }

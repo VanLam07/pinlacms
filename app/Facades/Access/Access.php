@@ -44,6 +44,10 @@ class Access {
     public function check() {
         $args = func_get_args();
         if (!call_user_func_array([$this, 'can'], $args)) {
+            if (request()->ajax() || request()->wantsJson()) {
+                echo trans('admin::view.authorize');
+                die();
+            }
             abort(403, trans('admin::view.authorize'));
         }
     }

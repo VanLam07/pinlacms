@@ -201,9 +201,9 @@ class AuthController extends Controller {
         if (isset($data['file_ids']) && $data['file_ids']) {
             $data['image_id'] = $data['file_ids'][0];
         }
-        $fillable = User::getFillable();
-        $fill_data = array_only($data, $fillable);
         $user = User::findOrFail(auth()->id());
+        $fillable = $user->getFillable();
+        $fill_data = array_only($data, $fillable);
         $user->update($fill_data);
         if (isset($data['role_ids'])) {
             $user->roles()->sync($data['role_ids']);

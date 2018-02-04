@@ -114,6 +114,13 @@ class MenuComposer {
                 'icon' => 'fa-sliders'
             ],
             [
+                'name' => trans('admin::view.contacts'), 
+                'url' => route('admin::contact.index', ['status' => AdConst::STT_PUBLISH]), 
+                'active' => 'contacts',
+                'cap' => 'manage_contacts', 
+                'icon' => 'fa-envelope-o'
+            ],
+            [
                 'name' => trans('admin::view.users'), 
                 'url' => route('admin::user.index', ['status' => AdConst::STT_PUBLISH]),
                 'active' => 'users',

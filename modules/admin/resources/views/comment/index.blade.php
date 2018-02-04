@@ -54,7 +54,19 @@ $actionCaps = [
                 <td></td>
             </tr>
             @if (!$items->isEmpty())
-                @foreach($items as $item)
+                <?php
+                $itemsGroup = $items->groupBy('parent_id');
+                $itemsParent = $itemsGroup[""];
+                ?>
+                @foreach($itemsParent as $itemData)
+                <?php
+                $itemCollect = [$itemData];
+                if (isset($itemsGroup[$itemData->id])) {
+                    $itemCollect = $itemsGroup[$itemData->id];
+                    $itemCollect->prepend($itemData);
+                }
+                ?>
+                @foreach($itemCollect as $item)
                 <tr>
                     <td>
                         @if (hasActionItem($actionCaps, $item, $status))
@@ -62,7 +74,7 @@ $actionCaps = [
                         @endif
                     </td>
                     <td>{{ $item->id }}</td>
-                    <td>{{ $item->content }}</td>
+                    <td>{{ ($item->parent_id ? '-- ' : '') . $item->content }}</td>
                     <td>{{ $item->author_name }}</td>
                     <td>{{ $item->author_id }}</td>
                     <td>{{ $item->getPost->title }}</td>
@@ -77,6 +89,7 @@ $actionCaps = [
                     </td>
                 </tr>
                 @endforeach
+                @endforeach
             @else
             <tr>
                 <td colspan="9" class="text-center"><h4>{{ trans('admin::message.not_found_items') }}</h4></td>
@@ -85,6 +98,8 @@ $actionCaps = [
         </tbody>
     </table>
 </div>
+
+@include('admin::parts.paginate')
 
 @stop
 

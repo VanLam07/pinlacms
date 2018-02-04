@@ -84,6 +84,15 @@ if (!function_exists('requestValue')) {
     }
 }
 
+if (!function_exists('getDefaultAvatar')) {
+    
+    function getDefaultAvatar($size = 32)
+    {
+        return '<img src="/images/icon/user-icon.png" size="'. $size .'" class="img-responsive">';
+    }
+    
+}
+
 if (!function_exists('showMessage')) {
 
     function showMessage($txt_class = null, $box_class = null) {
@@ -342,7 +351,7 @@ function stripAllTags($string, $remove_breaks = false) {
     return trim($string);
 }
 
-function trimWords($text, $num_words = 55, $more = null) {
+function trimWords($text, $num_words = 55, $more = '...') {
     if (null === $more) {
         $more = __('&hellip;');
     }
@@ -363,7 +372,7 @@ function trimWords($text, $num_words = 55, $more = null) {
     if (count($words_array) > $num_words) {
         array_pop($words_array);
         $text = implode($sep, $words_array);
-        $text = $text . $more;
+        $text = $text . ' ' . $more;
     } else {
         $text = implode($sep, $words_array);
     }

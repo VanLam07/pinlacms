@@ -46,7 +46,7 @@ class File extends BaseModel
         if($src = $this->getSrc($size)){
             return '<img '. $attrsText .' class="img-responsive '.$class.'" src="'.$src.'" alt="No image">';
         }
-        return '<img '. $attrsText .' class="img-responsive '.$class.'" src="/images/default.jpg" alt="No image">';
+        return '<img '. $attrsText .' class="img-responsive '.$class.'" src="/images/default.png" alt="No image">';
     }
     
     public static function rules($id = null) {

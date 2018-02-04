@@ -11,4 +11,12 @@ class Tax {
         
     }
     
+    public function listCategories()
+    {
+        return TaxModel::getData('cat', [
+            'fields' => ['taxs.id', 'td.name', 'td.slug', 'taxs.image_id'],
+            'per_page' => -1
+        ]);
+    }
+    
 }

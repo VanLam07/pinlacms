@@ -22,6 +22,10 @@ class BaseModel extends Model {
         return false;
     }
     
+    public static function getTableName() {
+        return (new static)->getTable();
+    }
+    
     public static function validator(array $attrs, array $rule = [], array $message = []) {
         $valid = Validator::make($attrs, 
                 $rule ? $rule : self::rules(), 
@@ -30,6 +34,14 @@ class BaseModel extends Model {
             throw new PlException($valid->messages(), 422);
         }
         return true;
+    }
+    
+    public static function reserveOrder($order)
+    {
+        if (strtolower($order) == 'desc') {
+            return 'asc';
+        }
+        return 'desc';
     }
     
     public static function getData($data) {

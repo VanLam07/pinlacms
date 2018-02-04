@@ -22,7 +22,7 @@ class PageController extends BaseController
         $this->templates = ['' => trans('admin::view.selection')];
         $this->model = PostType::class;
         
-        $view_path = config('view.paths')[0].'\front\templates';
+        $view_path = FRONT_DIR . '/../resources/views/templates';
         $files = File::files($view_path);
         foreach ($files as $file){
             $name = explode('.', basename($file))[0];

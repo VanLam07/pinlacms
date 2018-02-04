@@ -28,6 +28,19 @@ $actionCaps = [];
             </tr>
         </thead>
         <tbody>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="text" name="filters[option_key]" value="{{ getRequestParam('filters', 'option_key') }}"
+                           class="form-control filter-data" placeholder="{{ trans('admin::view.search') }}">
+                </td>
+                <td>
+                    <input type="text" name="filters[value]" value="{{ getRequestParam('filters', 'value') }}"
+                           class="form-control filter-data" placeholder="{{ trans('admin::view.search') }}">
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
             @if(!$items->isEmpty())
                 @foreach($items as $item)
                 <tr>

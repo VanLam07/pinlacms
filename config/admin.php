@@ -1,6 +1,7 @@
 <?php
 
 return [
-    'prefix' => 'manage'
+    'prefix' => 'manage',
+    'email' => 'skyfrost.07@gmail.com'
 ];
 

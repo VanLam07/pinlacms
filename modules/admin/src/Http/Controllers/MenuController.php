@@ -124,11 +124,11 @@ class MenuController extends BaseController {
                 break;
             case AdConst::MENU_TYPE_PAGE:
             case AdConst::MENU_TYPE_POST:
-                $result = PostType::findByLang($menu->type_id, ['posts.id', 'pd.title'], $lang);
+                $result = PostType::findByLang($menu->type_id, ['posts.id', 'pd.title', 'posts.post_type'], $lang);
                 break;
             case AdConst::MENU_TYPE_CAT:
             case AdConst::MENU_TYPE_TAX:
-                $result = Tax::findByLang($menu->type_id, ['taxs.id', 'td.name'], $lang);
+                $result = Tax::findByLang($menu->type_id, ['taxs.id', 'td.name', 'taxs.type'], $lang);
                 break;
         }
 

@@ -24,6 +24,10 @@ class PlException extends Exception
             $htmlError .= '</ul>';
             return $htmlError;
         }
+        
+        if (config('app.env') == 'production') {
+            return 'Error system';
+        }
         return $message;
     }
     

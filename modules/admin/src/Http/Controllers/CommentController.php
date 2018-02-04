@@ -22,10 +22,23 @@ class CommentController extends BaseController
         $this->model = Comment::class;
     }
     
+    public function toNested($collection, $parentId = null)
+    {
+        $nestedItems = [];
+        foreach ($collection as $item) {
+            if ($item->parent_id == $parentId) {
+                $nestedItems[] = $item;
+                $nestedItems = array_merge($nestedItems, $this->toNested($collection, $item->id));
+            }
+        }
+        return $nestedItems;
+    }
+    
     public function index(Request $request){
         canAccess('view_comment');
         
-        $items = Comment::getData($request->all());
+        $data = $request->all();
+        $items = Comment::getData($data);
         return view('admin::comment.index', compact('items'));
     }
     

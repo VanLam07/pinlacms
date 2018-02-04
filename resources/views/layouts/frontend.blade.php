@@ -31,7 +31,7 @@ and open the template in the editor.
     <body @yield('body_attr')>
 
         <header id="header">
-            @include('front.parts.header')
+            @include('front::includes.header')
         </header>
 
         <section id="main_body">

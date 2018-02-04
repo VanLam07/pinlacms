@@ -19,7 +19,7 @@ class Comment extends BaseModel {
     public static function isUseSoftDelete() {
         return true;
     }
-
+    
     public  function post() {
         return $this->belongsTo('\App\Models\PostType', 'post_id', 'id');
     }
@@ -39,6 +39,21 @@ class Comment extends BaseModel {
         return trans('manage.disable');
     }
     
+    public function author()
+    {
+        return $this->belongsTo('\App\User', 'author_id');
+    }
+    
+    public function childs()
+    {
+        return $this->hasMany('\App\Models\Comment', 'parent_id');
+    }
+    
+    public function parentItem()
+    {
+        return $this->belongsTo('\App\Models\Comment', 'parent_id');
+    }
+    
     public static function rules($update = false) {
         return [
             'content' => 'required',
@@ -51,7 +66,7 @@ class Comment extends BaseModel {
             'fields' => ['*'],
             'status' => [AdConst::STT_PUBLISH],
             'orderby' => 'created_at',
-            'order' => 'desc',
+            'order' => 'asc',
             'per_page' => AdConst::PER_PAGE,
             'exclude_key' => 'id',
             'exclude' => [],
@@ -61,7 +76,9 @@ class Comment extends BaseModel {
         ];
         $opts = array_merge($opts, $args);
         
-        $result = self::select($opts['fields']);
+        $result = self::select($opts['fields'])
+                ->with(['author'])
+                ->withCount('childs');
         
         if ($opts['status']) {
             if (!is_array($opts['status'])) {
@@ -75,15 +92,23 @@ class Comment extends BaseModel {
         }
         
         if ($opts['post_id']) {
-            $result = $result->where('post_id', $opts['post_id']);
+            $result->where('post_id', $opts['post_id']);
+        }
+        
+        if (isset($opts['parent_id'])) {
+            if ($opts['parent_id']) {
+                $result->where('parent_id', $opts['parent_id']);
+            } else {
+                $result->whereNull('parent_id');
+            }
         }
 
         if ($opts['author_id']) {
-            $result = $result->where('author_id', $opts['author_id']);
+            $result->where('author_id', $opts['author_id']);
         }
         
         if ($opts['exclude']) {
-            $result = $result->whereNotIn($opts['exclude_key'], $opts['exclude']);
+            $result->whereNotIn($opts['exclude_key'], $opts['exclude']);
         }
         
         if ($opts['filters']) {
@@ -93,14 +118,14 @@ class Comment extends BaseModel {
         $result->orderBy($opts['orderby'], $opts['order']);
 
         if ($opts['per_page'] > -1) {
-            $result->paginate($opts['per_page']);
+            return $result->paginate($opts['per_page']);
         }
         return $result->get();
     }
 
     public static function insertData($data) {
         self::validator($data, self::rules());
-
+        
         if (isset($data['author_id'])) {
             $author = User::find($data['author_id']);
             if($author){
@@ -122,7 +147,8 @@ class Comment extends BaseModel {
             $data['parent_id'] = null;
         }
         $item = self::create($data);
-        return $item->post()->increment('comment_count');
+        $item->post()->increment('comment_count');
+        return $item;
     }
 
     public static function updateData($id, $data) {

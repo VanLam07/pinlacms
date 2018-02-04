@@ -1,5 +1,10 @@
 <?php
 
+Route::get('/pinlaz1703/clear-cache', function() {
+    Artisan::call('config:cache');
+    Artisan::call('cache:clear');
+});
+
 Route::group(['prefix' => 'auth'], function () {
 
     Route::get('/login', ['as' => 'auth.get_login', 'uses' => 'AuthController@getLogin']);
@@ -86,6 +91,9 @@ Route::group(['middleware' => 'auth'], function () {
     //    Comments
     Route::resource('/comments', 'CommentController', rsNames('comment'));
     Route::post('/comments/actions', ['as' => 'comment.actions', 'uses' => 'CommentController@multiActions']);
+    //contact
+    Route::resource('/contacts', 'ContactController', rsNames('contact'));
+    Route::post('/contacts/actions', ['as' => 'contact.actions', 'uses' => 'ContactController@multiActions']);
 //    
 //    //    API
 //    Route::controller('/api', 'Api\ApiController');

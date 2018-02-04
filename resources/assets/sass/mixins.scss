@@ -1,0 +1,127 @@
+$main_cl: #000;
+$hover_cl: #d13030;
+$sbar_w: 200px;
+$sbar_wtg: 38px;
+$menu_hv: rgba(255,255,255,.12);
+$menu_bg: #039BE5;
+$high_cl: #ff0000;
+$top_head_cl: #000;
+$meta_cl: #888;
+$foot_bg: #444;
+$foot_cl: #fff;
+$end_bg: #2e2e2e;
+$sidebar_bg: #eaeaea;
+$fontz: 14;
+$active_bd: #f77b33;
+$main_bd: #dcdcdc;
+$more_cl: #666;
+$tag_bg: #aaa;
+
+@mixin clearf{
+    clear: both;
+    &:after, &:before{
+        content: " ";
+        display: table;
+        clear: both;
+    }
+}
+@mixin rotate($dg){
+    transform: rotate($dg);
+    -moz-transform: rotate($dg);
+    -webkit-transform: rotate($dg);
+    -o-transform: rotate($dg);
+}
+@mixin sizing-border{
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -o-box-sizing: border-box;
+}
+@mixin sizing-content{
+    box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    -o-box-sizing: content-box;
+}
+@mixin transform($trans){
+    transform:  $trans;
+    -moz-transform:  $trans;
+    -webkit-transform:  $trans;
+    -o-transform:  $trans;
+}
+@mixin border-radius($radius){
+    border-radius: $radius;
+    -moz-border-radius: $radius;
+    -webkit-border-radius: $radius;
+    -o-border-radius: $radius;
+}
+@mixin top-left-radius($radius){
+    border-top-left-radius: $radius;
+    -moz-border-top-left-radius: $radius;
+    -webkit-border-top-left-radius: $radius;
+    -o-border-top-left-radius: $radius;
+}
+@mixin bottom-left-radius($radius){
+    border-bottom-left-radius: $radius;
+    -moz-border-bottom-left-radius: $radius;
+    -webkit-border-bottom-left-radius: $radius;
+    -o-border-bottom-left-radius: $radius;
+}
+@mixin bottom-right-radius($radius){
+    border-bottom-right-radius: $radius;
+    -moz-border-bottom-right-radius: $radius;
+    -webkit-border-bottom-right-radius: $radius;
+    -o-border-bottom-right-radius: $radius;
+}
+@mixin top-right-radius($radius){
+    border-top-right-radius: $radius;
+    -moz-border-top-right-radius: $radius;
+    -webkit-border-top-right-radius: $radius;
+    -o-border-border-top-right-radius: $radius;
+}
+
+@mixin button($padding:8px 15px, $color: #fff, $background: #f4f4f4, $radius:0){
+    padding: $padding;
+    color: $color;
+    background: $background;
+    @include border-radius($radius);
+    border: none;
+    &:hover{background: #00cc33;}
+}
+@mixin shadown($shadown){
+    box-shadow: $shadown;
+    -moz-box-shadow: $shadown;
+    -webkit-box-shadow: $shadown;
+    -o-box-shadow: $shadown;
+}
+@mixin txtshadown($shadown){
+    text-shadow: $shadown;
+    -moz-text-shadow: $shadown;
+    -webkit-text-shadow: $shadown;
+    -o-text-shadow: $shadown;
+}
+@mixin transi($transi){
+    transition: $transi;
+    -moz-transition: $transi;
+    -webkit-transition: $transi;
+    -o-transition: $transi;
+}
+
+@mixin bg2-gradient($bg1, $bg2){
+    background: -moz-linear-gradient($bg1, $bg2); 
+    background: -webkit-linear-gradient($bg1, $bg2);
+    background: -o-linear-gradient($bg1, $bg2);
+    background: linear-gradient($bg1, $bg2);
+}
+@mixin display_flex{
+    display: flex;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -o-flex;
+}
+
+.bglinenear {
+    background-image: linear-gradient(90deg,#d3222a,#d3222a 14.2857%,#ed7f04 0,#ed7f04 28.5714%,#fcbf02 0,#fcbf02 42.8571%,#75b72d 0,#75b72d 57.1428%,#4dbbec 0,#4dbbec 71.4286%,#88417e 0,#88417e 85.7142%,#df1354 0,#df1354);
+    background-image: -moz-linear-gradient(90deg,#d3222a,#d3222a 14.2857%,#ed7f04 0,#ed7f04 28.5714%,#fcbf02 0,#fcbf02 42.8571%,#75b72d 0,#75b72d 57.1428%,#4dbbec 0,#4dbbec 71.4286%,#88417e 0,#88417e 85.7142%,#df1354 0,#df1354);
+    background-image: -ms-linear-gradient(90deg,#d3222a,#d3222a 14.2857%,#ed7f04 0,#ed7f04 28.5714%,#fcbf02 0,#fcbf02 42.8571%,#75b72d 0,#75b72d 57.1428%,#4dbbec 0,#4dbbec 71.4286%,#88417e 0,#88417e 85.7142%,#df1354 0,#df1354);
+}
+
+

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Admin\Facades\AdConst;
 use App\Models\BaseModel;
+use App\Helper\CacheFunc;
 
 class Menu extends BaseModel {
 
@@ -15,7 +16,8 @@ class Menu extends BaseModel {
         if (!$lang) {
             $lang = currentLocale();
         }
-        return self::join('menu_desc as md', 'menus.id', '=', 'md.menu_id')
+        return self::from(self::getTableName() . ' as menus')
+                ->join('menu_desc as md', 'menus.id', '=', 'md.menu_id')
                         ->where('md.lang_code', '=', $lang);
     }
 
@@ -61,16 +63,16 @@ class Menu extends BaseModel {
                 $route = 'cat.view';
                 break;
             case AdConst::MENU_TYPE_POST:
-                $route = 'page.view';
+                $route = 'post.view';
                 break;
             case AdConst::MENU_TYPE_PAGE:
-                $route = 'post.view';
+                $route = 'page.view';
                 break;
             case 0:
             default:
                 break;
         }
-        return $route;
+        return 'front::' . $route;
     }
 
     public function str_status() {
@@ -129,14 +131,56 @@ class Menu extends BaseModel {
 
         $item = self::create($data);
 
+        $link = isset($data['link']) ? $data['link'] : null;
+            
         $langs = getLangs(['fields' => ['code']]);
+        
         foreach ($langs as $lang) {
+            if (!$link) {
+                $link = self::getLinkByType($data['menu_type'], $data['id'], $lang);
+            }
+            
             $lang_data = [
                 'title' => isset($data['title']) ? $data['title'] : $data['name'],
-                'link' => isset($data['link']) ? $data['link'] : ''
+                'link' => $link
             ];
             $item->langs()->attach($lang->code, $lang_data);
         }
+    }
+    
+    public static function getLinkByType($type, $typeId, $langCode)
+    {
+        $link = null;
+        switch ($type) {
+            case AdConst::MENU_TYPE_TAX:
+                $tax = Tax::findByLang($typeId, ['td.slug', 'taxs.id'], $langCode);
+                if ($tax) {
+                    $link = route('front::tag.view', ['id' => $tax->id, 'slug' => $tax->slug]);
+                }
+                break;
+            case AdConst::MENU_TYPE_CAT:
+                $tax = Tax::findByLang($typeId, ['td.slug', 'taxs.id'], $langCode);
+                if ($tax) {
+                    $link = route('front::cat.view', ['id' => $tax->id, 'slug' => $tax->slug]);
+                }
+                break;
+            case AdConst::MENU_TYPE_POST:
+                $post = PostType::findByLang($typeId, ['posts.id', 'pd.slug'], $langCode);
+                if ($post) {
+                    $link = route('front::post.view', ['id' => $post->id, 'slug' => $post->slug]);
+                }
+                break;
+            case AdConst::MENU_TYPE_PAGE:
+                $post = PostType::findByLang($typeId, ['posts.id', 'pd.slug'], $langCode);
+                if ($post) {
+                    $link = route('front::page.view', ['id' => $post->id, 'slug' => $post->slug]);
+                }
+                break;
+            case 0:
+            default:
+                break;
+        }
+        return $link;
     }
 
     public static function findCustom($id, $fields = ['md.*'], $lang = null) {
@@ -152,6 +196,11 @@ class Menu extends BaseModel {
         $item->update($fill_data);
 
         $lang_data = $data['locale'];
+        $link = isset($lang_data['link']) ? $lang_data['link'] : null;
+        if (!$link) {
+            $link = self::getLinkByType($item->menu_type, $item->type_id, $data['lang']);
+            $lang_data['link'] = $link;
+        }
         $item->langs()->sync([$data['lang'] => $lang_data], false);
     }
 
@@ -160,6 +209,16 @@ class Menu extends BaseModel {
         if ($item) {
             $item->update(['order' => $order, 'parent_id' => $parent]);
         }
+    }
+    
+    public function save(array $options = array()) {
+        parent::save($options);
+        CacheFunc::forgetMenus();
+    }
+    
+    public function delete() {
+        parent::delete();
+        CacheFunc::forgetMenus();
     }
 
 }
