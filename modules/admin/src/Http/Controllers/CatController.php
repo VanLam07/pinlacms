@@ -28,8 +28,7 @@ class CatController extends BaseController {
         $data = $request->all();
         $data['fields'] = ['taxs.id', 'taxs.image_id', 'taxs.parent_id', 'taxs.order', 'td.name', 'td.slug'];
         $items = Tax::getData('cat', $data);
-        $parent = $items->isEmpty() ? 0 : $items->first()->parent_id;
-        $tableCats = Tax::tableCats($items, $parent);
+        $tableCats = Tax::tableCats($items);
         return view('admin::cat.index', compact('items', 'tableCats'));
     }
 

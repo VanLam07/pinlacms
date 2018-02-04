@@ -9,6 +9,7 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <title>@yield('title', 'Welcome') - {{ PlOption::get('blog_title', app()->getLocale()) }}</title>
         
+        <meta name="google-site-verification" content="{{ PlOption::get('google_webmaster_meta') }}" />
         <meta name="keywords" content="@yield('keywords', PlOption::get('blog_keywords'))">
         <meta name="description" content="@yield('description', PlOption::get('blog_description'))">
 
@@ -63,6 +64,8 @@ and open the template in the editor.
                 confirm: '<?php echo trans('front::message.are_you_sure'); ?>'
             };
         </script>
+        
+        {!! PlOption::get('google_analytics') !!}
         
         <script src="/js/jquery.min.js"></script>
         <script src="/js/popper.min.js"></script>

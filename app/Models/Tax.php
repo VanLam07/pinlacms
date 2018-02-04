@@ -123,7 +123,7 @@ class Tax extends BaseModel
         if ($opts['filters']) {
             self::filterData($result, $opts['filters']);
         }
-
+        
         if ($opts['per_page'] > -1) {
             return $result->paginate($opts['per_page']);
         }

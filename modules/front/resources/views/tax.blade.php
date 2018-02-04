@@ -8,14 +8,14 @@
 @section('content_col')
 
 <?php
-$pageTitle = trans('front::view.category');
+$pageTitle = '';
 if ($tax->isTag()) {
-    $pageTitle = trans('front::view.tag');
+    $pageTitle = trans('front::view.tag') . ': ';
 }
 ?>
 
 <h2 class="page-title bd-title mgb-30">
-    <span class="text-uppercase">{{ $pageTitle . ': ' . $tax->name }}</span>
+    <span class="text-uppercase">{{ $pageTitle . $tax->name }}</span>
 </h2>
 
 @if (!$posts->isEmpty())
