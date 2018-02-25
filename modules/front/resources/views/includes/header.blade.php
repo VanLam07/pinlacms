@@ -56,7 +56,7 @@ $primaryMenuId = PlOption::get('primary_menu');
 
 <div id="main_navbar">
     <div class="container">
-        <nav class="navbar navbar-expand-lg">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <?php 
             $logoText = PlOption::get('blog_title');
             $logoConvert = '';

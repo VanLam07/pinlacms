@@ -15,9 +15,14 @@
 }
 
 @media screen and (max-width: 992px) {
+    html, body {
+        font-size: 13px;
+    }
     #main_navbar {
         padding-left: 0;
         padding-right: 0;
+        padding-top: 5px;
+        padding-bottom: 3px;
         ul {
             li {
                 a {
@@ -28,6 +33,16 @@
         }
         ul.dropdown-menu {
             border-bottom: 1px solid rgba(0,0,0,.15);
+        }
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 992px) {
+    .sidebar-col {
+        .post-media {
+            .thumb img {
+                width: 40px;
+            }
         }
     }
 }
@@ -45,7 +60,21 @@
 }
 
 @media screen and (max-width: 420px) {
-    
+    .feature-posts {
+        .row {
+            .col-6 {
+                @include flex_col(0 0 100%);
+                max-width: 100%;
+            }
+        }
+    }
+    .post.post-row .row {
+        .thumb {
+            @include flex_col(0 0 100%);
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
+    }
 }
 
 @media screen and (max-width: 380px) {

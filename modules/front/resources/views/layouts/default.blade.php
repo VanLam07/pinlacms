@@ -42,7 +42,7 @@ and open the template in the editor.
 
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-8 content-col">
+                    <div class="col-md-8 content-col">
                         @yield('content_col')
                     </div>
 
