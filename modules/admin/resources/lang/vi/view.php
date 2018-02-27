@@ -107,6 +107,7 @@ return [
     'disable' =>                    'Disable',
     'actions' =>                    'Hành động',
     'fails_database' =>             'Lỗi tương tác với cơ sở dữ liệu',
+    'is_feature' =>                 'Nổi bật',
     'group' =>                      'Nhóm',
     'has_selected' =>               'được chọn',
     'level' =>                      'Level',

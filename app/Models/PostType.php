@@ -12,7 +12,7 @@ class PostType extends BaseModel
     protected $table = 'posts';
     protected static $tblDesc = 'post_desc';
     public $dates = ['trashed_at'];
-    protected $fillable = ['thumb_id', 'thumb_ids', 'author_id', 'status', 'comment_status', 
+    protected $fillable = ['thumb_id', 'thumb_ids', 'author_id', 'status', 'comment_status', 'is_feature',
         'comment_count', 'post_type', 'views', 'template', 'trased_at', 'created_at', 'updated_at'];
     
     use SoftDeletes;

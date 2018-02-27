@@ -46,37 +46,42 @@
         
         <div class="row">
         
-        <div class="form-group col-sm-6">
-            <label>{{trans('admin::view.created_at')}}</label>
-            <div class="time_group">
-                <div class="t_field">
-                    <span>{{trans('admin::view.day')}}</span>
-                    <select name="time[day]" class="form-control">
-                        {!! rangeOptions(1, 31, $item->created_at->format('d')) !!}
-                    </select>
-                </div>
-                <div class="t_field">
-                    <span>{{trans('admin::view.month')}}</span>
-                    <select name="time[month]" class="form-control">
-                        {!! rangeOptions(1, 12, $item->created_at->format('m')) !!}
-                    </select>
-                </div>
-                <div class="t_field">
-                    <span>{{trans('admin::view.year')}}</span>
-                    <select name="time[year]" class="form-control">
-                        {!! rangeOptions(2010, 2030, $item->created_at->format('Y')) !!}
-                    </select>
+            <div class="form-group col-sm-6">
+                <label>{{trans('admin::view.created_at')}}</label>
+                <div class="time_group">
+                    <div class="t_field">
+                        <span>{{trans('admin::view.day')}}</span>
+                        <select name="time[day]" class="form-control">
+                            {!! rangeOptions(1, 31, $item->created_at->format('d')) !!}
+                        </select>
+                    </div>
+                    <div class="t_field">
+                        <span>{{trans('admin::view.month')}}</span>
+                        <select name="time[month]" class="form-control">
+                            {!! rangeOptions(1, 12, $item->created_at->format('m')) !!}
+                        </select>
+                    </div>
+                    <div class="t_field">
+                        <span>{{trans('admin::view.year')}}</span>
+                        <select name="time[year]" class="form-control">
+                            {!! rangeOptions(2010, 2030, $item->created_at->format('Y')) !!}
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="form-group col-sm-6">
-            <label>{{trans('admin::view.author')}}</label>
-            {!! Form::select('author_id', $users, $item->author_id, ['class' => 'form-control']) !!}
-        </div>
+
+            <div class="form-group col-sm-6">
+                <label>{{trans('admin::view.author')}}</label>
+                {!! Form::select('author_id', $users, $item->author_id, ['class' => 'form-control']) !!}
+            </div>
+            
+            <div class="form-group col-sm-6">
+                <label>
+                    <input type="checkbox" name="is_feature" @if ($item->is_feature) checked @endif> {{ trans('admin::view.is_feature') }}
+                </label>
+            </div>
             
         </div>
-        
 
     </div>
     <div class="col-sm-3">
