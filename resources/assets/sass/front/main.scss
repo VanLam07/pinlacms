@@ -195,6 +195,11 @@ button {
     
 }
 .sidebar-col {
+    .post-media {
+        .post-title a {
+            font-size: 1rem;
+        }
+    }
 }
 
 .post-col {
@@ -378,6 +383,11 @@ button {
 .post-content {
     margin-bottom: 20px;
     position: relative;
+    font-size: 1.1rem;
+    p img {
+        max-width: 100%!important;
+        height: auto!important;
+    }
 }
 .post-excerpt {
     margin-bottom: 15px;

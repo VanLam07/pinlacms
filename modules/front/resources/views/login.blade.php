@@ -5,7 +5,7 @@
 @section('content_full')
 
 <div class="row mgt-50">
-    <div class="col-6 mr-auto ml-auto">
+    <div class="col-md-6 mr-auto ml-auto">
         
         <div class="box-wrapper">
             <h2 class="page-title bd-pattern"><span>{{ trans('front::view.login') }}</span></h2>
