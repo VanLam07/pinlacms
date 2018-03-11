@@ -20,6 +20,10 @@ class Option extends BaseModel
     const KC_ALL = 'key_cache_all_options';
     const KC_TIME = 24 * 3600;
     
+    public static function isUseSoftDelete() {
+        return false;
+    }
+    
     public static function rules(){
         return [
             'option_key' => 'required|alpha_dash',

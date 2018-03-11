@@ -12,6 +12,10 @@ class Contact extends BaseModel {
     protected $capEdit = 'edit_contact';
     protected $capRemove = 'remove_contact';
     
+    public static function isUseSoftDelete() {
+        return false;
+    }
+    
     public static function rules()
     {
         return [

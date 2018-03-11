@@ -11,6 +11,10 @@ class Menu extends BaseModel {
     protected $table = 'menus';
     protected $fillable = ['group_id', 'parent_id', 'menu_type', 'type_id', 'icon', 'open_type', 'order', 'status'];
     public $timestamps = false;
+    
+    public static function isUseSoftDelete() {
+        return false;
+    }
 
     public static function joinLang($lang = null) {
         if (!$lang) {

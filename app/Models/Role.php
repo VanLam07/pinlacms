@@ -7,6 +7,10 @@ class Role extends BaseModel {
     protected $table = 'roles';
     protected $fillable = ['label', 'name', 'default', 'list_caps'];
     public $timestamps = false;
+    
+    public static function isUseSoftDelete() {
+        return false;
+    }
 
     public static function rules($id = null) {
         $id = ($id) ? ',' . $id : '';

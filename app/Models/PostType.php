@@ -297,6 +297,9 @@ class PostType extends BaseModel
             $hasDel = true;
             unset($data['status']);
         }
+        if (!isset($data['is_feature'])) {
+            $data['is_feature'] = 0;
+        }
         
         $item = self::findOrFail($id);
         $fillable = $item->getFillable();

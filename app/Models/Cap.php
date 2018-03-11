@@ -12,6 +12,10 @@ class Cap extends BaseModel
     protected $capCreate = 'manage_cats';
     protected $capEdit = 'manage_cats';
     protected $capRemove = 'manage_cats';
+    
+    public static function isUseSoftDelete() {
+        return false;
+    }
 
     public static function rules(){
         return [

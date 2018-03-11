@@ -69,7 +69,11 @@ class BaseController extends Controller {
         if (!$ids) {
             return;
         }
-        $items = $this->model::whereIn('id', $ids)->get();
+        $items = $this->model::whereIn('id', $ids);
+        if ($action === 'delete') {
+            $items->withTrashed();
+        }
+        $items = $items->get();
         if ($items->isEmpty()) {
             return;
         }

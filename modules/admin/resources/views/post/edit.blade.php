@@ -77,7 +77,7 @@
             
             <div class="form-group col-sm-6">
                 <label>
-                    <input type="checkbox" name="is_feature" @if ($item->is_feature) checked @endif> {{ trans('admin::view.is_feature') }}
+                    <input type="checkbox" name="is_feature" value="1" @if ($item->is_feature) checked @endif> {{ trans('admin::view.is_feature') }}
                 </label>
             </div>
             

@@ -17,6 +17,10 @@ class Lang extends BaseModel {
     const KC_LANGS = 'all_key_langs';
     const KC_CURRENT = 'current_key_langs';
     
+    public static function isUseSoftDelete() {
+        return false;
+    }
+    
     public static function getAllCodes() {
         
         if (($allCodes = CacheFunc::get(self::KC_CODES)) !== null) {

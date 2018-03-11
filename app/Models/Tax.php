@@ -10,6 +10,10 @@ class Tax extends BaseModel
     protected $table = 'taxs';
     protected static $tblDesc = 'tax_desc';
     protected $fillable = ['image_id', 'type', 'parent_id', 'order', 'count', 'status'];
+    
+    public static function isUseSoftDelete() {
+        return false;
+    }
 
     public static function joinLang($code = null) {
         if (!$code) {

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Admin\Facades\AdConst;
 use App\Exceptions\PlException;
@@ -17,10 +16,6 @@ class BaseModel extends Model {
     protected $capRemove = 'remove_post';
 
     const CACHE_TIME = 3600; //minutes
-    
-    public static function isUseSoftDelete() {
-        return false;
-    }
     
     public static function getTableName() {
         return (new static)->getTable();
