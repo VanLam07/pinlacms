@@ -14,7 +14,10 @@
         @include('admin::parts.lang_edit_tabs', ['route' => 'admin::post.edit'])
 
         <div class="form-group">
-            <label>{{trans('admin::view.name')}} (*)</label>
+            <label>
+                {{trans('admin::view.name')}} (*)
+                <a href="{{ route('front::post.view', ['id' => $item->id, 'slug' => $item->slug]) }}" target="_blank">{{ trans('admin::view.view') }}</a>
+            </label>
             {!! Form::text('locale[title]', $item->title, ['class' => 'form-control', 'placeholder' => trans('admin::view.name')]) !!}
             {!! errorField('locale.title') !!}
         </div>
@@ -46,9 +49,9 @@
         
         <div class="row">
         
-            <div class="form-group col-sm-6">
+            <div class="col-sm-6">
                 <label>{{trans('admin::view.created_at')}}</label>
-                <div class="time_group">
+                <div class="time_group form-group">
                     <div class="t_field">
                         <span>{{trans('admin::view.day')}}</span>
                         <select name="time[day]" class="form-control">
@@ -68,17 +71,23 @@
                         </select>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label>{{trans('admin::view.author')}}</label>
+                    {!! Form::select('author_id', $users, $item->author_id, ['class' => 'form-control']) !!}
+                </div>
             </div>
 
             <div class="form-group col-sm-6">
-                <label>{{trans('admin::view.author')}}</label>
-                {!! Form::select('author_id', $users, $item->author_id, ['class' => 'form-control']) !!}
-            </div>
-            
-            <div class="form-group col-sm-6">
-                <label>
-                    <input type="checkbox" name="is_feature" value="1" @if ($item->is_feature) checked @endif> {{ trans('admin::view.is_feature') }}
-                </label>
+                <div class="form-group">
+                    <label>
+                        {!! Form::checkbox('is_feature', 1, $item->is_feature) !!}
+                        {{ trans('admin::view.is_feature') }}
+                    </label>
+                </div>
+                <div class="form-group">
+                    {!! Form::checkbox('is_notify', 1, $item->is_notify, ['id' => 'checkbox_notify']) !!}
+                    <label for="checkbox_notify">{{ trans('admin::view.is_notify') }}</label>
+                </div>
             </div>
             
         </div>

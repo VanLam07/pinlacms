@@ -12,7 +12,7 @@ class PostType extends BaseModel
     protected $table = 'posts';
     protected static $tblDesc = 'post_desc';
     public $dates = ['trashed_at'];
-    protected $fillable = ['thumb_id', 'thumb_ids', 'author_id', 'status', 'comment_status', 'is_feature',
+    protected $fillable = ['thumb_id', 'thumb_ids', 'author_id', 'status', 'comment_status', 'is_feature', 'is_notify',
         'comment_count', 'post_type', 'views', 'template', 'trased_at', 'created_at', 'updated_at'];
     
     use SoftDeletes;
@@ -99,6 +99,11 @@ class PostType extends BaseModel
             return $this->thumbnail->getImage($size, $class);
         }
         return '<img class="img-responsive '.$class.'" src="/images/default.png" alt="No image">';
+    }
+    
+    public function notiMails()
+    {
+        
     }
     
     public static function rules($update = false) {
@@ -229,6 +234,9 @@ class PostType extends BaseModel
         if (!isset($data['views']) || !$data['views']) {
             $data['views'] = 0;
         }
+        if (!isset($data['is_notify'])) {
+            $data['is_notify'] = 0;
+        }
         $data['post_type'] = $type;
         $item = self::create($data);
 
@@ -299,6 +307,9 @@ class PostType extends BaseModel
         }
         if (!isset($data['is_feature'])) {
             $data['is_feature'] = 0;
+        }
+        if (!isset($data['is_notify'])) {
+            $data['is_notify'] = 0;
         }
         
         $item = self::findOrFail($id);

@@ -58,30 +58,36 @@ use Admin\Facades\AdConst;
         </div>
         
         
-        <div class="form-group">
-            <label>{{trans('admin::view.created_at')}}</label>
-            <div class="time_group">
-                <div class="t_field">
-                    <span>{{trans('admin::view.day')}}</span>
-                    <select name="time[day]" class="form-control">
-                        {!! rangeOptions(1, 31, date('d')) !!}
-                    </select>
-                </div>
-                <div class="t_field">
-                    <span>{{trans('admin::view.month')}}</span>
-                    <select name="time[month]" class="form-control">
-                        {!! rangeOptions(1, 12, date('m')) !!}
-                    </select>
-                </div>
-                <div class="t_field">
-                    <span>{{trans('admin::view.year')}}</span>
-                    <select name="time[year]" class="form-control">
-                        {!! rangeOptions(2010, 2030, date('Y')) !!}
-                    </select>
+        <div class="row">
+            <div class="col-sm-6 form-group">
+                <label>{{trans('admin::view.created_at')}}</label>
+                <div class="time_group">
+                    <div class="t_field">
+                        <span>{{trans('admin::view.day')}}</span>
+                        <select name="time[day]" class="form-control">
+                            {!! rangeOptions(1, 31, date('d')) !!}
+                        </select>
+                    </div>
+                    <div class="t_field">
+                        <span>{{trans('admin::view.month')}}</span>
+                        <select name="time[month]" class="form-control">
+                            {!! rangeOptions(1, 12, date('m')) !!}
+                        </select>
+                    </div>
+                    <div class="t_field">
+                        <span>{{trans('admin::view.year')}}</span>
+                        <select name="time[year]" class="form-control">
+                            {!! rangeOptions(2010, 2030, date('Y')) !!}
+                        </select>
+                    </div>
                 </div>
             </div>
+            
+            <div class="col-sm-6 form-group">
+                <label for="checkbox_notify">{{ trans('admin::view.is_notify') }}</label>
+                {!! Form::checkbox('is_notify', 1, old('is_notify'), ['id' => 'checkbox_notify']) !!}
+            </div>
         </div>
-        
 
     </div>
 
@@ -155,6 +161,8 @@ use Admin\Facades\AdConst;
 @include('admin::parts.tinymce-script')
 
 @include('admin::file.manager')
+
+<script></script>
 
 @stop
 

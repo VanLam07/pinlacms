@@ -1,12 +1,5 @@
 <?php
 
-Route::get('/pinlaz1703/clear-cache', function() {
-    Artisan::call('config:cache');
-    Artisan::call('cache:clear');
-    Artisan::call('migrate');
-    Artisan::call('db:seed');
-});
-
 Route::get('/', 'PageController@index')->name('home');
 
 Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
@@ -40,6 +33,9 @@ Route::get('tag/{id}/{slug?}', 'TagController@view')
         ->name('tag.view')->where('id', '[0-9]+');
 Route::get('post/{id}/{slug?}', 'PostController@view')
         ->name('post.view')->where('id', '[0-9]+');
+//post notification
+Route::post('post/{id}/save-notify', 'PostController@saveMailNotify')
+        ->name('post.save_mail_notify')->where('id', '[0-9]+');
 Route::get('page/{id}/{slug?}', 'PageController@view')
         ->name('page.view')->where('id', '[0-9]+');
 

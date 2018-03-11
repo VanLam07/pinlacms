@@ -28,6 +28,7 @@ class CreatePostsTbl extends Migration
             $table->string('template')->nullable();
             $table->boolean('is_auth')->default(0);
             $table->boolean('is_feature')->default(0);
+            $table->boolean('is_notify')->default(0);
             $table->index(['id', 'post_type']);
             $table->softDeletes();
             $table->timestamps();
