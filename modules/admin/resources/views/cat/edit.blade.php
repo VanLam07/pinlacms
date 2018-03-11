@@ -61,6 +61,11 @@ use Admin\Facades\AdConst;
             {!! Form::number('order', $item->order, ['class' => 'form-control']) !!}
         </div>
         
+        <div class="form-group">
+            <label>{{ trans('admin::view.is_feature') }}</label>
+            {!! Form::checkbox('is_feature', 1, $item->is_feature) !!}
+        </div>
+        
         <input type="hidden" name="lang" value="{{$lang}}">
         {!! errorField('lang') !!}
 

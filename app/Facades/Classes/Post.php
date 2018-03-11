@@ -25,7 +25,7 @@ class Post {
     {
         return PostType::getData($type, [
             'fields' => ['posts.id', 'posts.author_id', 'posts.created_at', 'posts.thumb_id',
-                'posts.post_type', 'pd.title', 'pd.slug', 'pd.excerpt', 'pd.content'],
+                'posts.post_type', 'posts.views', 'pd.title', 'pd.slug', 'pd.excerpt', 'pd.content'],
             'orderby' => 'posts.created_at',
             'order' => 'desc',
             'per_page' => $number

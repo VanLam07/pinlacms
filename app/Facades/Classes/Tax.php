@@ -11,11 +11,12 @@ class Tax {
         
     }
     
-    public function listCategories()
+    public function listCategories($isFeature = null)
     {
         return TaxModel::getData('cat', [
             'fields' => ['taxs.id', 'td.name', 'td.slug', 'taxs.image_id'],
             'per_page' => -1,
+            'is_feature' => $isFeature,
             'orderby' => 'order',
             'order' => 'asc'
         ]);

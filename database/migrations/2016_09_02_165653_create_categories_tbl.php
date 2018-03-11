@@ -24,6 +24,7 @@ class CreateCategoriesTbl extends Migration
            $table->integer('order')->default(0);
            $table->integer('count')->default(0);
            $table->integer('status')->default(1);
+           $table->boolean('is_feature')->default(0);
            $table->timestamps();
            $table->foreign('parent_id')->references('id')->on('taxs')->onDelete('set null');
         });

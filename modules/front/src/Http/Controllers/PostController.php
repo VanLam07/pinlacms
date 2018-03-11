@@ -14,7 +14,7 @@ class PostController extends Controller
     public function view($id)
     {
         $post = PostType::findByLang($id);
-        
+        $post->increment('views');
         if (!$post) {
             abort(404);
         }

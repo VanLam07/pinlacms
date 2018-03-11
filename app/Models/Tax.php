@@ -9,7 +9,7 @@ class Tax extends BaseModel
 {
     protected $table = 'taxs';
     protected static $tblDesc = 'tax_desc';
-    protected $fillable = ['image_id', 'type', 'parent_id', 'order', 'count', 'status'];
+    protected $fillable = ['image_id', 'type', 'parent_id', 'order', 'count', 'status', 'is_feature'];
     
     public static function isUseSoftDelete() {
         return false;
@@ -103,6 +103,7 @@ class Tax extends BaseModel
             'per_page' => AdConst::PER_PAGE,
             'exclude_key' => 'taxs.id',
             'exclude' => [],
+            'is_feature' => null,
             'page' => 1,
             'filters' => []
         ];
@@ -120,6 +121,9 @@ class Tax extends BaseModel
                 $opts['status'] = [$opts['status']];
             }
             $result->whereIn('status', $opts['status']);
+        }
+        if (is_numeric($opts['is_feature'])) {
+            $result->where('is_feature', $opts['is_feature']);
         }
         $result->select($opts['fields'])
                 ->orderBy($opts['orderby'], $opts['order']);
@@ -182,6 +186,9 @@ class Tax extends BaseModel
         }
         if (!isset($data['order']) || !$data['order']) {
             $data['order'] = 0;
+        }
+        if (!isset($data['is_feature'])) {
+            $data['is_feature'] = 0;
         }
         
         $item = self::findOrFail($id);

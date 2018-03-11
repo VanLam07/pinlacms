@@ -1,6 +1,6 @@
 <div class="inner-sidebar">
     <?php
-    $cats = PlTax::listCategories();
+    $cats = PlTax::listCategories(1);
     ?>
 
     @if (!$cats->isEmpty())
