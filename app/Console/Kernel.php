@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
         $schedule->call(function () {
             \App\Models\MailNotify::cronAlert();
-        })->everyFiveMinutes();
+        })->everyMinute();
     }
 
     /**

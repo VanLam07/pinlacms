@@ -4,7 +4,7 @@
 
 <h2>{{ $postTitle }}</h2>
 
-<div style="margin-bottom: 20px; line-height: 22;">
+<div style="margin-bottom: 20px; line-height: 22px;">
     {!! $postContent !!}
 </div>
 

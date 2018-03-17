@@ -51,8 +51,10 @@ class PostController extends Controller
         }
         $postId = $request->get('post_id');
         $email = $request->get('email');
+        $data = $request->except(['_token', 'post_id', 'email']);
+        $data['ip'] = $request->ip();
         try {
-            MailNotify::insertOrUpdate($postId, $email, $request->except(['_token', 'post_id', 'email']));
+            MailNotify::insertOrUpdate($postId, $email, $data);
             return redirect()->back()->withInput()
                     ->with('succ_mess', trans('front::message.update_successful'));
         } catch (\Exception $ex) {

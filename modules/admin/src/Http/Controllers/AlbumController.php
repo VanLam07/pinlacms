@@ -13,11 +13,13 @@ use Breadcrumb;
 class AlbumController extends BaseController
 {
     protected $cap_accept = 'manage_cats';
+    protected $model;
 
     public function __construct() {
         parent::__construct();
         PlMenu::setActive('albums');
         Breadcrumb::add(trans('admin::view.albums'), route('admin::album.index'));
+        $this->model = Tax::class;
     }
 
     public function index(Request $request) {

@@ -22,6 +22,7 @@ class CreateTablePostMailNotify extends Migration
             $table->increments('id');
             $table->unsignedInteger('post_id');
             $table->string('email');
+            $table->string('ip', 64)->nullable();
             $table->date('from_date')->nullable();
             $table->date('to_date')->nullable();
             $table->time('from_hour')->nullable();

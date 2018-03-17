@@ -6,11 +6,12 @@ use Admin\Facades\AdConst;
 use App\Models\BaseModel;
 use Carbon\Carbon;
 use Mail;
+use Illuminate\Support\Facades\Cookie;
 
 class MailNotify extends BaseModel
 {
     protected $table = 'post_notify';
-    protected $fillable = ['post_id', 'email', 'from_date', 'to_date', 'from_hour', 'to_hour', 'number_alert', 'array_time'];
+    protected $fillable = ['post_id', 'email', 'ip', 'from_date', 'to_date', 'from_hour', 'to_hour', 'number_alert', 'array_time'];
 
     public static function isUseSoftDelete()
     {
@@ -76,9 +77,16 @@ class MailNotify extends BaseModel
     
     public static function findCurrentUser($postId)
     {
-        return self::where('post_id', $postId)
+        $item = self::where('post_id', $postId)
                 ->where('email', auth()->user()->email)
                 ->first();
+        if (!$item) {
+            return self::where('post_id', $postId)
+                    ->where('ip', request()->ip())
+                    ->orderBy('updated_at', 'desc')
+                    ->first();
+        }
+        return $item;
     }
     
     public static function cronAlert()
@@ -104,9 +112,8 @@ class MailNotify extends BaseModel
             }
             $arrayTime = json_decode($item->array_time, true);
             foreach ($arrayTime as $time) {
-                $itemTime = Carbon::createFromFormat('H:i', $time)->subMinutes(5);
-                $itemTimeEnd = clone $itemTime;
-                if ($timeNow->between($itemTime, $itemTimeEnd->addMinutes(10))) {
+                $itemTime = Carbon::createFromFormat('H:i', $time);
+                if ($timeNow->hour === $itemTime->hour && $timeNow->minute === $itemTime->minute) {
                     dump('send');
                     $dataPost = [
                         'postTitle' => $item->title,

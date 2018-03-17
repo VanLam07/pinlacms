@@ -39,8 +39,7 @@ class BaseController extends Controller {
         try {
             $item = $this->model::insertData($request->all());
             DB::commit();
-            return redirect()->route('admin::post.edit', $item->id)
-                    ->with('succ_mess', trans('admin::message.store_success'));
+            return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (PlException $ex) {
             DB::rollback();
             return redirect()->back()->withInput()->with('error_mess', $ex->getError());

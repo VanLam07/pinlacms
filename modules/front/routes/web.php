@@ -44,6 +44,9 @@ Route::get('comment/lists', 'CommentController@loadData')
 //contact
 Route::post('contact/send', 'PageController@sendContact')
         ->name('contact.send');
+//album
+Route::get('album/{id}/{slug?}', 'AlbumController@view')
+        ->name('album.view');
 
 Route::group(['middleware' => 'auth'], function () {
     

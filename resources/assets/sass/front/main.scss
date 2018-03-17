@@ -536,6 +536,10 @@ ul.related-posts {
     }
     .comment-auhor {
         padding-top: 5px;
+        >img {
+            width: 28px;
+            border-radius: 50%;
+        }
     }
 }
 .comment-lists {

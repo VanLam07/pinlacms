@@ -30,7 +30,11 @@ class File extends BaseModel
         }
         $upload_dir = trim(config('image.upload_dir'), '/');
         $src_file = $upload_dir .'/'. $size. '/' .$this->url;
+        $fullSrc = $upload_dir . '/full/' . $this->url;
         if (!Storage::disk()->exists($src_file)){
+            if (Storage::disk()->exists($fullSrc)) {
+                return Storage::disk()->url($fullSrc);
+            }
             return null;
         }
         return Storage::disk()->url($src_file);
