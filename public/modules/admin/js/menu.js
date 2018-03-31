@@ -77,6 +77,18 @@
                         $scope.cats = results.data;
                     });
                 }, 2500);
+                
+                $scope.albums = [];
+                $timeout(function () {
+                    $http.get(api_url + 'albums', {
+                        params: {
+                            'fields[]': ['td.name', 'taxs.id'],
+                            per_page: -1
+                        }
+                    }).then(function (results) {
+                        $scope.albums = results.data;
+                    });
+                }, 3000);
 
                 $scope.newMenus = [];
                 $scope.newcustom = {};

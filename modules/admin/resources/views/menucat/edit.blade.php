@@ -78,6 +78,24 @@ use Admin\Facades\AdConst;
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingThree">
                     <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#album_type" aria-expanded="false" aria-controls="collapseThree">
+                            {{ trans('admin::view.albums') }}
+                        </a>
+                    </h4>
+                </div>
+                <div id="album_type" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body">
+                        <div class="max-mdh" ng-if="albums.length > 0">
+                            <div ng-repeat="album in albums">
+                                <label><input type="checkbox" ng-click="addMenu(album, {{ AdConst::MENU_TYPE_ALBUM }})"> <span ng-bind="album.name"></span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <h4 class="panel-title">
                         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#post_type" aria-expanded="false" aria-controls="collapseThree">
                             {{ trans('admin::view.posts') }}
                         </a>

@@ -63,6 +63,9 @@ and open the template in the editor.
             var multi_select = 0;
             var file_type = '_all';
             var el_preview = '.thumb_group';
+            var thumbSize = 0;
+            var fileName = 'file_ids';
+            var isAppend = 0;
             var callback_function = null;
             @if(isset($params['callback']))
                 callback_function = "{{ $params['callback'] }}";
@@ -75,6 +78,15 @@ and open the template in the editor.
             @endif
             @if(isset($params['el_preview']))
                 el_preview = "{{$params['el_preview']}}";
+            @endif
+            @if (isset($params['thumb_size']))
+                thumbSize = 1;
+            @endif
+            @if (isset($params['file_name']))
+                fileName = "{{ $params['file_name'] }}";
+            @endif
+            @if (isset($params['append']))
+                isAppend = "{{ $params['append'] }}";
             @endif
         
             var _all_files_url = "{{route('admin::api.ajax_action')}}";
@@ -125,15 +137,18 @@ and open the template in the editor.
                         success: function (data) {
                             if (data.length > 0) {
                                 file_tabs.find('.tab-select-files').click();
+                                files_selected = [];
+                                el_files_list.find('li a').removeClass('selected');
                                 for (var i = 0; i < data.length; i++) {
                                     var file = data[i];
                                     el_files_list.prepend(
                                                 '<li>' + 
-                                                    '<a href="' + file.full_url + '" data-id="' + file.id + '">' +
+                                                    '<a href="' + file.full_url + '" data-id="' + file.id + '" class="selected">' +
                                                         '<img class="img-responsive" src="' + file.thumb_url + '" alt="' + file.name + '">' +
                                                     '</a>' +
                                                 '</li>'
                                             );
+                                    files_selected.push(file);
                                 }
                             }
                             $('#files-input').val('');
@@ -152,7 +167,8 @@ and open the template in the editor.
                     e.preventDefault();
                     var file_id = $(this).data('id');
                     var file_url = $(this).attr('href');
-                    var file = {id: file_id, url: file_url};
+                    var thumbUrl = $(this).find('img').attr('src');
+                    var file = {id: file_id, url: file_url, thumb_url: thumbUrl};
                     if (multi_select == 1) {
                         var index = check_selected(file, files_selected);
                         if ($(this).hasClass('selected')) {
@@ -197,7 +213,7 @@ and open the template in the editor.
                         if (callback_function) {
                             window.parent[callback_function](files_selected);
                         } else {
-                            window.parent.submitSelectFiles(files_selected, el_preview);
+                            window.parent.submitSelectFiles(files_selected, el_preview, thumbSize, fileName, isAppend);
                         }
                         window.parent.closeFileModal();
                     }

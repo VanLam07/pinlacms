@@ -8,7 +8,8 @@ and open the template in the editor.
     Author     : Pinla
 */
 
-@import "../mixin.scss";
+@import "../variables.scss";
+@import "../../mixins.scss";
 
 html, body{
     background: #f3f3f3; font-size: 0.93rem;
@@ -152,5 +153,17 @@ a{
 .btn-choose-files {
     input[type="file"] {
         /*display: none;*/
+    }
+}
+.album_media_box {
+    margin-left: -10px;
+    margin-right: -10px;
+    .file_item {
+        padding-left: 10px;
+        padding-right: 10px;
+        display: inline-block;
+        img {
+            border: 5px solid #ccc;
+        }
     }
 }

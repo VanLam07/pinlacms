@@ -29,6 +29,27 @@
             <label>{{trans('admin::view.description')}}</label>
             {!! Form::textarea('locale[description]', $item->description, ['class' => 'form-control', 'rows' => 2, 'placeholder' => trans('admin::view.description')]) !!}
         </div>
+        
+        <div class="form-group thumb_box">
+            <label>
+                {{ trans('admin::view.list_images') }} &nbsp;&nbsp;
+                <button type="button" class="btn btn-primary btn-files-modal"
+                        data-href="{{ route('admin::file.dialog', ['multiple' => 1, 'el_preview' => '#album_list_image', 'thumb_size' => 1, 'file_name' => 'media_ids', 'append' => 1]) }}">
+                    {{trans('admin::view.add_image')}}
+                </button>
+            </label>
+            <div class="thumb_group album_media_box well" id="album_list_image">
+                @if (!$medias->isEmpty())
+                @foreach ($medias as $media)
+                <p class="file_item" data-id="{{ $media->id }}">
+                    {!! $media->getImage('thumbnail') !!}
+                    <a class="f_close"></a>
+                    <input type="hidden" name="media_ids[{{ $media->pivot->order }}]" value="{{ $media->id }}">
+                </p>
+                @endforeach
+                @endif
+            </div>
+        </div>
 
         <div class="form-group">
             <label>{{trans('admin::view.meta_keyword')}}</label>
@@ -45,7 +66,7 @@
 
         <div class="form-group thumb_box" >
             <label>{{trans('admin::view.thumbnail')}}</label>
-            <div class="thumb_group">
+            <div class="thumb_group" id="album_feature_img">
                 <div class="thumb_item">
                     @if ($item->thumbnail)
                     <p class="file_item">
@@ -57,7 +78,8 @@
                 </div>
             </div>
             {!! errorField('file_ids') !!}
-            <div><button type="button" class="btn btn-default btn-files-modal" data-href="{{route('admin::file.dialog')}}">{{trans('admin::view.add_image')}}</button></div>
+            <div><button type="button" class="btn btn-default btn-files-modal"
+                         data-href="{{ route('admin::file.dialog', ['el_preview' => '#album_feature_img']) }}">{{trans('admin::view.add_image')}}</button></div>
         </div>
 
         <div class="form-group">

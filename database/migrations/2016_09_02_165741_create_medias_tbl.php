@@ -46,8 +46,9 @@ class CreateMediasTbl extends Migration
         Schema::create('media_tax', function(Blueprint $table){
             $table->integer('media_id')->unsigned();
             $table->integer('tax_id')->unsigned();
+            $table->unsignedInteger('order')->default(0);
             $table->primary(['media_id', 'tax_id']);
-            $table->foreign('media_id')->references('id')->on('medias')->onDelete('cascade');
+            $table->foreign('media_id')->references('id')->on('files')->onDelete('cascade');
             $table->foreign('tax_id')->references('id')->on('taxs')->onDelete('cascade');
         });
     }

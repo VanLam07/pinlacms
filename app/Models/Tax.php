@@ -202,6 +202,14 @@ class Tax extends BaseModel
         $langData['slug'] = (trim($slug) == '') ? str_slug($name) : str_slug($slug);
 
         $item->langs()->sync([$data['lang'] => $langData], false);
+        
+        $medias = [];
+        if (isset($data['media_ids'])) {
+            foreach ($data['media_ids'] as $order => $mediaId) {
+                $medias[$mediaId] = ['order' => $order];
+            }
+        }
+        $item->medias()->sync($medias);
     }
     
     public static function tableCats($items, $parent = 0, $depth = 0) {
@@ -296,5 +304,12 @@ class Tax extends BaseModel
             return route('front::' . $preRoute, ['id' => $this->id, 'slug' => $this->slug]);
         }
         return null;
+    }
+    
+    public function medias()
+    {
+        return $this->belongsToMany('\App\Models\File', 'media_tax', 'tax_id', 'media_id')
+                ->withPivot('order')
+                ->orderBy('order', 'asc');
     }
 }

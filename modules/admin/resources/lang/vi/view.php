@@ -115,6 +115,7 @@ return [
     'group' =>                      'Nhóm',
     'has_selected' =>               'được chọn',
     'level' =>                      'Level',
+    'list_images' =>                'Danh sách ảnh',
     'list_menus' =>                 'Danh sách menu',
     'list_caps' =>                  'Danh sách quyền',
     'man_caps' =>                   'Quản lý quyền hạn',

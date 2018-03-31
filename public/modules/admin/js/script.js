@@ -93,6 +93,11 @@
         if (!files_content.hasClass('loaded')) {
             files_content.html('<iframe class="files-frame" frameborder="0" src="' + href + '"></iframe>');
             files_content.addClass('loaded');
+        } else {
+            var oldHref = files_content.find('iframe').attr('src');
+            if (href !== oldHref) {
+                files_content.find('iframe').attr('src', href);
+            }
         }
     });
 
@@ -100,17 +105,37 @@
         $('#files-modal').modal('hide');
     };
 
-    window.submitSelectFiles = function (files, el_preview) {
+    window.submitSelectFiles = function (files, el_preview, thumbSize, fileName, append) {
+        if (typeof thumbSize == 'undefined') {
+            thumbSize = 0;
+        }
+        if (typeof fileName == 'undefined') {
+            fileName = 'file_ids';
+        }
+        if (typeof append == 'undefined') {
+            append = 0;
+        }
         var preview_html = '';
         for (var i in files) {
             var file = files[i];
-            preview_html += '<p class="file_item">' +
-                    '<img src="' + file.url + '" class="img-responsive" alt="" title="">' +
+            var fileUrl = file.url;
+            if (thumbSize) {
+                fileUrl = file.thumb_url;
+            }
+            if (append && $(el_preview).find('.file_item[data-id="'+ file.id +'"]').length > 0) {
+                continue;
+            }
+            preview_html += '<p class="file_item" data-id="'+ file.id +'">' +
+                    '<img src="' + fileUrl + '" class="img-responsive" alt="" title="">' +
                     '<a class="f_close"></a>' +
-                    '<input type="hidden" name="file_ids[]" value="' + file.id + '">' +
+                    '<input type="hidden" name="'+ fileName +'['+ i +']" value="' + file.id + '">' +
                     '</p>';
         }
-        $(el_preview).html(preview_html);
+        if (!append) {
+            $(el_preview).html(preview_html);
+        } else {
+            $(el_preview).append(preview_html);
+        }
     };
     
     window.setOptionValue = function (files) {

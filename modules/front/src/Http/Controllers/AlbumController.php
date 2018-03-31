@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Media;
 use App\Models\Tax;
+use Admin\Facades\AdConst;
 use App\Exceptions\PlException;
 
 class AlbumController extends Controller
@@ -16,9 +17,7 @@ class AlbumController extends Controller
         if (!$album) {
             abort(404);
         }
-        $collectMedias = Media::getData([
-            'albums' => [$id]
-        ]);
+        $collectMedias = $album->medias()->paginate(AdConst::PER_PAGE);
         return view('front::album.view', compact('album', 'collectMedias'));
     }
 }

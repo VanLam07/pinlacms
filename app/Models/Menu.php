@@ -37,6 +37,7 @@ class Menu extends BaseModel {
         switch ($this->menu_type) {
             case AdConst::MENU_TYPE_CAT:
             case AdConst::MENU_TYPE_TAX:
+            case AdConst::MENU_TYPE_ALBUM:
                 $object = self::join('tax_desc as td', 'menus.type_id', '=', 'td.tax_id')
                         ->where('td.lang_code', '=', currentLocale())
                         ->where('td.tax_id', '=', $this->type_id)
@@ -71,6 +72,9 @@ class Menu extends BaseModel {
                 break;
             case AdConst::MENU_TYPE_PAGE:
                 $route = 'page.view';
+                break;
+            case AdConst::MENU_TYPE_ALBUM:
+                $route = 'album.view';
                 break;
             case 0:
             default:
@@ -124,7 +128,7 @@ class Menu extends BaseModel {
             $result->leftJoin('tax_desc', function ($join) use ($lang) {
                 $join->on('menus.type_id', '=', 'tax_desc.tax_id')
                         ->where('tax_desc.lang_code', '=', $lang)
-                        ->whereIn('menus.menu_type', [AdConst::MENU_TYPE_CAT, AdConst::MENU_TYPE_TAX]);
+                        ->whereIn('menus.menu_type', [AdConst::MENU_TYPE_CAT, AdConst::MENU_TYPE_TAX, AdConst::MENU_TYPE_ALBUM]);
             });
             //post
             $result->leftJoin('post_desc', function ($join) use ($lang) {
@@ -156,7 +160,7 @@ class Menu extends BaseModel {
         
         foreach ($langs as $lang) {
             if (!$link) {
-                $link = self::getLinkByType($data['menu_type'], $data['id'], $lang);
+                $link = self::getLinkByType($data['menu_type'], $data['id'], $lang->code);
             }
             
             $lang_data = [
@@ -181,6 +185,12 @@ class Menu extends BaseModel {
                 $tax = Tax::findByLang($typeId, ['td.slug', 'taxs.id'], $langCode);
                 if ($tax) {
                     $link = route('front::cat.view', ['id' => $tax->id, 'slug' => $tax->slug]);
+                }
+                break;
+            case AdConst::MENU_TYPE_ALBUM:
+                $tax = Tax::findByLang($typeId, ['td.slug', 'taxs.id'], $langCode);
+                if ($tax) {
+                    $link = route('front::album.view', ['id' => $tax->id, 'slug' => $tax->slug]);
                 }
                 break;
             case AdConst::MENU_TYPE_POST:

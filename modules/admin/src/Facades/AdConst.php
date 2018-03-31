@@ -37,6 +37,7 @@ class AdConst {
     /*
      * menu type 
      */
+    const MENU_TYPE_ALBUM = 5;
     const MENU_TYPE_TAX = 4;
     const MENU_TYPE_CAT = 3;
     const MENU_TYPE_POST = 2;

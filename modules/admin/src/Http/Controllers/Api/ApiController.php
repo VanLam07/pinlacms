@@ -34,6 +34,12 @@ class ApiController extends Controller {
         $cats = Tax::getData('cat', $this->request->all());
         return response()->json($cats);
     }
+    
+    public function getAlbums()
+    {
+        $albums = Tax::getData('album', $this->request->all());
+        return response()->json($albums);
+    }
 
     public function getFiles() {
         $files = FileModel::getData($this->request->all());

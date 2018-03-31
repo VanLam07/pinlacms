@@ -57,7 +57,8 @@ class AlbumController extends BaseController
             $lang = currentLocale();
         }
         $item = Tax::findByLang($id, ['taxs.*', 'td.*'], $lang);
-        return view('admin::album.edit', compact('item', 'lang'));
+        $medias = $item->medias;
+        return view('admin::album.edit', compact('item', 'lang', 'medias'));
     }
 
     public function update($id, Request $request) {
