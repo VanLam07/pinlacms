@@ -18,7 +18,7 @@ class AuthController extends Controller {
     protected $decayMinutes = 5;
 
     use AuthenticatesUsers;
-
+    
     public function getRegister() {
         return view('admin::auth.register');
     }
@@ -117,7 +117,7 @@ class AuthController extends Controller {
 
         DB::beginTransaction();
         $user = User::where('email', $email)->first();
-        $token = makeToken(45, $this->user);
+        $token = makeToken(45, User::class);
         $user->resetPasswdToken = $token;
         $user->resetPasswdExpires = time() + 3600;
         $user->save();

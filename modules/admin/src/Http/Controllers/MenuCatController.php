@@ -136,7 +136,11 @@ class MenuCatController extends BaseController {
     public function getNestedMenus(Request $request) {
         canAccess($this->cap_accept);
         
-        $menus = Menu::getData($request->all());
+        $data = $request->all();
+        $data['with_target'] = true;
+        $tblPrefix = DB::getTablePrefix();
+        $data['fields'] = ['menus.*', 'md.*', DB::raw('IFNULL('.$tblPrefix.'tax_desc.name, '.$tblPrefix.'post_desc.title) as target_title')];
+        $menus = Menu::getData($data);
         $nested = Tax::toNested($menus);
         return $nested;
     }

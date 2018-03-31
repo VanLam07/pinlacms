@@ -132,7 +132,7 @@ use Admin\Facades\AdConst;
     <div class="col-sm-6">
 
         <h3 class="box-title"><label>{{trans('admin::view.list_menus')}}</label></h3>
-
+        <p>{% updateStatus %}</p>
         <script type="text/ng-template" id="items_renderer.html">
             <div class="mi-inner">
                 <div ui-nested-sortable-handle class="handle">
@@ -146,7 +146,7 @@ use Admin\Facades\AdConst;
                     </div>
                     <div class="collapse mi-content" role="tabpanel" id="mi-content-{% item.id %}">
                         <div class="form-group">
-                            <label>{{trans('admin::view.target')}}: </label> <span ng-menu-target="{% item.id %}"></span>
+                            <label>{{trans('admin::view.target')}}: </label> <span>{% item.target_title %}</span>
                         </div>
                         <div class="form-group">
                             <label>{{trans('admin::view.title')}}</label>
@@ -211,6 +211,7 @@ use Admin\Facades\AdConst;
     var group_id = '<?php echo ($item) ? $item->id : 0; ?>';
     var menu_nested_url = '<?php echo route('admin::menucat.to_nested', ['group_id' => ($item) ? $item->id : -1]); ?>';
     var menu_type_url = '<?php echo route('admin::menu.get_type') ?>';
+    var menu_list_type_url = '<?php echo route('admin::menu.get_list_type') ?>';
     var store_items_url = '<?php echo route('admin::menucat.store_items') ?>';
     var order_items_url = '<?php echo route('admin::menucat.update_order_items') ?>';
     var api_url = '<?php echo route('admin::index') . '/api/'; ?>';

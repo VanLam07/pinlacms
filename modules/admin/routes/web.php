@@ -61,6 +61,7 @@ Route::group(['middleware' => 'auth'], function () {
     //    Menu
     Route::delete('/menus/asyn-destroy', ['as' => 'menu.asyn_destroy', 'uses' => 'MenuController@asynDestroy']);
     Route::get('/menus/get-menu-type', ['as' => 'menu.get_type', 'uses' => 'MenuController@getType']);
+    Route::get('/menus/get-list-type', ['as' => 'menu.get_list_type', 'uses' => 'MenuController@getListType']);
     Route::resource('menus', 'MenuController', rsNames('menu'));
     Route::post('/menus/actions', ['as' => 'menu.actions', 'uses' => 'MenuController@multiActions']);
     //    Post

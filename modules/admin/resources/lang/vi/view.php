@@ -32,6 +32,7 @@ return [
     'register' =>                   'Đăng ký tài khoản',
     'remember' =>                   'Ghi nhớ',
     'repassword' =>                 'Nhập lại mật khẩu',
+    'reset_pass_subject' =>         'Yêu cầu đặt lại mật khẩu trên trang :host',
     
     'role' =>                       'Vai trò',
     'save' =>                       'Lưu lại',

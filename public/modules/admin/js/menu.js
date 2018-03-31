@@ -11,19 +11,21 @@
                 $scope.menus = [];
 
                 function reloadMenus() {
-                    $http.get(menu_nested_url, {
-                        params: {
-                            lang: _lang,
-                            group_id: group_id,
-                            per_page: -1
-                        }
-                    }).then(function (result) {
-                        $scope.menus = result.data;
-                    }).catch(function (err) {
-                        console.log(err);
-                    });
+                        $http.get(menu_nested_url, {
+                            params: {
+                                lang: _lang,
+                                group_id: group_id,
+                                per_page: -1
+                            }
+                        }).then(function (result) {
+                            $scope.menus = result.data;
+                        }).catch(function (err) {
+                            console.log(err);
+                        });
                 }
-                reloadMenus();
+                $timeout(function () {
+                    reloadMenus();
+                }, 1000);
 
                 $scope.options = {
                 };
@@ -41,7 +43,7 @@
                         $scope.post_prev_page_url = data.prev_page_url;
                         $scope.posts = data.data;
                     });
-                }, 500);
+                }, 1500);
 
                 $scope.postGoUrl = function (url) {
                     if (url) {
@@ -62,7 +64,7 @@
                     }).then(function (results) {
                         $scope.pages = results.data;
                     });
-                }, 1000);
+                }, 2000);
 
                 $scope.cats = [];
                 $timeout(function () {
@@ -74,7 +76,7 @@
                     }).then(function (results) {
                         $scope.cats = results.data;
                     });
-                }, 1500);
+                }, 2500);
 
                 $scope.newMenus = [];
                 $scope.newcustom = {};
@@ -118,39 +120,16 @@
                 };
 
                 $scope.updateOrder = function (e) {
+                    e.preventDefault();
                     $http.post(order_items_url, {
                         menus: $scope.menus, 
                         _token: _token
                     }).then(function (data) {
-                        console.log(data);
+                        $scope.updateStatus = data.data;
                     }).catch(function (err) {
+                        $scope.updateStatus = 'Error!';
                         e.preventDefault();
                     });
-                };
-            })
-            .directive('ngMenuTarget', function ($http) {
-                return {
-                    link: function (scope, element, attrs) {
-                        attrs.$observe('ngMenuTarget', function (id) {
-                            $http.get(menu_type_url, {
-                                params: {menu_id: id, lang: _lang}
-                            }).then(function (results) {
-                                var data = results.data;
-                                var title = data.name || data.title;
-                                element.html(title);
-                                var mi_inner = element.closest('.mi-inner');
-                                var elTitle = mi_inner.find('.item-title');
-                                var elHandle = mi_inner.find('.handle');
-
-                                if (elTitle.val() == '') {
-                                    elTitle.val(title);
-                                    elHandle.html(title);
-                                }
-                            }).catch(function (err) {
-                                console.log(err);
-                            });
-                        });
-                    }
                 };
             })
             .directive('ngConfirm', function () {

@@ -102,12 +102,13 @@ class Menu extends BaseModel {
             'per_page' => AdConst::PER_PAGE,
             'exclude' => [],
             'lang' => currentLocale(),
+            'with_target' => false,
             'filters' => []
         ];
 
         $opts = array_merge($opts, $args);
-
-        $result = self::joinLang($opts['lang'])
+        $lang = $opts['lang'];
+        $result = self::joinLang($lang)
                 ->whereNotNull('md.title');
         if ($opts['exclude']) {
             $result->whereNotIn('menus.id', $opts['exclude']);
@@ -116,7 +117,21 @@ class Menu extends BaseModel {
             self::filterData($result, $opts['filters']);
         }
         if ($opts['group_id'] > -1) {
-            $result = $result->where('group_id', $opts['group_id']);
+            $result->where('group_id', $opts['group_id']);
+        }
+        if ($opts['with_target']) {
+            //tax
+            $result->leftJoin('tax_desc', function ($join) use ($lang) {
+                $join->on('menus.type_id', '=', 'tax_desc.tax_id')
+                        ->where('tax_desc.lang_code', '=', $lang)
+                        ->whereIn('menus.menu_type', [AdConst::MENU_TYPE_CAT, AdConst::MENU_TYPE_TAX]);
+            });
+            //post
+            $result->leftJoin('post_desc', function ($join) use ($lang) {
+               $join->on('menus.type_id', '=', 'post_desc.post_id')
+                       ->whereIn('menus.menu_type', [AdConst::MENU_TYPE_POST, AdConst::MENU_TYPE_PAGE])
+                       ->where('post_desc.lang_code', '=', $lang);
+            });
         }
         
         $result->select($opts['fields'])

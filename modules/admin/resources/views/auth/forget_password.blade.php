@@ -23,6 +23,9 @@
         <div class="form-group">
             <button type="submit" class="btn btn-block btn-default">@lang('admin::view.submit')</button>
         </div>
+        <p class="text-right">
+            <a href="{{ route('admin::auth.get_login') }}"><i class="fa fa-long-arrow-left"></i> @lang('admin::view.login')</a>
+        </p>
         
         {!! Form::close() !!}
     </div>

@@ -166,7 +166,7 @@ if (!function_exists('makeToken')) {
     function makeToken($length = 17, $model = null) {
         $str = str_random($length);
         if ($model) {
-            $token = $model->where('resetPasswdToken', $str)->first();
+            $token = $model::where('resetPasswdToken', $str)->first();
             if ($token) {
                 $str = makeToken($length, $model);
             }

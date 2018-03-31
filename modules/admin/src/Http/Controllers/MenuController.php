@@ -138,4 +138,41 @@ class MenuController extends BaseController {
         return $result;
     }
 
+    public function getListType(Request $request)
+    {
+        canAccess($this->cap_accept);
+        if (!$request->has('menu_ids')) {
+            return response()->json(trans('admin::message.no_item'), 422);
+        }
+        $lang = $request->get('lang');
+        if(!$lang){
+            $lang = currentLocale();
+        }
+        
+        $menuIds = $request->get('menu_ids');
+        $menuTargets = Menu::whereIn('id', $menuIds)->get();
+        if ($menuTargets->isEmpty()) {
+            return response()->json(trans('admin::message.no_item'), 422);
+        }
+        $results = [];
+        foreach ($menuTargets as $menu) {
+            $target = null;
+            switch ($menu->model_type) {
+                case AdConst::MENU_TYPE_CUSTOM:
+                    $target = Menu::findCustom($menu->id, ['md.*'], $lang);
+                    break;
+                case AdConst::MENU_TYPE_PAGE:
+                case AdConst::MENU_TYPE_POST:
+                    $target = PostType::findByLang($menu->type_id, ['posts.id', 'pd.title', 'posts.post_type'], $lang);
+                    break;
+                case AdConst::MENU_TYPE_CAT:
+                case AdConst::MENU_TYPE_TAX:
+                    $target = Tax::findByLang($menu->type_id, ['taxs.id', 'td.name', 'taxs.type'], $lang);
+                    break;
+            }
+            $results[$menu->id] = $target;
+        }
+        return $results;
+    }
+
 }
