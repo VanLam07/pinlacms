@@ -1,6 +1,6 @@
 <div class="thumb">
-    <?php 
-    $thumbnail = $post->getThumbnail('medium');
+    <?php
+    $thumbnail = $post->getThumbnail(isset($thumbSize) ? $thumbSize : 'medium');
     $postLink = $post->getLink();
     ?>
     <a href="{{ $postLink }}">

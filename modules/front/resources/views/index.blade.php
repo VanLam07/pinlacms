@@ -14,7 +14,7 @@ $featurePosts = PlPost::getFeature();
     <!--<h2 class="box-title">{{ trans('front::view.feature_posts') }}</h2>-->
     <div class="posts feature-posts">
         <div class="post first-post post-col">
-            @include('front::includes.post-col', ['post' => $featurePosts->first(), 'postDate' => 1])
+            @include('front::includes.post-col', ['post' => $featurePosts->first(), 'postDate' => 1, 'thumbSize' => 'large'])
         </div>
         
         <?php unset($featurePosts[0]); ?>
