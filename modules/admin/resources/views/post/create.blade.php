@@ -135,7 +135,7 @@ use Admin\Facades\AdConst;
 
         <div class="form-group">
             <label>{{trans('admin::view.comment_status')}}</label>
-            {!! Form::select('status', AdView::commentStatusLabel(), old('comment_status'), ['class' => 'form-control']) !!}
+            {!! Form::select('comment_status', AdView::commentStatusLabel(), old('comment_status'), ['class' => 'form-control']) !!}
         </div>
 
         <div class="form-group">
