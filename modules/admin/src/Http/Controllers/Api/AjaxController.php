@@ -19,7 +19,9 @@ class AjaxController extends Controller
         $result = '';
         switch ($action) {
             case 'load_files':
-                $files = FileModel::getData($this->request->all());
+                $data = $this->request->all();
+                $data['per_page'] = -1;
+                $files = FileModel::getData($data);
                 if(!$files->isEmpty()){
                     foreach ($files as $file) {
                         $result .= '<li><a href="'.$file->getSrc('full').'" data-id="'.$file->id.'">';

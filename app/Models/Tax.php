@@ -203,13 +203,23 @@ class Tax extends BaseModel
 
         $item->langs()->sync([$data['lang'] => $langData], false);
         
-        $medias = [];
-        if (isset($data['media_ids'])) {
-            foreach ($data['media_ids'] as $order => $mediaId) {
-                $medias[$mediaId] = ['order' => $order];
+        if ($item->type === 'album') {
+            $medias = [];
+            $currCount = 0;
+            if (isset($data['curr_media_ids'])) {
+                foreach ($data['curr_media_ids'] as $order => $mediaId) {
+                    $medias[$mediaId] = ['order' => $order];
+                }
+                $orderKey = array_keys($data['curr_media_ids']);
+                $currCount = $orderKey[count($orderKey) - 1] + 1;
             }
+            if (isset($data['media_ids'])) {
+                foreach ($data['media_ids'] as $nOrder => $mediaId) {
+                    $medias[$mediaId] = ['order' => $nOrder + $currCount];
+                }
+            }
+            $item->medias()->sync($medias);
         }
-        $item->medias()->sync($medias);
     }
     
     public static function tableCats($items, $parent = 0, $depth = 0) {

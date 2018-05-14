@@ -44,7 +44,7 @@
                 <p class="file_item" data-id="{{ $media->id }}">
                     {!! $media->getImage('thumbnail') !!}
                     <a class="f_close"></a>
-                    <input type="hidden" name="media_ids[{{ $media->pivot->order }}]" value="{{ $media->id }}">
+                    <input type="hidden" name="curr_media_ids[{{ $media->pivot->order }}]" value="{{ $media->id }}">
                 </p>
                 @endforeach
                 @endif
