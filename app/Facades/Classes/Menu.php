@@ -88,8 +88,9 @@ class Menu {
         foreach ($items as $item) {
             $hasChilds = (isset($item['childs']) && $item['childs']);
             if (!$hasChilds) {
-                $html .= '<li class="nav-item">';
-                $html .= '<a href="'. $item->link .'" target="'. $item->open_type .'" title="' . $item->title . '" class="nav-link">' . $item->title . '</a>';
+                $html .= '<li class="nav-item'. ($item->link == request()->url() ? ' active' : '') .'">';
+                $html .= '<a href="'. $item->link .'" target="'. $item->open_type.'" title="' . $item->title . '" '
+                        . 'class="nav-link">' . $item->title . '</a>';
                 $html .= '</li>';
             } else {
                 $html .= '<li class="nav-item dropdown">';

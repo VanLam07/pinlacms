@@ -51,6 +51,10 @@ $latestPosts = PlPost::getLatest();
         @endforeach
     </div>
     
+    <div class="paginate-box">
+        {!! $latestPosts->links() !!}
+    </div>
+    
 </div>
 
 @endif

@@ -94,7 +94,7 @@ class MailNotify extends BaseModel
         $timeNow = Carbon::now();
         $timeFox = Carbon::now()->endOfDay();
         $postData = self::select('pnt.from_date', 'pnt.to_date', 'pnt.from_hour', 'pnt.to_hour', 'pnt.number_alert',
-                'pnt.array_time', 'pnt.email', 'pd.title', 'pd.content')
+                'pnt.array_time', 'pnt.email', 'pd.title', 'pd.content', 'pd.slug', 'pd.post_id')
                 ->from(self::getTableName() . ' as pnt')
                 ->join('post_desc as pd', 'pnt.post_id', '=', 'pd.post_id')
                 ->where('pd.lang_code', currentLocale())
@@ -117,7 +117,8 @@ class MailNotify extends BaseModel
                     dump('send');
                     $dataPost = [
                         'postTitle' => $item->title,
-                        'postContent' => $item->content
+                        'postContent' => $item->content,
+                        'postLink' => route('front::post.view', ['id' => $item->post_id, 'slug' => $item->slug])
                     ];
                     Mail::send('front::mail.post-alert', $dataPost, function ($mail) use ($item) {
                         $mail->to($item->email)

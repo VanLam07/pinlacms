@@ -1,5 +1,9 @@
 (function ($) {
 
+    $('.navbar li.active').each(function () {
+        $(this).closest('li.dropdown').addClass('active');
+    });
+
     $('.comment-body').each(function () {
         var _this = $(this);
         var url = _this.data('url');
