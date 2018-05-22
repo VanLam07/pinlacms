@@ -34,7 +34,7 @@ $featurePosts = PlPost::getFeature();
 
 
 <?php
-$latestPosts = PlPost::getLatest();
+$latestPosts = PlPost::getLatest(10);
 ?>
 @if (!$latestPosts->isEmpty())
 
@@ -51,10 +51,9 @@ $latestPosts = PlPost::getLatest();
         @endforeach
     </div>
     
-    <div class="paginate-box">
-        {!! $latestPosts->links() !!}
-    </div>
-    
+    @if ($latestPosts->hasMorePages())
+    <a href="{{ route('front::blog', ['page' => $latestPosts->currentPage() + 1]) }}" class="read-more-btn more-btn-lg text-center btn-block">{{ trans('front::view.read_more') }}</a>
+    @endif
 </div>
 
 @endif

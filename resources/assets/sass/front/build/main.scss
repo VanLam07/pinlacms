@@ -59,6 +59,9 @@ button {
                 &:hover {
                     color: $hover_cl;
                 }
+                &:active {
+                    background: transparent;
+                }
             }
         }
     }
@@ -69,11 +72,13 @@ button {
     .socials-list {
         padding-top: 3px;
         a {
-            font-size: 18/$fontz + rem;
             line-height: 1;
+            display: inline-block;
+            padding: 3px 8px;
+            min-width: 15px; min-height: 15px;
             &:hover {
                 color: #fff;
-                opacity: 0.8;
+                background: $hover_cl;
             }
         }
     }
@@ -292,11 +297,16 @@ button {
         cursor: pointer;
         background: $hover_cl;
         color: #fff;
+        border-color: $hover_cl;
     }
 }
 .lg-btn {
     padding: 5px 15px!important;
     font-size: 14/$fontz + rem;
+}
+.more-btn-lg {
+    padding: 10px 15px!important;
+    text-transform: uppercase;
 }
 
 .feature-posts {
@@ -608,21 +618,64 @@ ul.related-posts {
         display: block;
     }
 }
+.icon {
+    display: inline-block;
+    background-size: 100% 100% !important;
+    border-radius: 50%;
+}
+.icon-16 {
+    width: 16px; height: 16px;
+}
+.icon-32 {
+    width: 32px; height: 32px;
+}
+.icon-facebook {
+    background: url(/images/icon/facebook-icon.png) no-repeat;
+}
+.icon-google-plus {
+    background: url(/images/icon/google-plus-icon.png) no-repeat;
+}
+.icon-youtube {
+    background: url(/images/icon/YouTube-icon.png) no-repeat;
+}
+.footer-social {
+    .socials-list {
+        a {
+            padding-left: 10px; padding-right: 10px;
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+    }
+}
 
 footer {
     margin-top: 20px;
     color: #fff;
     a {
         color: #fff;
+        &:hover {
+            color: #bdbdbd;
+        }
     }
 }
 .foot-content {
     padding: 30px 0 20px;
     background: $foot_bg;
 }
+.footer-menu {
+    li {
+        border-right: 1px solid $foot_cl;
+        padding-right: 10px;
+        &:last-child {
+            border-right: none;
+        }
+    }
+}
 .end-foot {
     padding: 10px;
     border-top: 1px solid $foot_bg;
     text-align: right;
     background: $end_bg;
+    font-size: 0.85rem;
 }

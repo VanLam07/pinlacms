@@ -16,6 +16,11 @@ class PageController extends Controller
         return view('front::index');
     }
     
+    public function blog()
+    {
+        return view('front::blog');
+    }
+    
     public function view($id)
     {
         $page = PostType::findByLang($id);

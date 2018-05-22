@@ -17,7 +17,7 @@
     @endif
 
     <?php
-    $postViews = PlPost::getMostViews();
+    $postViews = PlPost::getMostViews(5);
     ?>
 
     @if (!$postViews->isEmpty())

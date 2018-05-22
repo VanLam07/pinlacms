@@ -181,7 +181,7 @@ class PostType extends BaseModel
             $result->whereNotIn('posts.id', $opts['exclude']);
         }
         if ($opts['filters']) {
-            $this->filterData($result, $opts['filters']);
+            self::filterData($result, $opts['filters']);
         }
         $result->select($opts['fields'])
                 ->groupBy('pd.lang_code', 'pd.post_id')
@@ -207,7 +207,7 @@ class PostType extends BaseModel
     {
         $cats = $this->cats->pluck('id')->toArray();
         return self::getData($type, [
-            'fields' => ['posts.id', 'posts.author_id', 'posts.created_at', 'posts.thumb_id', 'posts.views',
+            'fields' => ['posts.id', 'posts.author_id', 'posts.created_at', 'posts.thumb_id', 'posts.views', 'posts.post_type',
                 'pd.title', 'pd.slug', 'pd.excerpt', 'pd.content'],
             'orderby' => 'posts.created_at',
             'order' => 'desc',

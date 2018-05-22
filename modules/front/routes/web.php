@@ -1,6 +1,7 @@
 <?php
 
 Route::get('/', 'PageController@index')->name('home');
+Route::get('/blog', 'PageController@blog')->name('blog');
 
 Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
     Route::get('login', 'AuthController@getLogin')

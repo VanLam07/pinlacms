@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'blog_title' =>             'Blog',
     'cancel' =>                 'Hủy',
     'category' =>               'Danh mục',
     'close' =>                  'Đóng',
@@ -27,6 +28,7 @@ return [
     'notify_calendar' =>        'Lịch nhắc nhở',
     'password' =>               'Mật khẩu',
     'personal_info' =>          'Thông tin cá nhân',
+    'posts' =>                  'Bài viết',
     'post_mail_alert_subject' => '[Nhắc nhở lại bài] ',
     'read_more' =>              'Xem thêm',
     'related_post' =>           'Bài liên quan',

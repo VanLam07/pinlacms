@@ -1,12 +1,8 @@
 <div id="top_head">
     <div class="container">
         <div class="row">
-            <div class="col-3 social-col">
-                <div class="socials-list">
-                    <a href="{{ PlOption::get('facebook_link') }}" target="_blank"><i class="fa fa-facebook-square"></i></a>
-                    <a href="{{ PlOption::get('googleplus_link') }}" target="_blank"><i class="fa fa-google-plus-square"></i></a>
-                    <a href="{{ PlOption::get('youtube_link') }}" target="_blank"><i class="fa fa-youtube-square"></i></a>
-                </div>
+            <div class="col-sm-3 social-col">
+                @include('front::includes.social')
             </div>
             <div class="col account-col">
                 @if (auth()->check())
@@ -56,7 +52,7 @@ $primaryMenuId = PlOption::get('primary_menu');
 
 <div id="main_navbar">
     <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light">
             <?php 
             $logoText = PlOption::get('blog_title');
             $logoConvert = '';
