@@ -638,6 +638,34 @@ ul.related-posts {
 .icon-youtube {
     background: url(/images/icon/YouTube-icon.png) no-repeat;
 }
+
+.skyline {
+    background: url(/images/animate/skyline.png) repeat-x;
+    background-position: center bottom;
+    min-height: 125px;
+}
+.car-container {
+    display: inline-block;
+    position: relative;
+    .car {
+        max-width: 100%;
+        height: auto;
+        @include animation(car, 0.5s, ease-in-out forwards alternate);
+    }
+    .car-wheel {
+        position: absolute;
+        bottom: 7px;
+        width: 40px;
+        @include animation(wheel, 0.5s, linear);
+    }
+    .wheel-front {
+        right: 36px;
+    }
+    .wheel-behihe {
+        left: 18px;
+    }
+}
+
 .footer-social {
     .socials-list {
         a {

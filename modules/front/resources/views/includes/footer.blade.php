@@ -1,3 +1,10 @@
+<div class="text-center skyline">
+    <div class="car-container">
+        <img class="car" src="/images/animate/car.png">
+        <img class="wheel-front car-wheel" src="/images/animate/wheel.png">
+        <img class="wheel-behihe car-wheel" src="/images/animate/wheel.png">
+    </div>
+</div>
 <div class="foot-content">
     <div class="container text-center">
         <div>

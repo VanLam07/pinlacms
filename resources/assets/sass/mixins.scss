@@ -105,6 +105,32 @@
     -ms-flex: $flex;
 }
 
+@keyframes wheel {
+    0% {
+        @include rotate(0);
+    }
+    100% {
+        @include rotate(360deg);
+    }
+}
+
+@keyframes car {
+    0% {
+        @include transform(rotate(0) translateY(0));
+    }
+    100% {
+        @include transform(rotate(0.1deg) translateY(2px));
+    }
+}
+
+@mixin animation ($animation, $second, $type) {
+    animation: $animation $second infinite $type;
+    -webkit-animation: $animation $second infinite $type;
+    -moz-animation: $animation $second infinite $type;
+    -o-animation: $animation $second infinite $type;
+    -ms-animation: $animation $second infinite $type;
+}
+
 .bglinenear {
     background-image: linear-gradient(90deg,#d3222a,#d3222a 14.2857%,#ed7f04 0,#ed7f04 28.5714%,#fcbf02 0,#fcbf02 42.8571%,#75b72d 0,#75b72d 57.1428%,#4dbbec 0,#4dbbec 71.4286%,#88417e 0,#88417e 85.7142%,#df1354 0,#df1354);
     background-image: -moz-linear-gradient(90deg,#d3222a,#d3222a 14.2857%,#ed7f04 0,#ed7f04 28.5714%,#fcbf02 0,#fcbf02 42.8571%,#75b72d 0,#75b72d 57.1428%,#4dbbec 0,#4dbbec 71.4286%,#88417e 0,#88417e 85.7142%,#df1354 0,#df1354);
