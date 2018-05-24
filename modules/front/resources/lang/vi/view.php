@@ -8,6 +8,8 @@ return [
     'comment' =>                'Bình luận',
     'content' =>                'Nội dung',
     'delete' =>                 'Xóa',
+    'dead_end' =>               'Đường cụt rồi',
+    'go_back' =>                'Quay lại đi!',
     'email' =>                  'Email',
     'edit' =>                   'Chỉnh sửa',
     'feature_posts' =>          'Bài viết nổi bật',

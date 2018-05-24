@@ -20,8 +20,8 @@ and open the template in the editor.
         
         <link rel="stylesheet" href="/bootstrap4/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/font-awesome.min.css">
-        <link rel="stylesheet" href="/css/main.css?v=1.1">
-        <link rel="stylesheet" href="/css/screen.css?v=1.1">
+        <link rel="stylesheet" href="/css/main.css?v=1.3">
+        <link rel="stylesheet" href="/css/screen.css?v=1.3">
 
         @yield('head')
     </head>

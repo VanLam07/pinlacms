@@ -87,5 +87,29 @@
 }
 
 @media screen and (max-width: 380px) {
-    
-} 
+    .img-minion {
+        right: 0px;
+    }
+    .text-said {
+        right: calc(10% + 30px);
+    }
+    .car-container {
+        .text-said {
+            right: calc(10% + -50px);
+        }
+    }
+}
+
+@media screen and (min-width: 320px) and (max-width: 380px) {
+    .car-container{
+        .car-wheel {
+            width: 15.5%;
+        }
+        .wheel-front {
+            right: 14%;
+        }
+        .wheel-behihe {
+            
+        }
+    }
+}

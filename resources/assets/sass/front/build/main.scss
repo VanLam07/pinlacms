@@ -643,10 +643,20 @@ ul.related-posts {
     background: url(/images/animate/skyline.png) repeat-x;
     background-position: center bottom;
     min-height: 125px;
+    position: relative;
+    overflow: hidden;
+}
+.i_running {
+    color: $hover_cl;
 }
 .car-container {
     display: inline-block;
     position: relative;
+    .smoke {
+        max-width: 106px;
+        position: absolute;
+        bottom: 55px; left: -103px;
+    }
     .car {
         max-width: 100%;
         height: auto;
@@ -664,6 +674,56 @@ ul.related-posts {
     .wheel-behihe {
         left: 18px;
     }
+    .text-said {
+        bottom: calc(7px + 56px);
+        right: calc(10% + -98px);
+        .arrow {
+            left: 3px; right: auto;
+            bottom: 8px;
+            @include rotate(-5deg);
+        }
+    }
+}
+.img-minion {
+    width: 125px;
+    position: absolute;
+    bottom: 7px;
+    right: 10%;
+}
+.text-said {
+    position: absolute;
+    bottom: calc(7px + 84px);
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    right: calc(10% + 77px);
+    padding: 15px 25px;
+    min-width: 60px;
+    min-height: 20px;
+    .text-1 {
+        @include animation(text_1, 2s, linear);
+    }
+    .text-2 {
+        @include animation(text_2, 2s, linear);
+    }
+    .arrow {
+        position: absolute;
+        bottom: 1px;
+        right: 15px;
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-left: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        background: #fff;
+        @include rotate(-65deg);
+    }
+}
+.btn-go-home {
+    display: inline-block;
+    text-decoration: none;
+    padding: 20px 50px;
+    border: 1px solid #ddd;
 }
 
 .footer-social {

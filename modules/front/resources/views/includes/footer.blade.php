@@ -1,8 +1,14 @@
-<div class="text-center skyline">
+<div class="text-center skyline footer-part">
     <div class="car-container">
+        <img class="smoke" src="/images/animate/smoke.png">
         <img class="car" src="/images/animate/car.png">
         <img class="wheel-front car-wheel" src="/images/animate/wheel.png">
         <img class="wheel-behihe car-wheel" src="/images/animate/wheel.png">
+        
+        <div class="text-said">
+            <span class="i_running">I'm running</span>
+            <span class="arrow"></span>
+        </div>
     </div>
 </div>
 <div class="foot-content">

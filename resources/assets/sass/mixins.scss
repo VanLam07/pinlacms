@@ -123,6 +123,16 @@
     }
 }
 
+@keyframes text_1 {
+    0%   {position: absolute; bottom: -200px; opacity: 0;}
+    100% {position: static; opacity: 1;}
+}
+
+@keyframes text_2 {
+    0%   {position: static; opacity: 1;}
+    100%   {position: absolute; bottom: -200px; opacity: 0;}
+}
+
 @mixin animation ($animation, $second, $type) {
     animation: $animation $second infinite $type;
     -webkit-animation: $animation $second infinite $type;
