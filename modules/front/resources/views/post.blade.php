@@ -4,9 +4,21 @@
 
 @section('keywords', $post->meta_keyword)
 @section('description', $post->meta_desc)
+@section('og_image', asset($post->getThumbnailSrc('large', false)))
 
 @section('head')
 <link rel="stylesheet" href="/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
+@stop
+
+@section('comment_script')
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = 'https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v3.0&appId=174580299920381&autoLogAppEvents=1';
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 @stop
 
 @section('content_col')

@@ -23,7 +23,7 @@ class File extends BaseModel
         return $this->belongsTo('\App\User', 'author_id', 'id');
     }
     
-    public function getSrc($size = 'full'){
+    public function getSrc($size = 'full', $returnNull = true){
         $image_sizes = config('image.image_sizes');
         if(!isset($image_sizes[$size])){
             $size = 'full';
@@ -35,7 +35,9 @@ class File extends BaseModel
             if (Storage::disk()->exists($fullSrc)) {
                 return Storage::disk()->url($fullSrc);
             }
-            return null;
+            if ($returnNull) {
+                return null;
+            }
         }
         return Storage::disk()->url($src_file);
     }

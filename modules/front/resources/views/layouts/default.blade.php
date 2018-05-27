@@ -20,13 +20,18 @@ and open the template in the editor.
         
         <link rel="stylesheet" href="/bootstrap4/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/font-awesome.min.css">
-        <link rel="stylesheet" href="/css/main.css?v=1.3">
+        <link rel="stylesheet" href="/css/main.css?v=1.4">
         <link rel="stylesheet" href="/css/screen.css?v=1.3">
+        
+        @include('front::meta.facebook')
 
         @yield('head')
     </head>
 
     <body class="@yield('body_class')">
+        
+        @yield('comment_script')
+        
         <header>
             @include('front::includes.header')
         </header>

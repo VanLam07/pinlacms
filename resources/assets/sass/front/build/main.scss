@@ -120,6 +120,7 @@ button {
         margin-right: 3px;
         img {
             width: 24px;
+            border-radius: 50%;
         }
     }
 }
@@ -435,7 +436,7 @@ ul.related-posts {
             display: block;
             min-width: 15px;
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
         }
         a {
@@ -529,10 +530,16 @@ ul.related-posts {
     margin-top: 20px;
 }
 .comment-title {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     margin-bottom: 15px;
     padding-bottom: 5px;
     border-bottom: 1px solid $main_bd;
+}
+.comment-tabs {
+    .comment-title {
+        margin-bottom: 0;
+    }
+    margin-bottom: 15px;
 }
 .comment-box {
     .comment-content {

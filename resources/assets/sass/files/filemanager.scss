@@ -1,4 +1,4 @@
-@import "../admin/mixin.scss";
+@import "../mixins.scss";
 
 #files-modal{
     .modal-dialog{width: 95%!important;}
@@ -55,4 +55,5 @@ body.file_dialog{
 #footer_dialog{
     height: 50px; padding: 5px 10px; border-top: 1px solid #ddd;
     position: fixed; bottom: 0; left: 0; width: 100%; text-align: right;
+    background: #fff;
 }

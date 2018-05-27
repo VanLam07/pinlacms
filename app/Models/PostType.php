@@ -93,10 +93,20 @@ class PostType extends BaseModel
     public function thumbnail() {
         return $this->belongsTo('\App\Models\File', 'thumb_id', 'id');
     }
-    
+
+    public function getThumbnailSrc($size = 'full', $returnNull = true)
+    {
+        $thumbnail = $this->thumbnail;
+        if ($thumbnail) {
+            return $thumbnail->getSrc($size, $returnNull);
+        }
+        return null;
+    }
+
     public function getThumbnail($size = 'thumbnail', $class='') {
-        if ($this->thumbnail) {
-            return $this->thumbnail->getImage($size, $class);
+        $thumbnail = $this->thumbnail;
+        if ($thumbnail) {
+            return $thumbnail->getImage($size, $class);
         }
         return '<img class="img-responsive '.$class.'" src="/images/default.png" alt="No image">';
     }
