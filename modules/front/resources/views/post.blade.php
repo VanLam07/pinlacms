@@ -44,6 +44,11 @@
         {!! $post->content !!}
     </div>
     
+    @if (canDo('edit_post', $post->author_id))
+    <p><a href="{{route('admin::post.edit', ['id' => $post->id])}}" target="_blank"
+          title="{{trans('admin::view.edit')}}"><i class="fa fa-pencil"></i> {{ trans('admin::view.edit') }}</a></p>
+    @endif
+    
     @if ($post->is_notify)
     <div class="card notify-content mgb-30">
         <div class="card-body">

@@ -6,6 +6,7 @@ return [
     'select_files' => 'Chọn tệp tin',
     'close' => 'Đóng',
     'submit_selected' => 'Xác nhận',
-    'is_selected' => 'Được chọn'
+    'is_selected' => 'Được chọn',
+    'load_more' => 'Tải thêm',
 ];
 

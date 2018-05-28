@@ -5,6 +5,7 @@ namespace Admin\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\File as FileModel;
+use Admin\Facades\AdConst;
 
 class AjaxController extends Controller
 {
@@ -16,19 +17,20 @@ class AjaxController extends Controller
     
     public function action(){
         $action = $this->request->get('action');
-        $result = '';
+        $result = [];
         switch ($action) {
             case 'load_files':
                 $data = $this->request->all();
-                $data['per_page'] = -1;
+                $data['per_page'] = AdConst::FILE_PER_PAGE;
                 $files = FileModel::getData($data);
-                if(!$files->isEmpty()){
+                $result['html'] = '';
+                if (!$files->isEmpty()){
                     foreach ($files as $file) {
-                        $result .= '<li><a href="'.$file->getSrc('full').'" data-id="'.$file->id.'">';
-                        $result .= $file->getImage('thumbnail');
-                        $result .= '</a></li>';
+                        $result['html'] .= view('admin::file.file-item', ['file' => $file])->render();
                     }
                 }
+                $result['current_page'] = $files->currentPage();
+                $result['next_page_url'] = $files->nextPageUrl();
                 break;
             case 'get_video_info':
                 if (!$this->request->has('link')) {

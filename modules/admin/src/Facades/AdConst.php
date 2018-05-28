@@ -27,6 +27,7 @@ class AdConst {
     
     const PER_PAGE = 20;
     const SUB_PER_PAGE = 5;
+    const FILE_PER_PAGE = 30;
     
     /*
      * comment status

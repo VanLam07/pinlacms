@@ -17,7 +17,9 @@ class Post {
     {
         return PostType::getData($type, [
             'per_page' => $number,
-            'is_feature' => 1
+            'is_feature' => 1,
+            'orderby' => 'id',
+            'order' => 'asc'
         ]);
     }
     

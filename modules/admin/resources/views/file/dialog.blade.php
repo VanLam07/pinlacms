@@ -10,10 +10,6 @@ and open the template in the editor.
         <link rel="stylesheet" href="/css/font-awesome.min.css">
         <link rel="stylesheet" href="/css/filemanager.css">
         
-        <style>
-            .files-tab{margin-top: 10px;}
-        </style>
-        
         <script src="/js/jquery.min.js"></script>
     </head>
 
@@ -43,6 +39,9 @@ and open the template in the editor.
                         <ul class="list-inline files-list">
 
                         </ul>
+                        <div class="file-paginate text-center">
+                            <a class="btn-more-files" href="">{{ trans('file.load_more') }} <i class="fa fa-spin fa-refresh hidden"></i></a>
+                        </div>
                     </div>
                 </div>
                 
@@ -95,23 +94,51 @@ and open the template in the editor.
             var el_files_list = $('.files-list');
             var files_selected_count = $('.num_selected');
             var files_selected = [];
+            var btnMoreFile = $('.btn-more-files');
+            var iconLoadFile = btnMoreFile.find('i');
             
             (function ($) {
                 
                 if (el_files_list.data('loaded') != true) {
+                    loadFiles(_all_files_url);
+                }
+                
+                function loadFiles(url){
+                    if (el_files_list.hasClass('loading')) {
+                        return;
+                    }
+                    el_files_list.addClass('loading');
+                    iconLoadFile.removeClass('hidden');
                     $.ajax({
-                        url: _all_files_url,
+                        url: url,
                         type: 'GET',
                         data: {
                             action: 'load_files',
                             type: file_type
                         },
                         success: function (data) {
-                            el_files_list.html(data);
+                            el_files_list.append(data.html);
+                            btnMoreFile.attr('href', data.next_page_url);
+                            if (!data.next_page_url) {
+                                btnMoreFile.addClass('hidden');
+                            }
                             el_files_list.attr('data-loaded', true);
+                        },
+                        complete: function () {
+                            el_files_list.removeClass('loading');
+                            iconLoadFile.addClass('hidden');
                         }
                     });
-                }
+                };
+                
+                btnMoreFile.click(function(e) {
+                    e.preventDefault();
+                    var href = $(this).attr('href');
+                    if (!href) {
+                        return;
+                    }
+                    loadFiles(href);
+                });
                 
                 $('#files-input').click(function () {
                     $(this).val('');

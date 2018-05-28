@@ -57,3 +57,16 @@ body.file_dialog{
     position: fixed; bottom: 0; left: 0; width: 100%; text-align: right;
     background: #fff;
 }
+.files-tab{
+    margin-top: 10px;
+}
+.btn-more-files {
+    margin-top: 20px;
+    padding: 5px 25px;
+    display: inline-block;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    &:hover {
+        text-decoration: none;
+    }
+}
