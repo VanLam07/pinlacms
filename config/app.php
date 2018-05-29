@@ -183,6 +183,7 @@ return [
         Admin\AdminServiceProvider::class,
         Front\FrontServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
+        Admin\Providers\GoogleDriveServiceProvider::class,
 
     ],
 

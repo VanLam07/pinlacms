@@ -1,5 +1,32 @@
 (function ($) {
     
+    var plStorage = {
+        getItem: function (key) {
+            if (typeof Storage == 'undefined') {
+                return null;
+            }
+            return localStorage.getItem(key);
+        },
+        setItem: function (key, value) {
+            if (typeof Storage == 'undefined') {
+                return null;
+            }
+            return localStorage.setItem(key, value);
+        }
+    };
+    
+    var keyToggleSidebar = 'is_toggle_sidebar';
+    var toggleSidebar = plStorage.getItem(keyToggleSidebar);
+    if (parseInt(toggleSidebar)) {
+        $('body').addClass('sidebar-collapse');
+    } else {
+        $('body').removeClass('sidebar-collapse');
+    }
+    
+    $('.sidebar-toggle').click(function () {
+        plStorage.setItem(keyToggleSidebar, $('body').hasClass('sidebar-collapse') ? 0 : 1);
+    });
+    
     $('body').on('submit', 'form.form-confirm', function (e) {
         e.preventDefault();
         var button = $(this).find('button[type="submit"]');

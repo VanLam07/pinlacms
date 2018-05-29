@@ -1,8 +1,8 @@
 <?php
 
 Route::get('/pinlaz1703/clear-cache', function() {
-    Artisan::call('migrate');
-    Artisan::call('db:seed');
+//    Artisan::call('migrate');
+//    Artisan::call('db:seed');
     Artisan::call('config:cache');
     Artisan::call('cache:clear');
 });
