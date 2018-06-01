@@ -25,36 +25,21 @@ class File extends BaseModel
     
     public function getSrc($size = 'full', $returnNull = true){
         $image_sizes = config('image.image_sizes');
-        $uploadDir = trim(config('image.upload_dir'), '/');
         if(!isset($image_sizes[$size])){
             $size = 'full';
         }
-        $fullDir = $uploadDir . '/full/' . $this->url;
-        if ($size == 'full') {
-            $cloudFile = static::getCloudFile($this->url);
-            if ($cloudFile) {
-                if (!Storage::disk()->exists($fullDir)) {
-                    $srcFile = Storage::cloud()->url($cloudFile['path']);
-                } else {
-                    $srcFile = Storage::disk()->url($fullDir);
-                }
-                return $srcFile;
-            }
-        }
-        $srcFile = $uploadDir .'/'. $size. '/' .$this->url;
-        $thumbDir = $uploadDir . '/thumbnail/' . $this->url;
-        if (!Storage::disk()->exists($srcFile)){
-            if (Storage::disk()->exists($fullDir)) {
-                return Storage::disk()->url($fullDir);
-            }
-            if (Storage::disk()->exists($thumbDir)) {
-                return Storage::disk()->url($thumbDir);
+        $upload_dir = trim(config('image.upload_dir'), '/');
+        $src_file = $upload_dir .'/'. $size. '/' .$this->url;
+        $fullSrc = $upload_dir . '/full/' . $this->url;
+        if (!Storage::disk()->exists($src_file)){
+            if (Storage::disk()->exists($fullSrc)) {
+                return Storage::disk()->url($fullSrc);
             }
             if ($returnNull) {
                 return null;
             }
         }
-        return Storage::disk()->url($srcFile);
+        return Storage::disk()->url($src_file);
     }
     
     public function getImage($size='full', $class=null, $attrs = []){
@@ -129,16 +114,16 @@ class File extends BaseModel
         $mimetype = $file->getClientMimeType();
         $extension = strtolower($file->getClientOriginalExtension());
         $type = $extension;
-        $cutName = self::checkRename($name);
+        $cut_name = self::checkRename($name);
 
-        $uploadDir = trim(config('image.upload_dir', 'uploads/'), '/');
+        $upload_dir = config('image.upload_dir', 'uploads/');
 
         if (in_array($extension, ['jpeg', 'jpg', 'png', 'bmp', 'gif', 'svg'])) {
 
             $type = 'image';
-            $mImage = Image::make($file);
-            $width = $mImage->width();
-            $height = $mImage->height();
+            $m_image = Image::make($file);
+            $width = $m_image->width();
+            $height = $m_image->height();
             $ratio = $width / $height;
 
             $sizes = config('image.image_sizes');
@@ -151,56 +136,40 @@ class File extends BaseModel
                     continue;
                 }
 
-                $rspath = $uploadDir . '/' . $key . '/' . $cutName.'.'.$extension;
+                $rspath = $upload_dir . $key . '/' . $cut_name.'.'.$extension;
 
                 $crop = $value['crop'];
                 $r = ($h == null) ? 0 : $w / $h;
 
-                if (($width < $w || $height < $h) && ($key != 'thumbnail')) {
-                    continue;
-                }
+                if ($width > $w && $height > $h) {
+                    if ($ratio > $r) {
+                        $rh = $h;
+                        $rw = ($h == null) ? $w : $width * $h / $height;
+                    } else {
+                        $rw = $w;
+                        $rh = ($w == null) ? $h : $height * $w / $width;
+                    }
+                    $sh = round(($rh - $h) / 2);
+                    $sw = round(($rw - $w) / 2);
 
-                if (($width < $w || $height < $h)) {
-                    Storage::disk()->put($rspath, file_get_contents($file), 'public');
-                    continue;
-                }
-                if ($ratio > $r) {
-                    $rh = $h;
-                    $rw = ($h == null) ? $w : $width * $h / $height;
-                } else {
-                    $rw = $w;
-                    $rh = ($w == null) ? $h : $height * $w / $width;
-                }
-                $sh = round(($rh - $h) / 2);
-                $sw = round(($rw - $w) / 2);
+                    $rsImage = Image::make($file)->resize($rw, $rh, function($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    if ($crop) {
+                        $rsImage->crop($w, $h, $sw, $sh);
+                    }
 
-                $rsImage = Image::make($file)->resize($rw, $rh, function($constraint) {
-                    $constraint->aspectRatio();
-                });
-                if ($crop) {
-                    $rsImage->crop($w, $h, $sw, $sh);
+                    Storage::disk()->put($rspath, $rsImage->stream()->__toString(), 'public');
                 }
-
-                Storage::disk()->put($rspath, $rsImage->stream()->__toString(), 'public');
             }
         }
 
-        $driveUploadDir = self::hasDir($uploadDir);
-        if (!$driveUploadDir) {
-            Storage::cloud()->createDir($uploadDir);
-            $driveUploadDir = self::hasDir($uploadDir);
-        }
-        $fullDir = self::hasDir('full', '/' . $driveUploadDir['path']);
-        if (!$fullDir) {
-            Storage::cloud()->createDir($driveUploadDir['path'] . '/full');
-            $fullDir = self::hasDir('full', '/' . $driveUploadDir['path']);
-        }
-        $fullpath = $fullDir['path'] . '/' . $cutName.'.'.$extension;
-        Storage::cloud()->put($fullpath, file_get_contents($file));
+        $fullpath = $upload_dir . 'full/'. $cut_name.'.'.$extension;
+        Storage::disk()->put($fullpath, file_get_contents($file), 'public');
 
         $item = new File();
         $item->title = $name;
-        $item->url = $cutName.'.'.$extension;
+        $item->url = $cut_name.'.'.$extension;
         $item->type = $type;
         $item->mimetype = $mimetype;
         $item->author_id = auth()->id();
@@ -209,30 +178,17 @@ class File extends BaseModel
         return $item;
     }
     
-    public static function hasDir($dir, $root = '/')
-    {
-        $recursive = false;
-        $contents = collect(Storage::cloud()->listContents($root));
-        $dir = $contents->where('type', '=', 'dir')
-            ->where('filename', '=', $dir)
-            ->first();
-        if (!$dir) {
-            return false;
-        }
-        return $dir;
-    }
-    
     public static function checkRename($originalName) {
-        $uploadDir = trim(config('image.upload_dir', 'uploads'), '/'); 
-        $cutName = self::cutName($originalName);
-        $base_name = $cutName['name'];
-        $reName = $base_name;
+        $upload_dir = trim(config('image.upload_dir', 'uploads'), '/'); 
+        $cut_name = self::cutName($originalName);
+        $base_name = $cut_name['name'];
+        $re_name = $base_name;
         $i = 1;
-        while (Storage::disk()->exists($uploadDir . '/thumbnail/'.$reName.'.'.$cutName['ext'])) {
-            $reName = $base_name.'-'.$i;
+        while (Storage::disk()->exists($upload_dir . '/full/'.$re_name.'.'.$cut_name['ext'])) {
+            $re_name = $base_name.'-'.$i;
             $i++;
         }
-        return $reName;
+        return $re_name;
     }
     
     public static function cutName($originalName){
@@ -246,8 +202,9 @@ class File extends BaseModel
 
     public function forceDelete() {
         $sizes = config('image.image_sizes');
+        $sizes['full'] = null;
         $dir = trim(config('image.upload_dir'), '/');
-
+        
         try {
             $image = $this;
             $filename = $image->url;
@@ -258,35 +215,9 @@ class File extends BaseModel
                 }
             }
             \DB::table($this->getTable())->where('id', $image->id)->delete();
-            //delete full size
-            $file = static::getCloudFile($filename);
-            if ($file) {
-                Storage::cloud()->delete($file['path']);
-            }
             return true;
         } catch (\Exception $ex) {
-            dd($ex);
             return false;
         }
-    }
-
-    public static function getCloudFile($filename)
-    {
-        $dir = trim(config('image.upload_dir'), '/');
-        $uploadDir = static::hasDir($dir);
-            if (!$uploadDir) {
-                Storage::cloud()->createDir($dir);
-                $uploadDir = static::hasDir($dir);
-            }
-            $fullDir = self::hasDir('full', '/' . $uploadDir['path']);
-            if (!$fullDir) {
-                Storage::cloud()->createDir($uploadDir['path'] . '/full');
-                $fullDir = self::hasDir('full', '/' . $uploadDir['path']);
-            }
-            $contents = collect(Storage::cloud()->listContents($fullDir['path']));
-            return $contents
-                ->where('type', '=', 'file')
-                ->where('name', '=', $filename)
-                ->first();
     }
 }
