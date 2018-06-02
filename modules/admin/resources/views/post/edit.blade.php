@@ -29,7 +29,7 @@
 
         <div class="form-group">
             <label>{{trans('admin::view.content')}}</label>
-            {!! Form::textarea('locale[content]', $item->content, ['class' => 'form-control editor_content', 'rows' => 15, 'placeholder' => trans('admin::view.content')]) !!}
+            <textarea class="form-control editor_content" name="locale[content]" rows="15">{!! htmlentities($item->content) !!}</textarea>
         </div>
 
         <div class="form-group">

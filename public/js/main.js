@@ -251,5 +251,16 @@
             }
         });
     }
+    
+    $(document).ready(function() {
+        var elVisitor = $('#count_visitor');
+        $.ajax({
+            type: 'GET',
+            url: elVisitor.data('url'),
+            success: function (count) {
+                elVisitor.text(count);
+            }
+        });
+    });
 
 })(jQuery);

@@ -2,15 +2,20 @@
 <div class="comment-container">
     
     <ul class="nav nav-tabs comment-tabs" role="tablist">
+        
         <li class="nav-item">
-            <a class="nav-link active comment-title" data-toggle="tab" href="#cm_pinlaz" role="tab">{{ trans('front::view.comment') }}</a>
+            <a class="nav-link active comment-title" data-toggle="tab" href="#cm_facebook" role="tab">Facebook</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link comment-title" data-toggle="tab" href="#cm_facebook" role="tab">Facebook</a>
+            <a class="nav-link comment-title" data-toggle="tab" href="#cm_pinlaz" role="tab">{{ trans('front::view.comment') }}</a>
         </li>
     </ul>
     <div class="tab-content">
-        <div class="tab-pane show active" id="cm_pinlaz" role="tabpanel">
+        <div class="tab-pane show active" id="cm_facebook" role="tabpanel">
+            <div class="fb-comments" data-width="100%" data-href="{{ $post->getLink() }}" data-numposts="10"></div>
+        </div>
+        
+        <div class="tab-pane" id="cm_pinlaz" role="tabpanel">
             <div class="comment-body" data-post="{{ $post->id }}"
                 data-url="{{ route('front::comment.load', ['post_id' => $post->id, 'parent_id' => 0]) }}">
                <ul class="comment-lists">
@@ -69,10 +74,6 @@
                <a href="{{ route('front::account.login') }}">{{ trans('front::view.login_to_comment') }}</a>
            </p>
            @endif
-        </div>
-        
-        <div class="tab-pane" id="cm_facebook" role="tabpanel">
-            <div class="fb-comments" data-width="100%" data-href="{{ $post->getLink() }}" data-numposts="10"></div>
         </div>
     </div>
     

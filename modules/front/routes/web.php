@@ -2,6 +2,7 @@
 
 Route::get('/', 'PageController@index')->name('home');
 Route::get('/blog', 'PageController@blog')->name('blog');
+Route::get('/show-visitor', 'PageController@setVisitor')->name('set_visitor');
 
 Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
     Route::get('login', 'AuthController@getLogin')

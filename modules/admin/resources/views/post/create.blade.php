@@ -38,7 +38,7 @@ use Admin\Facades\AdConst;
                     <?php
                     $foxContent = '<br /><br /><p>Bài viết từ <a href="http://pinlaz.com">pinlaz.com</a></p>'
                     ?>
-                    {!! Form::textarea($code.'[content]', old($code.'.content') . $foxContent, ['class' => 'form-control editor_content', 'rows' => 15, 'placeholder' => trans('admin::view.content')]) !!}
+                    {!! Form::textarea($code.'[content]', htmlentities(old($code.'.content') . $foxContent), ['class' => 'form-control editor_content', 'rows' => 15, 'placeholder' => trans('admin::view.content')]) !!}
                 </div>
 
                 <div class="form-group">

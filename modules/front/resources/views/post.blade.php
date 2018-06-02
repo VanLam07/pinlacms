@@ -8,6 +8,7 @@
 
 @section('head')
 <link rel="stylesheet" href="/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
+<link rel="stylesheet" href="/plugins/prism/prism.css">
 @stop
 
 @section('comment_script')
@@ -133,6 +134,7 @@ $relatedPosts = $post->getRelated();
 
 <script src="/js/moment.min.js"></script>
 <script src="/plugins/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script src="/plugins/prism/prism.js"></script>
 <script >
     (function ($) {
         $('.date_picker').datetimepicker({

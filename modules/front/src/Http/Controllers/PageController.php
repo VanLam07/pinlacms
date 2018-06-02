@@ -52,4 +52,9 @@ class PageController extends Controller
         }
         
     }
+    
+    public function setVisitor(Request $request)
+    {
+        return \App\Models\Visitor::insertItem($request);
+    }
 }

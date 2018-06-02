@@ -77,8 +77,9 @@ and open the template in the editor.
         <script src="/js/popper.min.js"></script>
         <script src="/bootstrap4/js/bootstrap.min.js"></script>
         <script src="/js/bootbox.min.js"></script>
-        <script src="/js/main.js"></script>
+        <script src="/js/main.js?v=1.5"></script>
 
         @yield('foot')
+        <div class="hidden" id="count_visitor" data-url="{{ route('front::set_visitor') }}"></div>
     </body>
 </html>
