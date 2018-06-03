@@ -32,7 +32,7 @@
 
                 $scope.posts = [];
                 $timeout(function () {
-                $scope.posts_params = {'fields[]': ['pd.title', 'posts.id']};
+                    $scope.posts_params = {'fields[]': ['pd.title', 'posts.id']};
                     $http.get(api_url + 'posts', {
                         params: $scope.posts_params
                     }).then(function (result) {
@@ -49,7 +49,8 @@
                     if (url) {
                         $http.get(url, {
                             params: $scope.posts_params
-                        }).then(function (data) {
+                        }).then(function (result) {
+                            var data = result.data;
                             $scope.posts = data.data;
                             $scope.post_next_page_url = data.next_page_url;
                             $scope.post_prev_page_url = data.prev_page_url;
@@ -59,12 +60,29 @@
 
                 $scope.pages = [];
                 $timeout(function () {
+                    $scope.pages_params = {'fields[]': ['pd.title', 'posts.id']};
                     $http.get(api_url + 'pages', {
-                        params: {'fields[]': ['pd.title', 'posts.id'], per_page: -1}
+                        params: $scope.pages_params
                     }).then(function (results) {
-                        $scope.pages = results.data;
+                        var data = results.data;
+                        $scope.pages = data.data;
+                        $scope.page_next_page_url = data.next_page_url;
+                        $scope.page_prev_page_url = data.prev_page_url;
                     });
                 }, 2000);
+                
+                $scope.pageGoUrl = function (url) {
+                    if (url) {
+                        $http.get(url, {
+                            params: $scope.pages_params
+                        }).then(function (result) {
+                            var data = result.data;
+                            $scope.pages = data.data;
+                            $scope.page_next_page_url = data.next_page_url;
+                            $scope.page_prev_page_url = data.prev_page_url;
+                        });
+                    }
+                };
 
                 $scope.cats = [];
                 $timeout(function () {
@@ -135,6 +153,7 @@
                     e.preventDefault();
                     $http.post(order_items_url, {
                         menus: $scope.menus, 
+                        data: $('#form_menu_cat').serialize(),
                         _token: _token
                     }).then(function (data) {
                         $scope.updateStatus = data.data;

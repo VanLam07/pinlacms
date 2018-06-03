@@ -6,6 +6,7 @@ use App\Models\Tax;
 use App\Models\BaseModel;
 use Admin\Facades\AdConst;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Session;
 
 class PostType extends BaseModel
 {
@@ -414,7 +415,7 @@ class PostType extends BaseModel
                 return null;
         }
     }
-    
+
     public function getExcerpt($limit = 15, $more = '[...]')
     {
         $excerpt = $this->excerpt;
@@ -422,5 +423,15 @@ class PostType extends BaseModel
             $excerpt = $this->content;
         }
         return trimWords($excerpt, $limit, $more);
+    }
+
+    public function incrementView()
+    {
+        $postSessionKey = 'post_' . $this->id;
+        $existsView = Session::get($postSessionKey);
+        if (!$existsView) {
+            Session::put($postSessionKey, 1);
+            $this->increment('views');
+        }
     }
 }

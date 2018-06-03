@@ -18,7 +18,7 @@ use Admin\Facades\AdConst;
 
 @include('admin::parts.lang_edit_tabs', ['route' => 'admin::menucat.edit'])
 
-{!! Form::open(['method' => 'put', 'route' => ['admin::menucat.update', $item->id], 'ng-submit' => 'updateOrder($event)']) !!}
+{!! Form::open(['method' => 'put', 'route' => ['admin::menucat.update', $item->id], 'ng-submit' => 'updateOrder($event)', 'id' => 'form_menu_cat']) !!}
 
 <div class="row">
     <div class="col-sm-4">
@@ -34,6 +34,7 @@ use Admin\Facades\AdConst;
             {!! Form::text('locale[slug]', $item->slug, ['class' => 'form-control', 'placeholder' => trans('admin::view.slug')]) !!}
         </div>
 
+        <input type="hidden" name="id" value="{{ $item->id }}">
         <input type="hidden" name="lang" value="{{$lang}}">
         {!! errorField('lang') !!}
 
@@ -54,6 +55,13 @@ use Admin\Facades\AdConst;
                                 <label><input type="checkbox" ng-click="addMenu(page, {{ AdConst::MENU_TYPE_PAGE }})"> <span ng-bind="page.title"></span></label>
                             </div>
                         </div>
+                    </div>
+                    
+                    <div class="paginate">
+                        <ul class="pager pagination-sm">
+                            <li ng-if="page_prev_page_url"><a href="javascript:void(0)" ng-click="pageGoUrl(page_prev_page_url)"><i class="fa fa-arrow-left"></i> {{trans('admin::view.previous')}}</a></li>
+                            <li ng-if="page_next_page_url"><a href="javascript:void(0)" ng-click="pageGoUrl(page_next_page_url)">{{trans('admin::view.next')}} <i class="fa fa-arrow-right"></i></a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -111,9 +119,9 @@ use Admin\Facades\AdConst;
                     </div>
                     
                     <div class="paginate">
-                        <ul class="pager pagination-sm" ng-if="post_total > post_last_page">
-                            <li><a href="javascript:void(0)" ng-click="postGoUrl(post_prev_page_url)"><i class="fa fa-arrow-left"></i> {{trans('admin::view.previous')}}</a></li>
-                            <li><a href="javascript:void(0)" ng-click="postGoUrl(post_next_page_url)">{{trans('admin::view.next')}} <i class="fa fa-arrow-right"></i></a></li>
+                        <ul class="pager pagination-sm">
+                            <li ng-if="post_prev_page_url"><a href="javascript:void(0)" ng-click="postGoUrl(post_prev_page_url)"><i class="fa fa-arrow-left"></i> {{trans('admin::view.previous')}}</a></li>
+                            <li ng-if="post_next_page_url"><a href="javascript:void(0)" ng-click="postGoUrl(post_next_page_url)">{{trans('admin::view.next')}} <i class="fa fa-arrow-right"></i></a></li>
                         </ul>
                     </div>
                 </div>

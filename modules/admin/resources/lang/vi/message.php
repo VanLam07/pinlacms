@@ -12,6 +12,7 @@ return [
     'do_success' =>         'Thực hiện thành công!',
     'error_occurred' =>     'Có lỗi xảy ra!',
     'invalid_token' =>      'Token không hợp lệ!',
+    'invalid_data' =>       'Dữ liệu không hợp lệ!',
     'failure_send_mail' =>  'Có lỗi khi gửi mail, vui lòng thử lại sau!',
     'file' => [
         'required' =>       'Bạn phải chọn tệp tin'

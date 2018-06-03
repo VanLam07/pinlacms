@@ -106,6 +106,19 @@ class MenuCatController extends BaseController {
     public function updateOrderItems(Request $request){
         canAccess($this->cap_accept);
         
+        parse_str($request->get('data'), $menuData);
+        if (!isset($menuData['id'])) {
+            return response()->json(trans('admin::message.invalid_data'));
+        }
+        //update menu
+        Tax::updateData($menuData['id'], $menuData);
+        foreach ($menuData['menus'] as $menuId => $menu){
+            $menu = (array) $menu;
+            $menu['lang'] = $menuData['lang'];
+            Menu::updateData($menuId, $menu);
+        }
+        
+        //update sort order
         $menus = $request->get('menus');
         if($menus){
             $this->nestedOrderUpdate($menus);
