@@ -13,8 +13,8 @@ class Visitor extends BaseModel {
     {
         $ip = $request->ip();
         $agent = $request->header('User-Agent');
-        $exits = self::where('ip', $ip)->first();
-        if (!$exits || Carbon::now()->diffInSeconds($exits->updated_at) >= 5) {
+        $exits = self::where('ip', $ip)->orderBy('updated_at', 'desc')->first();
+        if (!$exits || Carbon::now()->diffInSeconds($exits->updated_at) >= 20) {
             self::create(['ip' => $ip, 'agent' => $agent]);
         }
         return self::count('id');

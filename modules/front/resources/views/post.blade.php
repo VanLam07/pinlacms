@@ -30,10 +30,10 @@
     
     <div class="page-head">
         <div class="row">
-            <div class="col-6">
+            <div class="col-5">
                 @include('front::meta.social-share')
             </div>
-            <div class="col-6 post-meta text-right">
+            <div class="col-7 post-meta text-right">
                 <span class="date"><i class="fa fa-calendar"></i> {{ $post->created_at->format('d-m-Y') }}</span>
                 <span class="author"><i class="fa fa-user"></i> {{ $post->authorName() }}</span>
                 <span class="view"><i class="fa fa-eye"></i> {{ (int) $post->views }}</span>

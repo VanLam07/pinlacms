@@ -42,10 +42,13 @@ class PageController extends Controller
             $data['ip'] = $request->ip();
             Contact::insertData($data);
             Mail::send('front::mail.new-contact', $data, function ($mail) use ($data) {
-                $mail->from(config('mail.from.address'))
+                $mail->from(config('mail.from.address'), config('mail.from.name'))
                         ->to(config('admin.email'))
                         ->subject('New contact - ' . $data['subject']);
             });
+            if (Mail::failures()) {
+                return redirect()->back()->withInput()->with('error_mess', trans('front::message.error_occour'));
+            }
             return redirect()->back()->withInput()->with('succ_mess', trans('front::message.send_contact_successful'));
         } catch (PlException $ex) {
             return redirect()->back()->withInput()->with('error_mess', $ex->getError());
