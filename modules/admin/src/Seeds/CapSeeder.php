@@ -51,6 +51,7 @@ class CapSeeder extends BaseSeeder
             'manage_menus' => [1 => $capOther],
             'manage_options' => [1 => $capOther],
             'manage_contacts' => [1 => $capOther],
+            'view_visitors' => [1 => $capOther],
         ];
         
         foreach ($caps as $cap => $arrLevel) {

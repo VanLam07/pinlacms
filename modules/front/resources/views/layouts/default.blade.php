@@ -20,8 +20,8 @@ and open the template in the editor.
         
         <link rel="stylesheet" href="/bootstrap4/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/font-awesome.min.css">
-        <link rel="stylesheet" href="/css/main.css?v=1.4">
-        <link rel="stylesheet" href="/css/screen.css?v=1.3">
+        <link rel="stylesheet" href="/css/main.css?v=1.7">
+        <link rel="stylesheet" href="/css/screen.css?v=1.7">
         
         @include('front::meta.facebook')
 

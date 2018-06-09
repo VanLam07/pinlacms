@@ -3,14 +3,14 @@ $thumbnail = $post->getThumbnail('medium');
 $postLink = $post->getLink();
 ?>
 
-<div class="thumb col-5">
+<div class="thumb col-6 col-sm-5">
     <a href="{{ $postLink }}">
         {!! $thumbnail !!}
     </a>
 </div>
 
-<div class="post-content col">
-    <h3 class="post-title"><a href="{{ $postLink }}" class="text-uppercase">{{ $post->title }}</a></h3>
+<div class="post-content col col-sm-7">
+    <h3 class="post-title"><a href="{{ $postLink }}">{{ $post->title }}</a></h3>
     
     <div class="post-meta">
         <span class="date"><i class="fa fa-calendar"></i> {{ $post->created_at->format('d-m-Y') }}</span>

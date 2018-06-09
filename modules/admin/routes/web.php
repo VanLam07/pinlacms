@@ -97,6 +97,8 @@ Route::group(['middleware' => 'auth'], function () {
     //contact
     Route::resource('/contacts', 'ContactController', rsNames('contact'));
     Route::post('/contacts/actions', ['as' => 'contact.actions', 'uses' => 'ContactController@multiActions']);
+    //visitor
+    Route::get('/visitors', ['as' => 'visitor.index', 'uses' => 'VisitorController@index']);
 //    
 //    //    API
 //    Route::controller('/api', 'Api\ApiController');

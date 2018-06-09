@@ -403,6 +403,11 @@ button {
         font-size: 1.25rem
     }
 }
+.post {
+    .post-content {
+        margin-bottom: 0;
+    }
+}
 .post-excerpt {
     margin-bottom: 15px;
 }

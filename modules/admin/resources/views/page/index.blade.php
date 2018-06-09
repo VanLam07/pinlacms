@@ -80,9 +80,7 @@ $actionCaps = [
     </table>
 </div>
 
-<div class="paginate">
-    {!! $items->render() !!}
-</div>
+@include('admin::parts.paginate')
 
 @stop
 

@@ -155,6 +155,13 @@ class MenuComposer {
                 'active' => 'options',
                 'cap' => 'manage_options', 
                 'icon' => 'fa-gear'
+            ],
+            [
+                'name' => trans('admin::view.visitors'),
+                'url' => route('admin::visitor.index'),
+                'active' => 'visitor',
+                'cap' => 'view_visitors',
+                'icon' => 'fa-eye'
             ]
         ];
 

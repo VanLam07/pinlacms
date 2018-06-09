@@ -22,7 +22,7 @@ class CreateTableVisitors extends Migration
             $table->bigIncrements('id');
             $table->string('ip');
             $table->string('agent');
-            $table->integer('count')->default(0);
+            $table->string('lang', 64)->nullable();
             $table->timestamps();
         });
     }

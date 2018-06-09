@@ -238,4 +238,5 @@ return [
     'members' =>                     'Thành viên',
     
     'ip' =>                         'Ip',
+    'visitors' =>                   'Lượt thăm',
 ];
