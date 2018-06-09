@@ -8,6 +8,8 @@
                 "save table contextmenu directionality emoticons template paste textcolor codesample ex_loadfile"
             ],
             image_advtab: true,
+            relative_urls : 0,
+            remove_script_host : 0,
             toolbar: "insertfile undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | forecolor backcolor | codesample ex_loadfile",
             ex_loadfile: {
                 title: "Danh sách tệp tin",
