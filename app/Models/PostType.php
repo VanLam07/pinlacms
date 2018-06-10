@@ -143,7 +143,7 @@ class PostType extends BaseModel
             'exclude' => [],
             'filters' => [],
             'cats' => [],
-            'exclude_cats' => [],
+            'not_notify' => null,
             'tags' => [],
             'with_cats' => false,
             'with_tags' => false,
@@ -164,11 +164,9 @@ class PostType extends BaseModel
             });
             $hasJoinCat = true;
         }
-        if ($opts['exclude_cats']) {
-            if (!$hasJoinCat) {
-                $result->join('post_tax as pt', 'posts.id', '=', 'pt.post_id'); 
-            }
-            $result->whereNotIn('pt.tax_id', $opts['exclude_cats']);
+        
+        if ($opts['not_notify'] === true) {
+            $result->where('posts.is_notify', 0);
         }
         if ($opts['tags']) {
             $tag_ids = $opts['tags'];

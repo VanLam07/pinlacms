@@ -31,7 +31,7 @@ class Post {
             'orderby' => 'posts.created_at',
             'order' => 'desc',
             'per_page' => $number,
-            'exclude_cats' => [20]
+            'not_notify' => true
         ]);
     }
     
