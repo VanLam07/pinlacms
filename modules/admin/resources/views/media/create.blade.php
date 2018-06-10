@@ -35,7 +35,7 @@ use Admin\Facades\AdConst;
 
                 <div class="form-group">
                     <label>{{trans('admin::view.description')}}</label>
-                    {!! Form::textarea($code.'[description]', old($code.'.description'), ['class' => 'form-control editor_content', 'rows' => 15, 'placeholder' => trans('admin::view.content')]) !!}
+                    {!! Form::textarea($code.'[description]', old($code.'.description'), ['class' => 'form-control editor_short', 'rows' => 15, 'placeholder' => trans('admin::view.content')]) !!}
                 </div>
 
             </div>
@@ -110,6 +110,8 @@ use Admin\Facades\AdConst;
 @stop
 
 @section('foot')
+
+@include('admin::parts.tinymce-script')
 
 @include('admin::file.manager')
 

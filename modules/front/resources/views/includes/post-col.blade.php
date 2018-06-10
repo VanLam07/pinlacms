@@ -3,7 +3,7 @@
     $thumbnail = $post->getThumbnail(isset($thumbSize) ? $thumbSize : 'medium');
     $postLink = $post->getLink();
     ?>
-    <a href="{{ $postLink }}">
+    <a href="{{ $postLink }}" title="{{ $post->title }}">
         {!! $thumbnail !!}
     </a>
 </div>
@@ -20,7 +20,7 @@
         @endif
         
         <div class="media-body">
-            <h3 class="post-title"><a href="{{ $postLink }}">{{ $post->title }}</a></h3>
+            <h3 class="post-title"><a href="{{ $postLink }}" title="{{ $post->title }}">{{ $post->title }}</a></h3>
             <div class="post-meta">
                 @if (isset($postDate))
                     <span class="date"><i class="fa fa-calendar"> {{ $post->created_at->format('Y') }}</i></span>

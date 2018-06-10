@@ -34,7 +34,7 @@ $featurePosts = PlPost::getFeature();
 
 
 <?php
-$latestPosts = PlPost::getLatest(10);
+$latestPosts = PlPost::getLatest(20);
 ?>
 @if (!$latestPosts->isEmpty())
 

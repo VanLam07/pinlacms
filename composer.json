@@ -12,6 +12,7 @@
         "laravel/socialite": "^3.0",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.5",
+        "league/flysystem-aws-s3-v3": "^1.0",
         "nao-pon/flysystem-google-drive": "~1.1"
     },
     "require-dev": {

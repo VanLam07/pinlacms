@@ -22,14 +22,18 @@ class OptionSeeder extends BaseSeeder
             ['option_key' => 'blog_keywords', 'value' => 'blog'],
             ['option_key' => 'blog_title', 'value' => 'Blog'],
             ['option_key' => 'cms_title', 'value' => 'Admin blog'],
-            ['option_key' => 'google_analytics', 'value' => 'script'],
-            ['option_key' => 'google_webmaster_meta', 'value' => 'key'],
+            ['option_key' => 'designed_by_url', 'value' => ''],
+            ['option_key' => 'facebook_link', 'value' => ''],
+            ['option_key' => 'google_analytics', 'value' => ''],
+            ['option_key' => 'google_webmaster_meta', 'value' => ''],
+            ['option_key' => 'primary_menu', 'value' => ''],
+            ['option_key' => 'footer_menu', 'value' => ''],
         ];
         foreach ($data as $item) {
             if (Option::where('option_key', $item['option_key'])->first()) {
                 continue;
             }
-            Option::created($item);
+            Option::create($item);
         }
         $this->insertSeeder();
     }

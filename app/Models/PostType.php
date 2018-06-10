@@ -109,7 +109,7 @@ class PostType extends BaseModel
         if ($thumbnail) {
             return $thumbnail->getImage($size, $class);
         }
-        return '<img class="img-responsive '.$class.'" src="/images/default.png" alt="No image">';
+        return '<img title="'. e($this->title) .'" class="img-responsive '.$class.'" src="/images/default.png" alt="No image">';
     }
     
     public function notiMails()

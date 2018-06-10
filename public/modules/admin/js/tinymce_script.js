@@ -10,13 +10,27 @@
             image_advtab: true,
             relative_urls : 0,
             remove_script_host : 0,
-            toolbar: "insertfile undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | forecolor backcolor | codesample ex_loadfile",
+            toolbar: "insertfile undo redo | bold underline italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | forecolor backcolor | codesample ex_loadfile",
             ex_loadfile: {
                 title: "Danh sách tệp tin",
                 filepath: file_dialog_url
             }
         });
     }
+    
+    tinymce.init({
+        selector: '.editor_short',
+        menubar:false,
+        plugins: [
+            "advlist autolink link lists print preview hr anchor pagebreak spellchecker",
+            "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+            "save table contextmenu directionality emoticons template paste"
+        ],
+        image_advtab: true,
+        relative_urls : 0,
+        remove_script_host : 0,
+        toolbar: "undo redo | bold underline italic | alignleft aligncenter alignright alignjustify | bullist numlist | link | forecolor backcolor",
+    });
     
     $('.btn-popup-files').click(function(e){
         $('#files-frame').attr('src', $(this).attr('frame-url'));

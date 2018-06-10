@@ -49,7 +49,7 @@ class File extends BaseModel
                 $attrsText .= $key . '="'. $val .'"';
             }
         }
-        if($src = $this->getSrc($size)){
+        if($src = $this->getSrc($size, false)){
             return '<img '. $attrsText .' class="img-responsive '.$class.'" src="'.$src.'" alt="No image">';
         }
         return '<img '. $attrsText .' class="img-responsive '.$class.'" src="/images/default.png" alt="No image">';
@@ -209,7 +209,7 @@ class File extends BaseModel
             $image = $this;
             $filename = $image->url;
             foreach ($sizes as $key => $size) {
-                $path = $dir . $key . '/' . $filename;
+                $path = $dir . '/'. $key . '/' . $filename;
                 if (Storage::disk()->exists($path)) {
                     Storage::disk()->delete($path);
                 }

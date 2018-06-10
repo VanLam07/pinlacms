@@ -37,6 +37,27 @@ class MenuComposer {
                 ]
             ],
             [
+                'name' => trans('admin::view.cats'), 
+                'url' => route('admin::cat.index', ['status' => AdConst::STT_PUBLISH]), 
+                'active' => 'cats',
+                'cap' => 'manage_cats', 
+                'icon' => 'fa-folder'
+            ],
+            [
+                'name' => trans('admin::view.tags'), 
+                'url' => route('admin::tag.index', ['status' => AdConst::STT_PUBLISH]), 
+                'active' => 'tags',
+                'cap' => 'manage_tags', 
+                'icon' => 'fa-tags'
+            ],
+            [
+                'name' => trans('admin::view.comments'), 
+                'url' => route('admin::comment.index', ['status' => AdConst::STT_PUBLISH]),
+                'active' => 'comments',
+                'cap' => 'view_comment', 
+                'icon' => 'fa-comments'
+            ],
+            [
                 'name' => trans('admin::view.pages'), 
                 'url' => route('admin::page.index', ['status' => AdConst::STT_PUBLISH]),
                 'active' => 'pages',
@@ -56,27 +77,6 @@ class MenuComposer {
                         'cap' => 'publish_post',
                     ]
                 ]
-            ],
-            [
-                'name' => trans('admin::view.comments'), 
-                'url' => route('admin::comment.index', ['status' => AdConst::STT_PUBLISH]),
-                'active' => 'comments',
-                'cap' => 'view_comment', 
-                'icon' => 'fa-comments'
-            ],
-            [
-                'name' => trans('admin::view.cats'), 
-                'url' => route('admin::cat.index', ['status' => AdConst::STT_PUBLISH]), 
-                'active' => 'cats',
-                'cap' => 'manage_cats', 
-                'icon' => 'fa-folder'
-            ],
-            [
-                'name' => trans('admin::view.tags'), 
-                'url' => route('admin::tag.index', ['status' => AdConst::STT_PUBLISH]), 
-                'active' => 'tags',
-                'cap' => 'manage_tags', 
-                'icon' => 'fa-tags'
             ],
             [
                 'name' => trans('admin::view.medias'), 
