@@ -30,7 +30,8 @@ class Post {
                 'posts.post_type', 'posts.views', 'pd.title', 'pd.slug', 'pd.excerpt', 'pd.content'],
             'orderby' => 'posts.created_at',
             'order' => 'desc',
-            'per_page' => $number
+            'per_page' => $number,
+            'exclude_cats' => [20]
         ]);
     }
     

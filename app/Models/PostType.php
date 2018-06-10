@@ -143,6 +143,7 @@ class PostType extends BaseModel
             'exclude' => [],
             'filters' => [],
             'cats' => [],
+            'exclude_cats' => [],
             'tags' => [],
             'with_cats' => false,
             'with_tags' => false,
@@ -154,19 +155,29 @@ class PostType extends BaseModel
         
         $result = self::joinLang();
 
+        $hasJoinCat = false;
         if ($opts['cats']) {
             $cat_ids = self::inCats($opts['cats']);
             $result->join('post_tax as pt', function($join) use ($cat_ids) {
                 $join->on('posts.id', '=', 'pt.post_id')
-                        ->whereIn('tax_id', $cat_ids);
+                        ->whereIn('pt.tax_id', $cat_ids);
             });
+            $hasJoinCat = true;
+        }
+        if ($opts['exclude_cats']) {
+            if (!$hasJoinCat) {
+                $result->join('post_tax as pt', 'posts.id', '=', 'pt.post_id'); 
+            }
+            $result->whereNotIn('pt.tax_id', $opts['exclude_cats']);
         }
         if ($opts['tags']) {
             $tag_ids = $opts['tags'];
-            $result->join('post_tax as pt', function($join) use ($tag_ids) {
-                $join->on('posts.id', '=', 'pt.post_id')
-                        ->whereIn('tax_id', $tag_ids);
-            });
+            if (!$hasJoinCat) {
+                $result->join('post_tax as pt', function($join) {
+                    $join->on('posts.id', '=', 'pt.post_id');
+                });
+            }
+            $result->whereIn('pt.tax_id', $tag_ids);
         }
 
         $result->where('post_type', $type)
