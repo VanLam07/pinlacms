@@ -30,6 +30,7 @@ class CreateMediasTbl extends Migration
             $table->softDeletes();
             $table->foreign('author_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('slider_id')->references('id')->on('taxs')->onDelete('set null');
+            $table->foreign('thumb_id')->references('id')->on('files')->onDelete('set null');
         });
         
         Schema::create('media_desc', function(Blueprint $table){

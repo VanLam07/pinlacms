@@ -78,8 +78,10 @@ class Role extends BaseModel {
                 }
             }
             $user = auth()->user();
-            $sessionKey = 'user_cap_'. $user->name .'_'.sha1($user->id);
-            Session::forget($sessionKey);
+            if ($user) {
+                $sessionKey = 'user_cap_'. $user->name .'_'.sha1($user->id);
+                Session::forget($sessionKey);
+            }
         }
         if ($roleCaps) {
             $this->list_caps = serialize($roleCaps);

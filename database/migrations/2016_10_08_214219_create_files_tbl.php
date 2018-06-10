@@ -39,10 +39,6 @@ class CreateFilesTbl extends Migration
         Schema::table('posts', function ($table) {
             $table->foreign('thumb_id')->references('id')->on('files')->onDelete('set null'); 
         });
-        
-        Schema::table('medias', function ($table) {
-            $table->foreign('thumb_id')->references('id')->on('files')->onDelete('cascade'); 
-        });
     }
 
     /**
