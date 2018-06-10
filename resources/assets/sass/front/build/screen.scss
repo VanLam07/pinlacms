@@ -11,9 +11,7 @@
 }
 
 @media screen and (min-width: 420px) {
-    .post-title, .post-title a {
-        text-transform: uppercase;
-    }
+    
 }
 
 @media screen and (min-width: 381px) {
@@ -21,6 +19,12 @@
         .post-xs-title {
             display: none;
         }
+    }
+}
+
+@media screen and (min-width: 320px) {
+    .post-title, .post-title a {
+        text-transform: uppercase;
     }
 }
 
