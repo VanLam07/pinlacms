@@ -16,6 +16,14 @@
     }
 }
 
+@media screen and (min-width: 381px) {
+    .post.post-row {
+        .post-xs-title {
+            display: none;
+        }
+    }
+}
+
 @media screen and (max-width: 1200px) {
     
 }
@@ -95,6 +103,13 @@
     .car-container {
         .text-said {
             right: calc(10% + -50px);
+        }
+    }
+    .post.post-row {
+        .row {
+            .post-title {
+                display: none;
+            }
         }
     }
 }
