@@ -21,11 +21,7 @@ if ($tax->isTag()) {
 @if (!$posts->isEmpty())
 <div class="posts">
     @foreach ($posts as $post)
-    <div class="post post-row">
-        <div class="row">
-            @include('front::includes.post-row')
-        </div>
-    </div>
+        @include('front::includes.post-row')
     @endforeach
 </div>
 @endif
