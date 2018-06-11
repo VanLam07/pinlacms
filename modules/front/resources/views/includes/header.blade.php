@@ -56,7 +56,7 @@ $primaryMenuId = PlOption::get('primary_menu');
             <?php 
             $logoText = PlOption::get('blog_title');
             $logoConvert = '';
-            $arrayColor = ['#75b72d', '#ed7f04', '#fcbf02', '#0074d9', '#ffc107', '#00e765'];
+            $arrayColor = ['#75b72d', '#ed7f04', '#fcbf02', '#0074d9', '#ffc107', '#00e765', '#000', '#d13030'];
             if ($logoText) {
                 $logoText = str_split($logoText);
                 foreach ($logoText as $text) {
