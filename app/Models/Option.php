@@ -81,7 +81,7 @@ class Option extends BaseModel
     }
     
     public function save(array $options = array()) {
-        Cache::forget($this->kcAll);
+        Cache::forget(self::KC_ALL);
         parent::save($options);
     }
 }
