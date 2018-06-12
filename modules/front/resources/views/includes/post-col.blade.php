@@ -1,6 +1,6 @@
 <div class="thumb">
     <?php
-    $thumbnail = $post->getThumbnail(isset($thumbSize) ? $thumbSize : 'medium');
+    $thumbnail = $post->getImage(isset($thumbSize) ? $thumbSize : 'medium', null, ['title' => $post->title]);
     $postLink = $post->getLink();
     ?>
     <a href="{{ $postLink }}" title="{{ $post->title }}">
@@ -27,7 +27,7 @@
                 @else
                     <span class="date"><i class="fa fa-calendar"> {{ $post->created_at->format('d-m-Y') }}</i></span>
                 @endif
-                <span class="author"><i class="fa fa-user"></i> {{ $post->authorName() }}</span>
+                <span class="author"><i class="fa fa-user"></i> {{ $post->getAuthorName() }}</span>
                 <span class="view"><i class="fa fa-eye"></i> {{ (int) $post->views }}</span>
             </div>
             <div class="post-excerpt">

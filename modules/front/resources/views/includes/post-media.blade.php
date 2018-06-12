@@ -5,7 +5,7 @@ $postLink = $post->getLink();
 <div class="media">
     <div class="media-left mr-3 thumb">
         <a href="{{ $postLink }}" title="{{ $post->title }}">
-            {!! $post->getThumbnail('thumbnail') !!}
+            {!! $post->getImage('thumbnail', null, ['title' => $post->title]) !!}
         </a>
     </div>
     

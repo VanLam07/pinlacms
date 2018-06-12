@@ -82,6 +82,11 @@ class PostType extends BaseModel
         return null;
     }
     
+    public function getAuthorName()
+    {
+        return $this->author_name;
+    }
+    
     public function comments(){
         return $this->hasMany('\App\Models\Comment', 'post_id', 'id');
     }
@@ -91,6 +96,9 @@ class PostType extends BaseModel
                         ->where('post_type', 'post');
     }
 
+    /**
+     * begin get in siggle post
+     */
     public function thumbnail() {
         return $this->belongsTo('\App\Models\File', 'thumb_id', 'id');
     }
@@ -111,12 +119,33 @@ class PostType extends BaseModel
         }
         return '<img title="'. e($this->title) .'" class="img-responsive '.$class.'" src="/images/default.png" alt="No image">';
     }
+    /*
+     * end get in single post
+     */
     
-    public function notiMails()
-    {
-        
+    /*
+     * get in list post
+     */
+    public function getImageSrc($size = 'thumbnail') {
+        return AdConst::getFileSrc($this->file_url, $size);
     }
     
+    public function getImage($size = 'thumbnail', $class = 'null', $attrs = []) {
+        $attrsText = '';
+        if ($attrs) {
+            foreach ($attrs as $key => $val) {
+                $attrsText .= $key . '="'. $val .'"';
+            }
+        }
+        if($src = $this->getImageSrc($size)) {
+            return '<img '. $attrsText .' class="img-responsive '.$class.'" src="'.$src.'" alt="'. $this->file_name .'">';
+        }
+        return '<img '. $attrsText .' class="img-responsive '.$class.'" src="/images/default.png" alt="No image">';
+    }
+    /*
+     * end get in list post
+     */
+
     public static function rules($update = false) {
         if (!$update) {
             $code = currentLocale();
@@ -132,7 +161,7 @@ class PostType extends BaseModel
 
     public static function getData($type = 'post', $args = []) {
         $opts = [
-            'fields' => ['posts.*', 'pd.*'],
+            'fields' => ['posts.*', 'pd.*', 'file.id as file_id', 'file.url as file_url', 'file.title as file_name'],
             'status' => [AdConst::STT_PUBLISH],
             'orderby' => 'posts.created_at',
             'order' => 'desc',
@@ -153,7 +182,8 @@ class PostType extends BaseModel
 
         $opts = array_merge($opts, $args);
         
-        $result = self::joinLang();
+        $result = self::joinLang()
+                ->leftJoin(\App\User::getTableName() . ' as author', 'posts.author_id', '=', 'author.id');
 
         $hasJoinCat = false;
         if ($opts['cats']) {
@@ -188,7 +218,7 @@ class PostType extends BaseModel
             if ($opts['status'][0] == AdConst::STT_TRASH) {
                 $result->onlyTrashed();
             } else {
-                $result->whereIn('status', $opts['status']);
+                $result->whereIn('posts.status', $opts['status']);
             }
         }
         if ($opts['is_auth']) {
@@ -214,7 +244,7 @@ class PostType extends BaseModel
             $result->with('tags');
         }
         if ($opts['with_thumb']) {
-            $result->with('thumbnail');
+            $result->leftJoin(File::getTableName() . ' as file', 'posts.thumb_id', '=', 'file.id');
         }
 
         if ($opts['per_page'] > -1) {

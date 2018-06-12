@@ -2,6 +2,8 @@
 
 namespace Admin\Facades;
 
+use Storage;
+
 class AdConst {
     
     const ADMIN_ID = 1;
@@ -45,4 +47,20 @@ class AdConst {
     const MENU_TYPE_PAGE = 1;
     const MENU_TYPE_CUSTOM = 0;
     
+    public static function getFileSrc($fileUrl, $size = 'thumbnail')
+    {
+        $imageSizes = config('image.image_sizes');
+        if(!isset($imageSizes[$size])){
+            $size = 'full';
+        }
+        $uploadDir = trim(config('image.upload_dir'), '/');
+        $srcFile = $uploadDir .'/'. $size. '/' . $fileUrl;
+        $fullSrc = $uploadDir . '/full/' . $fileUrl;
+        if (!Storage::disk()->exists($srcFile)){
+            if (Storage::disk()->exists($fullSrc)) {
+                return Storage::disk()->url($fullSrc);
+            }
+        }
+        return Storage::disk()->url($srcFile);
+    }
 }

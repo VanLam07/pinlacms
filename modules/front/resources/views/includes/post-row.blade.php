@@ -1,5 +1,5 @@
 <?php 
-$thumbnail = $post->getThumbnail('medium'); 
+$thumbnail = $post->getImage('medium', null, ['title' => $post->title]); 
 $postLink = $post->getLink();
 ?>
 
@@ -17,7 +17,7 @@ $postLink = $post->getLink();
     
             <div class="post-meta">
                 <span class="date"><i class="fa fa-calendar"></i> {{ $post->created_at->format('d-m-Y') }}</span>
-                <span class="author"><i class="fa fa-user"></i> {{ $post->authorName() }}</span>
+                <span class="author"><i class="fa fa-user"></i> {{ $post->getAuthorName() }}</span>
                 <span class="view"><i class="fa fa-eye"></i> {{ (int) $post->views }}</span>
             </div>
 

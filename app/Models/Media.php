@@ -70,6 +70,29 @@ class Media extends BaseModel {
         return null;
     }
     
+    /*
+     * get in list
+     */
+    public function getImageSrc($size = 'thumbnail') {
+        return AdConst::getFileSrc($this->file_url, $size);
+    }
+    
+    public function getImage($size = 'thumbnail', $class = 'null', $attrs = []) {
+        $attrsText = '';
+        if ($attrs) {
+            foreach ($attrs as $key => $val) {
+                $attrsText .= $key . '="'. $val .'"';
+            }
+        }
+        if($src = $this->getImageSrc($size)) {
+            return '<img '. $attrsText .' class="img-responsive '.$class.'" src="'.$src.'" alt="'. $this->file_name .'">';
+        }
+        return '<img '. $attrsText .' class="img-responsive '.$class.'" src="/images/default.png" alt="No image">';
+    }
+    /*
+     * end get in list
+     */
+    
     public static function rules($update = false) {
         if (!$update) {
             $code = currentLocale();
@@ -86,7 +109,7 @@ class Media extends BaseModel {
     public static function getData($args = []) {
         $opts = [
             'type' => 'inherit',
-            'fields' => ['medias.*', 'md.*'],
+            'fields' => ['medias.*', 'md.*', 'file.id as file_id', 'file.url as file_url', 'file.name as file_name'],
             'status' => AdConst::STT_PUBLISH,
             'orderby' => 'medias.created_at',
             'order' => 'desc',
@@ -100,7 +123,8 @@ class Media extends BaseModel {
         $opts = array_merge($opts, $args);
 
         $result = self::joinLang()
-                ->whereNotNull('md.name');
+                ->whereNotNull('md.name')
+                ->join(File::getTableName() . ' as file', 'medias.thumb_id', '=', 'file.id');;
         
         if ($opts['albums']){
             $album_ids = $opts['albums'];
@@ -120,7 +144,7 @@ class Media extends BaseModel {
             if ($opts['status'][0] == AdConst::STT_TRASH) {
                 $result->onlyTrashed();
             } else {
-                $result->whereIn('status', $opts['status']);
+                $result->whereIn('medias.status', $opts['status']);
             }
         }
         
