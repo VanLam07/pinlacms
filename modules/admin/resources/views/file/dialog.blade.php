@@ -170,12 +170,12 @@ and open the template in the editor.
                                     var file = data[i];
                                     el_files_list.prepend(
                                                 '<li>' + 
-                                                    '<a href="' + file.full_url + '" data-id="' + file.id + '" class="selected">' +
+                                                    '<a href="' + file.full_url + '" data-id="' + file.id + '">' +
                                                         '<img class="img-responsive" src="' + file.thumb_url + '" alt="' + file.name + '">' +
                                                     '</a>' +
                                                 '</li>'
                                             );
-                                    files_selected.push(file);
+                                    el_files_list.find('li a[data-id="'+ file.id +'"]').trigger('click');
                                 }
                             }
                             $('#files-input').val('');

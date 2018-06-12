@@ -60,10 +60,12 @@ $primaryMenuId = PlOption::get('primary_menu');
             if ($logoText) {
                 $logoText = str_split($logoText);
                 foreach ($logoText as $text) {
-                    if ($text === '') {
+                    if ($text == ' ') {
                         $text = '&nbsp';
+                    } else {
+                        $text = e($text);
                     }
-                    $logoConvert .= '<span style="color: '. $arrayColor[array_rand($arrayColor)] .';">' . e($text) . ' </span>';
+                    $logoConvert .= '<span style="color: '. $arrayColor[array_rand($arrayColor)] .';">' . $text . ' </span>';
                 }
             }
             ?>
