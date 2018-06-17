@@ -14,11 +14,7 @@ $latestPosts = PlPost::getLatest(10);
 
     <div class="posts latest-posts">
         @foreach ($latestPosts as $post)
-        <div class="post post-row">
-            <div class="row">
-                @include('front::includes.post-row')
-            </div>
-        </div>
+            @include('front::includes.post-row')
         @endforeach
     </div>
     
