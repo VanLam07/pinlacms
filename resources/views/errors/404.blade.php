@@ -14,9 +14,8 @@ and open the template in the editor.
         <link rel="stylesheet" href="/css/screen.css">
         
         <meta property="og:locale" content="{{ app()->getLocale() }}" />
-        <meta property="og:title" content="@yield('title', 'Welcome') - {{ PlOption::get('blog_title', app()->getLocale()) }}" />
         <meta property="og:description" content="404" />
-        <meta property="og:image" content="asset('/images/animate/minion.gif')" />
+        <meta property="og:image" content="{{ asset('/images/animate/minion.gif') }}" />
         
         <style>
             body, html {
