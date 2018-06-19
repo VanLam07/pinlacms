@@ -407,6 +407,18 @@ button {
     .post-content {
         margin-bottom: 0;
     }
+    .thumb {
+        overflow: hidden;
+        img {
+            @include transi(all ease-in-out 0.5s);
+        }
+    }
+    &:hover {
+        .thumb img {
+            @include transform(scale(1.05));
+            opacity: 0.85;
+        }
+    }
 }
 .post-excerpt {
     margin-bottom: 15px;

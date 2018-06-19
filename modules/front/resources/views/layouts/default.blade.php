@@ -4,6 +4,9 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
+<?php
+$assetVer = 1.8;
+?>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -20,8 +23,8 @@ and open the template in the editor.
         
         <link rel="stylesheet" href="/bootstrap4/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/font-awesome.min.css">
-        <link rel="stylesheet" href="/css/main.css?v=1.7">
-        <link rel="stylesheet" href="/css/screen.css?v=1.7">
+        <link rel="stylesheet" href="/css/main.css?v={{ $assetVer }}">
+        <link rel="stylesheet" href="/css/screen.css?v={{ $assetVer }}">
         
         @include('front::meta.facebook')
 
@@ -77,7 +80,7 @@ and open the template in the editor.
         <script src="/js/popper.min.js"></script>
         <script src="/bootstrap4/js/bootstrap.min.js"></script>
         <script src="/js/bootbox.min.js"></script>
-        <script src="/js/main.js?v=1.5"></script>
+        <script src="/js/main.js?v={{ $assetVer }}"></script>
 
         @yield('foot')
         <div class="hidden" id="count_visitor" data-url="{{ route('front::set_visitor') }}"></div>
