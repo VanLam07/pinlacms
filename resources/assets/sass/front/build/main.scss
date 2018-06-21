@@ -206,6 +206,13 @@ button {
             font-size: 1rem;
         }
     }
+    .socials-list {
+        padding-top: 10px;
+        border-top: 2px solid $main_bd;
+    }
+    .sub-title {
+        font-size: 1.1rem;
+    }
 }
 
 .post-col {
@@ -351,7 +358,7 @@ button {
 }
 .bd-title {
     padding-bottom: 5px;
-    border-bottom: 1px solid $main_bd;
+    border-bottom: 2px solid $main_bd;
 }
 .bd-pattern {
     margin-bottom: 30px;

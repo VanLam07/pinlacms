@@ -105,7 +105,8 @@ class Tax extends BaseModel
             'exclude' => [],
             'is_feature' => null,
             'page' => 1,
-            'filters' => []
+            'filters' => [],
+            'count_post' => false
         ];
         
         $opts = array_merge($opts, $args);
@@ -125,8 +126,12 @@ class Tax extends BaseModel
         if (is_numeric($opts['is_feature'])) {
             $result->where('is_feature', $opts['is_feature']);
         }
+        if ($opts['count_post']) {
+            $result->join('post_tax', 'taxs.id', '=', 'post_tax.tax_id');
+        }
         $result->select($opts['fields'])
-                ->orderBy($opts['orderby'], $opts['order']);
+                ->orderBy($opts['orderby'], $opts['order'])
+                ->groupBy('taxs.id');
         
         if ($opts['filters']) {
             self::filterData($result, $opts['filters']);

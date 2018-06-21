@@ -10,9 +10,23 @@
     <div class="wrap">
         <ul class="list-categories">
             @foreach ($cats as $cat)
-            <li><a href="{{ $cat->getlink() }}">{{ $cat->name }}</a></li>
+            <li><a href="{{ $cat->getlink() }}" title="{{ $cat->name }}">{{ $cat->name }}</a></li>
             @endforeach
         </ul>
+    </div>
+    @endif
+    
+    <?php
+    $listTags = PlTax::listTagsCloud();
+    ?>
+    @if (!$listTags->isEmpty())
+    <div class="tags-box mgb-15">
+        <h3 class="sub-title bd-title"><span class="text-uppercase">Tags</span></h3>
+        <div class="tags-list">
+            @foreach ($listTags as $tag)
+            <a href="{{ $tag->getLink() }}" title="{{ $tag->name }}">{{ $tag->name }}</a>
+            @endforeach
+        </div>
     </div>
     @endif
 
@@ -34,4 +48,6 @@
         </div>
     </div>
     @endif
+
+    @include('front::includes.social', ['imageIcon' => true])
 </div>
