@@ -22,6 +22,10 @@
 }(document, 'script', 'facebook-jssdk'));</script>
 @stop
 
+@section('content_full')
+{!! Breadcrumb::render() !!}
+@stop
+
 @section('content_col')
 
 <div class="post-container">

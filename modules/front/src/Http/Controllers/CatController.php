@@ -8,18 +8,19 @@
 
 namespace Front\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Front\Http\Controllers\BaseController;
 use App\Models\Tax;
 use App\Models\PostType;
 use Front\Helper\FtConst;
 use PlOption;
+use Breadcrumb;
 
 /**
  * Description of CatController
  *
  * @author Pinla
  */
-class CatController extends Controller 
+class CatController extends BaseController 
 {
     
     public function view($id)
@@ -28,6 +29,7 @@ class CatController extends Controller
         if (!$tax) {
             abort(404);
         }
+        Breadcrumb::add($tax->name, $tax->getLink());
         
         $posts = PostType::getData('post', [
             'per_page' => PlOption::get('front_per_page', null, FtConst::PER_PAGE),

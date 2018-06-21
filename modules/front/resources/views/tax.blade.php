@@ -5,6 +5,10 @@
 @section('keywords', $tax->meta_keyword)
 @section('description', $tax->meta_desc)
 
+@section('content_full')
+{!! Breadcrumb::render() !!}
+@stop
+
 @section('content_col')
 
 <?php

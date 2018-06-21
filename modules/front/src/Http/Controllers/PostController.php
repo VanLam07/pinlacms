@@ -2,14 +2,15 @@
 
 namespace Front\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Front\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use App\Models\PostType;
 use App\Models\MailNotify;
 use Validator;
 use Carbon\Carbon;
+use Breadcrumb;
 
-class PostController extends Controller
+class PostController extends BaseController
 {
     public function view($id)
     {
@@ -18,6 +19,12 @@ class PostController extends Controller
         if (!$post) {
             abort(404);
         }
+        $firstCat = $post->getCats()->first();
+        if ($firstCat) {
+            Breadcrumb::add($firstCat->name, $firstCat->getLink());
+        }
+        Breadcrumb::add($post->title, $post->getLink());
+
         $dataNotify = null;
         if (auth()->check() && $post->is_notify) {
             $dataNotify = MailNotify::findCurrentUser($id);
