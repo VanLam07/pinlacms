@@ -833,9 +833,9 @@ footer {
         }
         .wheel {
             position: absolute;
-            bottom: 104px;
+            bottom: 100px;
             width: 62px;
-            @include animation(wheel, 0.5s, linear);
+            @include animation(rewheel, 0.5s, linear);
         }
         .wheel1 {
             left: 64px;
@@ -843,5 +843,13 @@ footer {
         .wheel2 {
             right: 54px;
         }
+    }
+}
+@keyframes rewheel {
+    0% {
+        @include rotate(0);
+    }
+    100% {
+        @include rotate(360deg);
     }
 }
