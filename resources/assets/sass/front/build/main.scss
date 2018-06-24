@@ -850,6 +850,6 @@ footer {
         @include rotate(0);
     }
     100% {
-        @include rotate(360deg);
+        @include rotate(-360deg);
     }
 }
