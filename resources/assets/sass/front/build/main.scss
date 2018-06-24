@@ -818,3 +818,30 @@ footer {
     background: $end_bg;
     font-size: 0.85rem;
 }
+
+/* custom post content */
+.post-content {
+    .animation-box {
+        text-align: center;
+    }
+    .car-contaner {
+        display: inline-block;
+        position: relative;
+        .car-body {
+            width: 340px;
+            @include animation(car, 0.5s, ease-in-out forwards alternate);
+        }
+        .wheel {
+            position: absolute;
+            bottom: 104px;
+            width: 62px;
+            @include animation(wheel, 0.5s, linear);
+        }
+        .wheel1 {
+            left: 64px;
+        }
+        .wheel2 {
+            right: 54px;
+        }
+    }
+}
