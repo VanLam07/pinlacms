@@ -22,7 +22,7 @@ use Front\Helper\FtConst;
 class TagController extends Controller 
 {
     
-    public function view($id)
+    public function view($slug, $id)
     {
         $tax = Tax::findByLang($id);
         if (!$tax) {

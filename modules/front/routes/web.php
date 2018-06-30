@@ -4,14 +4,14 @@ Route::get('/', 'PageController@index')->name('home');
 Route::get('/blog', 'PageController@blog')->name('blog');
 Route::get('/show-visitor', 'PageController@setVisitor')->name('set_visitor');
 
-Route::get('category/{id}/{slug?}', 'CatController@view')
+Route::get('category/{slug}_c{id}.html', 'CatController@view')
         ->name('cat.view')->where('id', '[0-9]+');
-Route::get('tag/{id}/{slug?}', 'TagController@view')
+Route::get('tag/{slug}_t{id}.html', 'TagController@view')
         ->name('tag.view')->where('id', '[0-9]+');
 //post notification
 Route::post('post/{id}/save-notify', 'PostController@saveMailNotify')
         ->name('post.save_mail_notify')->where('id', '[0-9]+');
-Route::get('page/{id}/{slug?}', 'PageController@view')
+Route::get('page/{slug}_p{id}.html', 'PageController@view')
         ->name('page.view')->where('id', '[0-9]+');
 
 Route::get('comment/lists', 'CommentController@loadData')

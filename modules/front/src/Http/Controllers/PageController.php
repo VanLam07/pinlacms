@@ -21,7 +21,7 @@ class PageController extends Controller
         return view('front::blog');
     }
     
-    public function view($id)
+    public function view($slug, $id)
     {
         $page = PostType::findByLang($id);
         

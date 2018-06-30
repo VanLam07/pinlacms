@@ -23,7 +23,7 @@ use Breadcrumb;
 class CatController extends BaseController 
 {
     
-    public function view($id)
+    public function view($slug, $id)
     {
         $tax = Tax::findByLang($id);
         if (!$tax) {
