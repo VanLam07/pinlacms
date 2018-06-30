@@ -11,7 +11,7 @@ use App\Exceptions\PlException;
 
 class AlbumController extends Controller
 {
-    public function view($id, $slug = null)
+    public function view($slug, $id)
     {
         $album = Tax::findByLang($id);
         if (!$album) {
