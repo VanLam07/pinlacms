@@ -27,13 +27,13 @@
             "database/factories"
         ],
         "psr-4": {
-            "App\\": "app/",
+            "App\\": "modules/core/src",
             "Admin\\": "modules/admin/src/",
             "Front\\": "modules/front/src/"
         },
         "files": [
-            "app/Helper/HelperFunc.php",
-            "app/Helper/LangFunc.php"
+            "modules/core/src/Helper/HelperFunc.php",
+            "modules/core/src/Helper/LangFunc.php"
         ]
     },
     "autoload-dev": {

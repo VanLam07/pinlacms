@@ -41,6 +41,8 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+$app->instance('path', realpath(__DIR__ . '/../modules/core/src'));
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application
