@@ -4,6 +4,28 @@ Route::get('/', 'PageController@index')->name('home');
 Route::get('/blog', 'PageController@blog')->name('blog');
 Route::get('/show-visitor', 'PageController@setVisitor')->name('set_visitor');
 
+Route::get('category/{id}/{slug?}', 'CatController@view')
+        ->name('cat.view')->where('id', '[0-9]+');
+Route::get('tag/{id}/{slug?}', 'TagController@view')
+        ->name('tag.view')->where('id', '[0-9]+');
+//post notification
+Route::post('post/{id}/save-notify', 'PostController@saveMailNotify')
+        ->name('post.save_mail_notify')->where('id', '[0-9]+');
+Route::get('page/{id}/{slug?}', 'PageController@view')
+        ->name('page.view')->where('id', '[0-9]+');
+
+Route::get('comment/lists', 'CommentController@loadData')
+        ->name('comment.load');
+//contact
+Route::post('contact/send', 'PageController@sendContact')
+        ->name('contact.send');
+//album
+Route::get('album/{id}/{slug?}', 'AlbumController@view')
+        ->name('album.view');
+//post
+Route::get('/{slug}_{id}.html', 'PostController@view')
+        ->name('post.view')->where('id', '[0-9]+');
+
 Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
     Route::get('login', 'AuthController@getLogin')
             ->name('login');
@@ -28,27 +50,6 @@ Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
     Route::post('/reset-password', 'AuthController@postResetPass')
             ->name('post_reset_pass');
 });
-
-Route::get('category/{id}/{slug?}', 'CatController@view')
-        ->name('cat.view')->where('id', '[0-9]+');
-Route::get('tag/{id}/{slug?}', 'TagController@view')
-        ->name('tag.view')->where('id', '[0-9]+');
-Route::get('post/{id}/{slug?}', 'PostController@view')
-        ->name('post.view')->where('id', '[0-9]+');
-//post notification
-Route::post('post/{id}/save-notify', 'PostController@saveMailNotify')
-        ->name('post.save_mail_notify')->where('id', '[0-9]+');
-Route::get('page/{id}/{slug?}', 'PageController@view')
-        ->name('page.view')->where('id', '[0-9]+');
-
-Route::get('comment/lists', 'CommentController@loadData')
-        ->name('comment.load');
-//contact
-Route::post('contact/send', 'PageController@sendContact')
-        ->name('contact.send');
-//album
-Route::get('album/{id}/{slug?}', 'AlbumController@view')
-        ->name('album.view');
 
 Route::group(['middleware' => 'auth'], function () {
     

@@ -12,7 +12,7 @@ use Breadcrumb;
 
 class PostController extends BaseController
 {
-    public function view($id)
+    public function view($slug, $id)
     {
         $post = PostType::findByLang($id);
         $post->incrementView();
