@@ -16,7 +16,7 @@ class Post {
     public function getFeature($number = 3, $type = 'post')
     {
         return PostType::getData($type, [
-            'per_page' => $number,
+            'limit' => $number,
             'is_feature' => 1,
             'orderby' => 'id',
             'order' => 'asc'
@@ -44,7 +44,7 @@ class Post {
                 'file.id as file_id', 'file.url as file_url', 'file.title as file_name'],
             'orderby' => 'posts.views',
             'order' => 'desc',
-            'per_page' => $number,
+            'limit' => $number,
             'page_name' => 'sidebar_page'
         ]);
     }

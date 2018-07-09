@@ -41,9 +41,9 @@ class Breadcrumb {
         if ($this->paths) {
             $render = '<ol class="breadcrumb '. $class .'">';
             foreach ($this->paths as $path) {
-                $render .= '<li>';
+                $render .= '<li itemscope itemtype="http://data-vocabulary.org/Breadcrumb">';
                 if (isset($path['url']) && ($url = $path['url'])) {
-                    $render .= '<a href="' . $url . '">' . $path['text'] . '</a>';
+                    $render .= '<a itemprop="url" href="' . $url . '" title="'. $path['text'] .'">' . $path['text'] . '</a>';
                 } else {
                     $render .= $path['text'];
                 }

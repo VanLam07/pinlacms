@@ -165,6 +165,7 @@ class PostType extends BaseModel
             'status' => [AdConst::STT_PUBLISH],
             'orderby' => 'posts.created_at',
             'order' => 'desc',
+            'limit' => null,
             'per_page' => AdConst::PER_PAGE,
             'exclude_key' => 'posts.id',
             'is_auth' => 0,
@@ -247,6 +248,9 @@ class PostType extends BaseModel
             $result->leftJoin(File::getTableName() . ' as file', 'posts.thumb_id', '=', 'file.id');
         }
 
+        if ($opts['limit']) {
+            return $result->take($opts['limit'])->get();
+        }
         if ($opts['per_page'] > -1) {
             return $result->paginate($opts['per_page'], ['*'], $opts['page_name']);
         }
