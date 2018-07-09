@@ -16,7 +16,7 @@ class Tax {
     {
         return TaxModel::getData('cat', [
             'fields' => ['taxs.id', 'td.name', 'td.slug', 'taxs.image_id', 'taxs.type'],
-            'per_page' => -1,
+            'limit' => 1000,
             'is_feature' => $isFeature,
             'orderby' => 'order',
             'order' => 'asc'
@@ -28,7 +28,7 @@ class Tax {
         $tblPre = DB::getTablePrefix();
         return TaxModel::getData('tag', [
             'fields' => ['taxs.id', 'td.name', 'td.slug', 'taxs.type', DB::raw('COUNT(DISTINCT('. $tblPre .'post_tax.post_id)) as count_post')],
-            'per_page' => $number,
+            'limit' => $number,
             'orderby' => 'count_post',
             'order' => 'desc',
             'count_post' => true

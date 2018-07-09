@@ -100,6 +100,7 @@ class Tax extends BaseModel
             'orderby' => 'td.name',
             'order' => 'asc',
             'status' => [AdConst::STT_PUBLISH],
+            'limit' => null,
             'per_page' => AdConst::PER_PAGE,
             'exclude_key' => 'taxs.id',
             'exclude' => [],
@@ -137,6 +138,9 @@ class Tax extends BaseModel
             self::filterData($result, $opts['filters']);
         }
         
+        if ($opts['limit']) {
+            return $result->take($opts['limit'])->get();
+        }
         if ($opts['per_page'] > -1) {
             return $result->paginate($opts['per_page']);
         }
