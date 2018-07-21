@@ -176,6 +176,8 @@ and open the template in the editor.
                             btnMoreFile.attr('href', data.next_page_url);
                             if (!data.next_page_url) {
                                 btnMoreFile.addClass('hidden');
+                            } else {
+                                btnMoreFile.removeClass('hidden');
                             }
                             el_files_list.attr('data-loaded', true);
                         },
