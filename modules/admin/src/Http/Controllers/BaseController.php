@@ -39,6 +39,9 @@ class BaseController extends Controller {
         try {
             $item = $this->model::insertData($request->all());
             DB::commit();
+            if (method_exists($this, 'redirectEdit')) {
+                return $this->redirectEdit($item);
+            }
             return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
         } catch (PlException $ex) {
             DB::rollback();

@@ -7,7 +7,7 @@ use Admin\Facades\AdConst;
 
 $status = request()->get('status');
 $multiActions = ['delete'];
-$statuses = [AdConst::STT_PUBLISH];
+$statuses = [];
 $actionCaps = [
     'create' => 'publish_contact',
     'edit' => 'edit_contact',

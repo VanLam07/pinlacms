@@ -239,4 +239,6 @@ return [
     
     'ip' =>                         'Ip',
     'visitors' =>                   'Lượt thăm',
+    'Date increment' =>             'Ngày tăng dần',
+    'Date decrement' =>             'Ngày giảm dần',
 ];

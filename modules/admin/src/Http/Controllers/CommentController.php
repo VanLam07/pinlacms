@@ -7,6 +7,7 @@ use Admin\Http\Controllers\BaseController;
 use App\Models\Comment;
 use PlMenu;
 use Breadcrumb;
+use Admin\Facades\AdConst;
 
 class CommentController extends BaseController
 {
@@ -17,7 +18,7 @@ class CommentController extends BaseController
 
     public function __construct() {
         parent::__construct();
-        Breadcrumb::add(trans('admin::view.comments'), route('admin::comment.index'));
+        Breadcrumb::add(trans('admin::view.comments'), route('admin::comment.index', ['status' => AdConst::STT_PUBLISH]));
         PlMenu::setActive('comments');
         $this->model = Comment::class;
     }
@@ -58,6 +59,12 @@ class CommentController extends BaseController
         canAccess($this->cap_create);
         
         return parent::store($request);
+    }
+    
+    public function redirectEdit($item)
+    {
+        return redirect()->route('admin::comment.edit', $item->id)
+                ->with('succ_mess', trans('admin::message.store_success'));
     }
     
     public function edit($id){

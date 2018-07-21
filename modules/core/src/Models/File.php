@@ -97,7 +97,7 @@ class File extends BaseModel
             $result->whereNotIn($opts['exclude_key'], $opts['exclude']);
         }
         if ($opts['filters']) {
-            $this->filterData($result, $opts['filters']);
+            self::filterData($result, $opts['filters']);
         }
         $result->orderby($opts['orderby'], $opts['order']);
         

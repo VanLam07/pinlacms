@@ -9,6 +9,7 @@ use App\Exceptions\PlException;
 use App\User;
 use PlMenu;
 use Breadcrumb;
+use Admin\Facades\AdConst;
 
 class FileController extends BaseController {
 
@@ -20,7 +21,7 @@ class FileController extends BaseController {
     public function __construct() {
         parent::__construct();
         PlMenu::setActive('files');
-        Breadcrumb::add(trans('admin::view.files'), route('admin::file.index'));
+        Breadcrumb::add(trans('admin::view.files'), route('admin::file.index', ['status' => AdConst::STT_PUBLISH]));
         $this->model = FileModel::class;
     }
 

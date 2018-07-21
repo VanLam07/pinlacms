@@ -50,10 +50,7 @@ class AuthController extends Controller {
 
     public function getLogin() {
         if (Auth::check()) {
-            return view('errors.notice', [
-                'message' => trans('admin::message.you_are_logged_in') . 
-                        ' <a href="'. route('admin::auth.logout') .'">Logout</a>'
-            ]);
+            return redirect()->route('admin::index');
         }
         return view('admin::auth.login');
     }

@@ -35,6 +35,12 @@ class RoleController extends BaseController
         return view('admin::role.create');
     }
     
+    public function redirectEdit($item)
+    {
+        return redirect()->route('admin::role.edit', $item->id)
+                ->with('succ_mess', trans('admin::message.store_success'));
+    }
+    
     public function edit($id){
         canAccess($this->cap_accept);
         

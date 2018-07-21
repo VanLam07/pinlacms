@@ -42,8 +42,9 @@ class MenuCatController extends BaseController {
         canAccess($this->cap_accept);
         
         try {
-            Tax::insertData($request->all(), 'menucat');
-            return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
+            $item = Tax::insertData($request->all(), 'menucat');
+            return redirect()->route('admin::menucat.edit', $item->id)
+                    ->with('succ_mess', trans('admin::message.store_success'));
         } catch (PlException $ex) {
             return redirect()->back()->withInput()->with('error_mess', $ex->getError());
         }

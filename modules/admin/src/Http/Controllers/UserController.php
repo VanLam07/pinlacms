@@ -9,6 +9,7 @@ use App\Models\Role;
 use Validator;
 use PlMenu;
 use Breadcrumb;
+use Admin\Facades\AdConst;
 
 class UserController extends BaseController
 {
@@ -19,7 +20,7 @@ class UserController extends BaseController
 
     public function __construct() {
         parent::__construct();
-        Breadcrumb::add(trans('admin::view.users'), route('admin::user.index'));
+        Breadcrumb::add(trans('admin::view.users'), route('admin::user.index', ['status' => AdConst::STT_PUBLISH]));
         PlMenu::setActive('users');
         $this->model = User::class;
     }
@@ -58,7 +59,7 @@ class UserController extends BaseController
         }
         $user->roles()->attach($data['role_ids']);
         
-        return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
+        return redirect()->route('admin::user.edit', $user->id)->with('succ_mess', trans('admin::message.store_success'));
     }
     
     public function edit($id){

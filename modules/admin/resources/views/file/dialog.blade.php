@@ -36,11 +36,54 @@ and open the template in the editor.
                         {!! Form::close() !!}
                     </div>
                     <div role="tabpanel" class="tab-pane" id="select-files-tab">
-                        <ul class="list-inline files-list">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="dialog-search">
+                                    <form method="get" action="{{ route('admin::api.ajax_action') }}" id="form_load_files">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group maxw-250">
+                                                    <select id="filter_order_files" class="form-control filter-field-select">
+                                                        <option value="">&nbsp;</option>
+                                                        <option value="created_at" data-order="asc">{{ trans('admin::view.Date increment') }}</option>
+                                                        <option value="created_at" data-order="desc">{{ trans('admin::view.Date decrement') }}</option>
+                                                    </select>
+                                                    <input type="hidden" class="search-field" name="orderby" value="created_at">
+                                                    <input type="hidden" class="search-field" name="order" value="desc">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group maxw-250 pull-right">
+                                                    <input type="text" name="filters[title]" value="" class="form-control filter-field-input" placeholder="{{ trans('admin::view.search') }}...">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="action" value="load_files">
+                                        <input type="hidden" name="type" value="{{ isset($params['file_type']) ? $params['file_type'] : '_all' }}">
+                                    </form>
+                                </div>
+                                
+                                <ul class="list-inline files-list">
 
-                        </ul>
-                        <div class="file-paginate text-center">
-                            <a class="btn-more-files" href="">{{ trans('file.load_more') }} <i class="fa fa-spin fa-refresh hidden"></i></a>
+                                </ul>
+                                
+                                <div class="file-paginate text-center">
+                                    <a class="btn-more-files" href="">{{ trans('file.load_more') }} <i class="fa fa-spin fa-refresh hidden"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div id="preview_selected">
+                                    <div class="form-group">
+                                        <div class="image-field"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="title-field"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="created-field"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -103,21 +146,33 @@ and open the template in the editor.
                     loadFiles(_all_files_url);
                 }
                 
-                function loadFiles(url){
+                function loadFiles(url, isAppend){
                     if (el_files_list.hasClass('loading')) {
                         return;
                     }
                     el_files_list.addClass('loading');
                     iconLoadFile.removeClass('hidden');
+                    var data = {
+                        action: 'load_files',
+                        type: file_type
+                    };
+                    var formFile = $('#form_load_files');
+                    if (formFile.length > 0) {
+                        data = formFile.serialize();
+                    }
+                    if (typeof isAppend == 'undefined') {
+                        isAppend = true;
+                    }
                     $.ajax({
                         url: url,
                         type: 'GET',
-                        data: {
-                            action: 'load_files',
-                            type: file_type
-                        },
+                        data: data,
                         success: function (data) {
-                            el_files_list.append(data.html);
+                            if (isAppend) {
+                                el_files_list.append(data.html);
+                            } else {
+                                el_files_list.html(data.html);
+                            }
                             btnMoreFile.attr('href', data.next_page_url);
                             if (!data.next_page_url) {
                                 btnMoreFile.addClass('hidden');
@@ -189,6 +244,27 @@ and open the template in the editor.
                         }
                     });
                 });
+                
+                $('#filter_order_files').on('change', function () {
+                    var orderBy = $(this).val();
+                    var order = $(this).find('option:selected').data('order');
+                    $('[name="orderby"]').val(orderBy);
+                    $('[name="order"]').val(order);
+                });
+                
+                $('.filter-field-select').on('change', function () {
+                    $(this).closest('form').submit();
+                });
+                $('.filter-field-input').on('keydown', function (e) {
+                    if (e.which == 13) {
+                        $(this).closest('form').submit();
+                    }
+                });
+                
+                $('#form_load_files').submit(function () {
+                    loadFiles($(this).attr('action'), false);
+                    return false;
+                });
 
                 $('body').on('click', '.files-list li a', function (e) {
                     e.preventDefault();
@@ -220,6 +296,11 @@ and open the template in the editor.
                         }
                     }
                     files_selected_count.text(files_selected.length);
+                    
+                    var previewSelected = $('#preview_selected');
+                    previewSelected.find('.image-field').html('<img class="img-responsive" src="'+ file_url +'" />');
+                    previewSelected.find('.title-field').text($(this).attr('title'));
+                    previewSelected.find('.created-field').text($(this).attr('data-created-at'));
                 });
                 
                 var args = null;

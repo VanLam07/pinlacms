@@ -7,9 +7,9 @@ use Admin\Http\Controllers\BaseController;
 use App\Models\Tax;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\PlException;
-use Exception;
 use PlMenu;
 use Breadcrumb;
+use Admin\Facades\AdConst;
 
 class TagController extends BaseController
 {
@@ -19,7 +19,7 @@ class TagController extends BaseController
     public function __construct() {
         parent::__construct();
         PlMenu::setActive('tags');
-        Breadcrumb::add(trans('admin::view.tags'), route('admin::tag.index'));
+        Breadcrumb::add(trans('admin::view.tags'), route('admin::tag.index', ['status' => AdConst::STT_PUBLISH]));
         $this->model = Tax::class;
     }
 
@@ -43,9 +43,10 @@ class TagController extends BaseController
         
         DB::beginTransaction();
         try {
-            Tax::insertData($request->all(), 'tag');
+            $item = Tax::insertData($request->all(), 'tag');
             DB::commit();
-            return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
+            return redirect()->route('admin::tag.edit', $item->id)
+                    ->with('succ_mess', trans('admin::message.store_success'));
         } catch (PlException $ex) {
             DB::rollback();
             return redirect()->back()->withInput()->with('error_mess', $ex->getError());

@@ -21,7 +21,7 @@ class MediaController extends BaseController
     public function __construct() {
         parent::__construct();
         PlMenu::setActive('medias');
-        Breadcrumb::add(trans('admin::view.medias'), route('admin::media.index'));
+        Breadcrumb::add(trans('admin::view.medias'), route('admin::media.index', ['status' => AdConst::STT_PUBLISH]));
         $this->model = Media::class;
     }
 
@@ -59,6 +59,12 @@ class MediaController extends BaseController
         canAccess($this->cap_create);
         
         return parent::store($request);
+    }
+    
+    public function redirectEdit($item)
+    {
+        return redirect()->route('admin::media.edit', $item->id)
+                ->with('succ_mess', trans('admin::message.store_success'));
     }
 
     public function edit($id, Request $request) {

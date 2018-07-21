@@ -8,6 +8,7 @@ use Admin\Http\Controllers\BaseController;
 use App\Models\Lang;
 use PlMenu;
 use Breadcrumb;
+use Admin\Facades\AdConst;
 
 class LangController extends BaseController
 {
@@ -17,7 +18,7 @@ class LangController extends BaseController
     public function __construct(Lang $lang) {
         parent::__construct();
         PlMenu::setActive('langs');
-        Breadcrumb::add(trans('admin::view.langs'), route('admin::lang.index'));
+        Breadcrumb::add(trans('admin::view.langs'), route('admin::lang.index', ['status' => AdConst::STT_PUBLISH]));
         $this->model = $lang;
     }
     
@@ -33,6 +34,12 @@ class LangController extends BaseController
         
         Breadcrumb::add(trans('admin::view.create'));
         return view('admin::lang.create');
+    }
+    
+    public function redirectEdit($item)
+    {
+        return redirect()->route('admin::lang.edit', $item->code)
+                ->with('succ_mess', trans('admin::message.store_success'));
     }
     
     public function edit($id){

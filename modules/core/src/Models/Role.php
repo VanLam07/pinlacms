@@ -44,7 +44,7 @@ class Role extends BaseModel {
         if (isset($data['caps_level']) && $data['caps_level']) {
             $dataCaps = [];
             foreach ($data['caps_level'] as $capName => $level) {
-                if ($level) {
+                if (is_numeric($level)) {
                     $dataCaps[$capName] = ['level' => $level];
                 }
             }

@@ -109,7 +109,7 @@ class Media extends BaseModel {
     public static function getData($args = []) {
         $opts = [
             'type' => 'inherit',
-            'fields' => ['medias.*', 'md.*', 'file.id as file_id', 'file.url as file_url', 'file.name as file_name'],
+            'fields' => ['medias.*', 'md.*', 'file.id as file_id', 'file.url as file_url', 'file.title as file_name'],
             'status' => AdConst::STT_PUBLISH,
             'orderby' => 'medias.created_at',
             'order' => 'desc',

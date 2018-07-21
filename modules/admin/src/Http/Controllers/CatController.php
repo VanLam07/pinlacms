@@ -7,6 +7,7 @@ use Admin\Http\Controllers\BaseController;
 use App\Models\Tax;
 use PlMenu;
 use Breadcrumb;
+use Admin\Facades\AdConst;
 
 class CatController extends BaseController {
 
@@ -17,7 +18,7 @@ class CatController extends BaseController {
     public function __construct() {
         PlMenu::setActive('cats');
         parent::__construct();
-        Breadcrumb::add(trans('admin::view.categories'), route('admin::cat.index'));
+        Breadcrumb::add(trans('admin::view.categories'), route('admin::cat.index', ['status' => AdConst::STT_PUBLISH]));
         $this->locale = currentLocale();
         $this->model = Tax::class;
     }
@@ -43,6 +44,12 @@ class CatController extends BaseController {
             'orderby' => 'td.name'
         ]);
         return view('admin::cat.create', ['parents' => $parents, 'lang' => $this->locale]);
+    }
+    
+    public function redirectEdit($item)
+    {
+        return redirect()->route('admin::cat.edit', $item->id)
+                ->with('succ_mess', trans('admin::message.store_success'));
     }
 
     public function edit($id, Request $request) {

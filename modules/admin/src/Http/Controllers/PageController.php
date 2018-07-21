@@ -8,9 +8,9 @@ use App\Models\PostType;
 use App\Exceptions\PlException;
 use File;
 use DB;
-use Exception;
 use PlMenu;
 use Breadcrumb;
+use Admin\Facades\AdConst;
 
 class PageController extends BaseController
 {
@@ -29,7 +29,7 @@ class PageController extends BaseController
             $this->templates[$name] = $name;
         }
         PlMenu::setActive('pages');
-        Breadcrumb::add(trans('admin::view.pages'), route('admin::page.index'));
+        Breadcrumb::add(trans('admin::view.pages'), route('admin::page.index', ['status' => AdConst::STT_PUBLISH]));
     }
 
     public function index(Request $request) {
@@ -53,9 +53,10 @@ class PageController extends BaseController
         
         DB::beginTransaction();
         try {
-            PostType::insertData($request->all(), 'page');
+            $item = PostType::insertData($request->all(), 'page');
             DB::commit();
-            return redirect()->back()->with('succ_mess', trans('admin::message.store_success'));
+            return redirect()->route('admin::page.edit', $item->id)
+                    ->with('succ_mess', trans('admin::message.store_success'));
         } catch (PlException $ex) {
             DB::rollback();
             return redirect()->back()->withInput()->with('error_mess', $ex->getError());
