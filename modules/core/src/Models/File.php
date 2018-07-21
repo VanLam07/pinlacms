@@ -79,10 +79,10 @@ class File extends BaseModel
             'filters' => []
         ];
 
-        if (!isset($args['orderby']) || $args['orderby']) {
+        if (!isset($args['orderby']) || !$args['orderby']) {
             unset($args['orderby']);
         }
-        if (!isset($args['order']) || $args['order']) {
+        if (!isset($args['order']) || !$args['order']) {
             unset($args['order']);
         }
         $opts = array_merge($opts, $args);
