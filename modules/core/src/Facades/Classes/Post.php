@@ -3,6 +3,7 @@
 namespace App\Facades\Classes;
 
 use App\Models\PostType;
+use Admin\Facades\AdConst;
 
 class Post {
     
@@ -31,7 +32,8 @@ class Post {
                 'file.id as file_id', 'file.url as file_url', 'file.title as file_name'],
             'orderby' => 'posts.created_at',
             'order' => 'desc',
-            'per_page' => $number
+            'per_page' => $number,
+            'post_format' => AdConst::FORMAT_POST
         ]);
     }
     

@@ -173,7 +173,7 @@ class PostType extends BaseModel
             'exclude' => [],
             'filters' => [],
             'cats' => [],
-            'post_format' => AdConst::FORMAT_POST,
+            'post_format' => null,
             'tags' => [],
             'with_cats' => false,
             'with_tags' => false,
@@ -207,8 +207,12 @@ class PostType extends BaseModel
         }
 
         $result->where('post_type', $type)
-                ->whereNotNull('pd.title')
-                ->where('post_format', $opts['post_format']);
+                ->whereNotNull('pd.title');
+
+        //post format
+        if ($opts['post_format']) {
+            $result->where('post_format', $opts['post_format']);
+        }
         
         if ($opts['status']) {
             if (!is_array($opts['status'])) {
