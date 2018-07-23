@@ -1,3 +1,7 @@
+<?php
+use Admin\Facades\AdConst;
+?>
+
 @extends('front::layouts.default')
 
 @section('title', $post->title)
@@ -54,7 +58,7 @@
           title="{{trans('admin::view.edit')}}"><i class="fa fa-pencil"></i> {{ trans('admin::view.edit') }}</a></p>
     @endif
     
-    @if ($post->is_notify)
+    @if ($post->post_format == AdConst::FORMAT_NOTIFY)
     <div class="card notify-content mgb-30">
         <div class="card-body">
             <h5>{{ trans('front::view.notify_calendar') }}</h5>
