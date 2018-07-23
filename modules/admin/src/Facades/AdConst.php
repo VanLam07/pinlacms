@@ -30,6 +30,7 @@ class AdConst {
     const FORMAT_POST = 1;
     const FORMAT_NOTIFY = 2;
     const FORMAT_QUOTE = 3;
+    const FORMAT_DIARY = 10;
     
     const PER_PAGE = 20;
     const SUB_PER_PAGE = 5;
@@ -73,7 +74,8 @@ class AdConst {
         return [
             self::FORMAT_POST => 'Post',
             self::FORMAT_NOTIFY => 'Notify',
-            self::FORMAT_QUOTE => 'Quote'
+            self::FORMAT_QUOTE => 'Quote',
+            self::FORMAT_DIARY => 'Diary',
         ];
     }
 }
