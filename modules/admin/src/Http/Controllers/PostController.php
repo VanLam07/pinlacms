@@ -49,6 +49,7 @@ class PostController extends BaseController {
             'per_page' => -1,
             'fields' => ['taxs.id', 'td.name']]
         );
+        $listFormats = AdConst::listPostFormats();
         
         $users = null;
         if (canDo('edit_post', null, AdConst::CAP_OTHER)) {
@@ -59,7 +60,7 @@ class PostController extends BaseController {
                 'fields' => ['id', 'name']]
             );
         }
-        return view('admin::post.create', compact('cats', 'tags', 'users'));
+        return view('admin::post.create', compact('cats', 'tags', 'users', 'listFormats'));
     }
 
     public function store(Request $request) {
@@ -71,6 +72,12 @@ class PostController extends BaseController {
             return redirect()->back()->withInput()
                     ->with('error_mess', $ex->getError());
         }
+    }
+    
+    public function redirectEdit($item)
+    {
+        return redirect()->route('admin::post.edit', $item->id)
+                ->with('succ_mess', trans('admin::message.store_success'));
     }
 
     public function edit($id, Request $request) {
@@ -96,6 +103,7 @@ class PostController extends BaseController {
             'per_page' => -1,
             'fields' => ['taxs.id', 'td.name']
         ]);
+        $listFormats = AdConst::listPostFormats();
         $users = null;
         if (canDo('edit_post', null, AdConst::CAP_OTHER)) {
             $users = User::getData([
@@ -107,7 +115,7 @@ class PostController extends BaseController {
         
         $curr_cats = $item->cats->pluck('id')->toArray();
         $curr_tags = $item->tags->pluck('id')->toArray();
-        return view('admin::post.edit', compact('item', 'cats', 'tags', 'users', 'curr_cats', 'curr_tags', 'lang'));
+        return view('admin::post.edit', compact('item', 'cats', 'tags', 'users', 'curr_cats', 'curr_tags', 'lang', 'listFormats'));
     }
 
     public function update($id, Request $request) {

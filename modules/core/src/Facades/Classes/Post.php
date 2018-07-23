@@ -31,8 +31,7 @@ class Post {
                 'file.id as file_id', 'file.url as file_url', 'file.title as file_name'],
             'orderby' => 'posts.created_at',
             'order' => 'desc',
-            'per_page' => $number,
-            'not_notify' => true
+            'per_page' => $number
         ]);
     }
     

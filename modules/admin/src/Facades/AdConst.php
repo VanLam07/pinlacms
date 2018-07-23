@@ -27,6 +27,10 @@ class AdConst {
     const STT_TRASH = 10;
     const AC_DELETE = 20;
     
+    const FORMAT_POST = 1;
+    const FORMAT_NOTIFY = 2;
+    const FORMAT_QUOTE = 3;
+    
     const PER_PAGE = 20;
     const SUB_PER_PAGE = 5;
     const FILE_PER_PAGE = 30;
@@ -62,5 +66,14 @@ class AdConst {
             }
         }
         return Storage::disk()->url($srcFile);
+    }
+
+    public static function listPostFormats()
+    {
+        return [
+            self::FORMAT_POST => 'Post',
+            self::FORMAT_NOTIFY => 'Notify',
+            self::FORMAT_QUOTE => 'Quote'
+        ];
     }
 }

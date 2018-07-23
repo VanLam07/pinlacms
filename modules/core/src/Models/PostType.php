@@ -13,7 +13,7 @@ class PostType extends BaseModel
     protected $table = 'posts';
     protected static $tblDesc = 'post_desc';
     public $dates = ['trashed_at'];
-    protected $fillable = ['thumb_id', 'thumb_ids', 'author_id', 'status', 'comment_status', 'is_feature', 'is_notify',
+    protected $fillable = ['thumb_id', 'thumb_ids', 'author_id', 'status', 'comment_status', 'is_feature', 'post_format',
         'comment_count', 'post_type', 'views', 'template', 'trased_at', 'created_at', 'updated_at'];
     
     use SoftDeletes;
@@ -173,7 +173,7 @@ class PostType extends BaseModel
             'exclude' => [],
             'filters' => [],
             'cats' => [],
-            'not_notify' => null,
+            'post_format' => AdConst::FORMAT_POST,
             'tags' => [],
             'with_cats' => false,
             'with_tags' => false,
@@ -195,10 +195,7 @@ class PostType extends BaseModel
             });
             $hasJoinCat = true;
         }
-        
-        if ($opts['not_notify'] === true) {
-            $result->where('posts.is_notify', 0);
-        }
+
         if ($opts['tags']) {
             $tag_ids = $opts['tags'];
             if (!$hasJoinCat) {
@@ -210,7 +207,8 @@ class PostType extends BaseModel
         }
 
         $result->where('post_type', $type)
-                ->whereNotNull('pd.title');
+                ->whereNotNull('pd.title')
+                ->where('post_format', $opts['post_format']);
         
         if ($opts['status']) {
             if (!is_array($opts['status'])) {

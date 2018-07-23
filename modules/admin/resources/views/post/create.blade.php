@@ -86,9 +86,17 @@ use Admin\Facades\AdConst;
                 </div>
             </div>
             
-            <div class="col-sm-6 form-group">
-                <label for="checkbox_notify">{{ trans('admin::view.is_notify') }}</label>
-                {!! Form::checkbox('is_notify', 1, old('is_notify'), ['id' => 'checkbox_notify']) !!}
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>
+                        {!! Form::checkbox('is_feature', 1) !!}
+                        {{ trans('admin::view.is_feature') }}
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>{{ trans('admin::view.post_format') }}</label>
+                    {!! Form::select('post_format', $listFormats, null, ['class' => 'form-control']) !!}
+                </div>
             </div>
         </div>
 

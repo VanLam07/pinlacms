@@ -85,8 +85,8 @@
                     </label>
                 </div>
                 <div class="form-group">
-                    {!! Form::checkbox('is_notify', 1, $item->is_notify, ['id' => 'checkbox_notify']) !!}
-                    <label for="checkbox_notify">{{ trans('admin::view.is_notify') }}</label>
+                    <label>{{ trans('admin::view.post_format') }}</label>
+                    {!! Form::select('post_format', $listFormats, $item->post_format, ['class' => 'form-control']) !!}
                 </div>
             </div>
             

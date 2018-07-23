@@ -241,4 +241,5 @@ return [
     'visitors' =>                   'Lượt thăm',
     'Date increment' =>             'Ngày tăng dần',
     'Date decrement' =>             'Ngày giảm dần',
+    'post_format' =>                'Loại bài viết',
 ];
