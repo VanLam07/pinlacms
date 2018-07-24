@@ -26,7 +26,6 @@ class PageController extends Controller
     
     public function view($slug, $id)
     {
-        dd(Subscribe::cronSendMail());
         $page = PostType::findByLang($id);
         
         if (!$page) {
