@@ -1,5 +1,14 @@
 <div class="inner-sidebar">
     <?php
+    $quotePage = PlOption::get('quote_page');
+    ?>
+    @if ($quotePage)
+    <a href="{{ route('front::page.view', ['id' => $quotePage, 'slug' => 'quote-daily']) }}" class="btn-reg btn-reg-primary mgb-20">
+        {{ trans('front::view.one_day_one_proverb') }}
+    </a>
+    @endif
+
+    <?php
     $cats = PlTax::listCategories(1);
     ?>
 

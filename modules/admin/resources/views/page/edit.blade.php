@@ -18,7 +18,10 @@ use Admin\Facades\AdConst;
         @include('admin::parts.lang_edit_tabs', ['route' => 'admin::page.edit'])
 
         <div class="form-group">
-            <label>{{trans('admin::view.name')}} (*)</label>
+            <label>
+                {{trans('admin::view.name')}} (*) 
+                <a href="{{ route('front::page.view', ['id' => $item->id, 'slug' => $item->slug]) }}" target="_blank">{{ trans('admin::view.view') }}</a>
+            </label>
             {!! Form::text('locale[title]', $item->title, ['class' => 'form-control', 'placeholder' => trans('admin::view.name')]) !!}
             {!! errorField('locale.title') !!}
         </div>

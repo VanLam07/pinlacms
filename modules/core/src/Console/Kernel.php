@@ -27,7 +27,10 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->call(function () {
+            //post notify
             \App\Models\MailNotify::cronAlert();
+            //qoute notify
+            \App\Models\Subscribe::cronSendMail();
         })->everyMinute();
     }
 

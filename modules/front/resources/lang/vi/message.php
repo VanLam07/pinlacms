@@ -12,4 +12,5 @@ return [
     'send_contact_successful' =>    'Gửi liên hệ thành công, chúng tôi sẽ phản hồi bạn trong thời gian sớm nhất',
     'succ_register' =>              'Đăng ký thành công',
     'update_successful' =>          'Cập nhật thành công!',
+    'subscribed_successful' =>      'Đăng ký thành công, hãy chờ đón những câu nói thật hay mỗi ngày nhé!',
 ];

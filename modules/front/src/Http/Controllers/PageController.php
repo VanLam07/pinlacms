@@ -8,6 +8,9 @@ use App\Models\PostType;
 use App\Models\Contact;
 use App\Exceptions\PlException;
 use Illuminate\Support\Facades\Mail;
+use Admin\Facades\AdConst;
+use App\Models\Subscribe;
+use Validator;
 
 class PageController extends Controller
 {
@@ -23,6 +26,7 @@ class PageController extends Controller
     
     public function view($slug, $id)
     {
+        dd(Subscribe::cronSendMail());
         $page = PostType::findByLang($id);
         
         if (!$page) {
@@ -59,5 +63,26 @@ class PageController extends Controller
     public function setVisitor(Request $request)
     {
         return \App\Models\Visitor::insertItem($request);
+    }
+    
+    public function quoteRegister(Request $request)
+    {
+        $data = $request->except('_token');
+        $valid = Validator::make($data, [
+            'email' => 'required|email|unique:' . Subscribe::getTableName() . ',email',
+            'name' => 'required',
+        ]);
+        if ($valid->fails()) {
+            return redirect()->back()->withErrors($valid->errors());
+        }
+        $data['ip'] = $request->ip();
+        $data['type'] = AdConst::FORMAT_QUOTE;
+        Subscribe::create($data);
+        return redirect()->back()->with('succ_mess', trans('front::message.subscribed_successful'));
+    }
+
+    public function confirmRegister()
+    {
+        
     }
 }

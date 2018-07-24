@@ -3,6 +3,7 @@
 Route::get('/', 'PageController@index')->name('home');
 Route::get('/blog', 'PageController@blog')->name('blog');
 Route::get('/show-visitor', 'PageController@setVisitor')->name('set_visitor');
+Route::post('/quote-daily', 'PageController@quoteRegister')->name('quote.register');
 
 Route::get('{slug}_c{id}.html', 'CatController@view')
         ->name('cat.view')->where('id', '[0-9]+');

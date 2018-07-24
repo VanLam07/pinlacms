@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use Admin\Facades\AdConst;
 use App\Models\BaseModel;
 use Carbon\Carbon;
 use Mail;
-use Illuminate\Support\Facades\Cookie;
 
 class MailNotify extends BaseModel
 {
@@ -114,7 +112,6 @@ class MailNotify extends BaseModel
             foreach ($arrayTime as $time) {
                 $itemTime = Carbon::createFromFormat('H:i', $time);
                 if ($timeNow->hour === $itemTime->hour && $timeNow->minute === $itemTime->minute) {
-                    dump('send');
                     $dataPost = [
                         'postTitle' => $item->title,
                         'postContent' => $item->content,

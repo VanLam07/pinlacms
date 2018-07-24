@@ -46,5 +46,10 @@ return [
     'tag' =>                    'Tag',
     'tags' =>                   'Tags',
     'view_more' =>              'Xem thêm',
+    'one_day_one_proverb' =>    "Mỗi ngày một câu châm ngôn \r\n Tiếng Anh",
+    'full_name' =>              'Tên',
+    'time_receive' =>           'Khoảng thời gian muốn nhận',
+    'Register' =>               'Đăng ký',
+    'quote_mail_alert_subject' => 'Mỗi ngày một câu nói tiếng anh ngày :date',
 ]; 
 
