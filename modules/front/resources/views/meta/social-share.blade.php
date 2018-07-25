@@ -1,5 +1,7 @@
 <?php
-$postLink = $post->getLink();
+if (!isset($postLink)) {
+    $postLink = $post->getLink();
+}
 ?>
 
 <div class="social-share-links width-42">

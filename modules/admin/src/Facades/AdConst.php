@@ -52,6 +52,8 @@ class AdConst {
     const MENU_TYPE_PAGE = 1;
     const MENU_TYPE_CUSTOM = 0;
     
+    const BG_COLOURS = ['#74a8fc', '#ffa75b', '#f7d86a', '#63c159', '#75d5d8', '#ad143d', '#037267', '#18ba3d', '#1a2499'];
+    
     public static function getFileSrc($fileUrl, $size = 'thumbnail')
     {
         $imageSizes = config('image.image_sizes');
@@ -77,5 +79,19 @@ class AdConst {
             self::FORMAT_QUOTE => 'Quote',
             self::FORMAT_DIARY => 'Diary',
         ];
+    }
+
+    public static function getPostFormatLabel($format, $listFormats)
+    {
+        if (isset($listFormats[$format])) {
+            return $listFormats[$format];
+        }
+        return $format;
+    }
+
+    public static function randBgPost()
+    {
+        $idx = array_rand(self::BG_COLOURS);
+        return self::BG_COLOURS[$idx];
     }
 }

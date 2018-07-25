@@ -12,6 +12,8 @@
 @section('content_col')
 
 <?php
+use Admin\Facades\AdConst;
+
 $pageTitle = '';
 if ($tax->isTag()) {
     $pageTitle = trans('front::view.tag') . ': ';
@@ -23,10 +25,23 @@ if ($tax->isTag()) {
 </h2>
 
 @if (!$posts->isEmpty())
+<?php
+$firstPost = $posts->first();
+?>
 <div class="posts">
-    @foreach ($posts as $post)
-        @include('front::includes.post-row')
-    @endforeach
+    @if ($firstPost->post_format == AdConst::FORMAT_QUOTE)
+    <div class="row">
+        @foreach ($posts as $post)
+        <div class="col-md-6">
+        @include('front::includes.post-quote', ['bgColor' => AdConst::randBgPost()])
+        </div>
+        @endforeach
+    </div>
+    @else
+        @foreach ($posts as $post)
+            @include('front::includes.post-row')
+        @endforeach
+    @endif
 </div>
 @endif
 

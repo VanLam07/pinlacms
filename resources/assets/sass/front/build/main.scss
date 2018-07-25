@@ -371,6 +371,38 @@ button {
         margin-bottom: 20px;
     }
 }
+.post-quote {
+    margin-bottom: 30px;
+    border: 1px solid #c4c4c4;
+    @include shadown(2px 2px 2px 0 rgba(0,0,0,.1));
+    .thumb {
+        background-size: cover!important;
+    }
+    .post-excerpt {
+        padding: 30px 20px;
+        text-align: center;
+        color: #fff;
+        margin-bottom: 0;
+        font-size: 1.4rem;
+        min-height: 145px;
+        line-height: 1.8rem;
+        @include txtshadown(2px 2px 2px #000);
+    }
+    .post-content {
+        padding: 10px;
+        background: #fff;
+        border-bottom: 1px solid $main_bd;
+        .post-title {
+            margin-bottom: 0;
+            a {
+                text-transform: none;
+            }
+        }
+    }
+    .post-foot {
+        padding: 5px 10px;
+    }
+}
 
 .box {
     margin-bottom: 20px;

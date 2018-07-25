@@ -13,6 +13,7 @@ $actionCaps = [
     'edit' => 'edit_post',
     'remove' => 'remove_post'
 ];
+$listPostFormats = AdConst::listPostFormats();
 ?>
 
 @section('nav_status')
@@ -32,6 +33,7 @@ $actionCaps = [
                 <th>ID {!! linkOrder('id') !!}</th>
                 <th>{{trans('admin::view.name')}} {!! linkOrder('pd.title') !!}</th>
                 <th>{{trans('admin::view.slug')}}</th>
+                <th>{{ trans('admin::view.post_format') }} {!! linkOrder('post_format') !!}</th>
                 <th>{{trans('admin::view.author')}} {!! linkOrder('author_id') !!}</th>
                 <th>{{trans('admin::view.comment_count')}} {!! linkOrder('comment_count') !!}</th>
                 <th>{{trans('admin::view.views')}} {!! linkOrder('views') !!}</th>
@@ -53,6 +55,7 @@ $actionCaps = [
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
             </tr>
             @if (!$items->isEmpty())
                 @foreach($items as $item)
@@ -65,6 +68,7 @@ $actionCaps = [
                     <td>{{$item->id}}</td>
                     <td>{{$item->title}}</td>
                     <td>{{$item->slug}}</td>
+                    <td>{{ AdConst::getPostFormatLabel($item->post_format, $listPostFormats) }}</td>
                     <td>{{$item->author ? $item->author->name : 'N/A'}}</td>
                     <td>{{$item->comment_count}}</td>
                     <td>{{$item->views}}</td>
@@ -80,7 +84,7 @@ $actionCaps = [
                 @endforeach
             @else
             <tr>
-                <td colspan="9" class="text-center"><h4>{{ trans('admin::message.not_found_items') }}</h4></td>
+                <td colspan="10" class="text-center"><h4>{{ trans('admin::message.not_found_items') }}</h4></td>
             </tr>
             @endif
         </tbody>

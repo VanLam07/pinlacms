@@ -1,5 +1,6 @@
 <?php
 use App\Models\Subscribe;
+use Admin\Facades\AdConst;
 
 $subs = Subscribe::where('ip', request()->ip())->orderBy('created_at', 'desc')->first();
 ?>
@@ -69,6 +70,30 @@ $subs = Subscribe::where('ip', request()->ip())->orderBy('created_at', 'desc')->
     {!! Form::close() !!}
     
     </div>
+    
+    <?php
+    $posts = PlPost::getQuotes();
+    ?>
+    @if (!$posts->isEmpty())
+    <div class="posts">
+        <div class="row">
+            @foreach ($posts as $post)
+            <div class="col-md-4">
+                @include('front::includes.post-quote', ['bgColor' => AdConst::randBgPost()])
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+    
+    <?php
+    $postPaginate = $posts->links();
+    ?>
+    @if ($postPaginate)
+    <div class="paginate-box">
+        {!! $postPaginate !!}
+    </div>
+    @endif
 </div>
 
 @stop
