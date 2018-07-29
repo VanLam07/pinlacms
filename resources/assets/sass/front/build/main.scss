@@ -199,13 +199,11 @@ button {
                 padding: 1rem 1rem;
                 border-top: 2px solid transparent;
                 color: $main_cl;
-                &:hover {
-                    color: $hover_cl;
-                }
             }
         }
         li.active a, li a:hover {
             border-top: 2px solid $active_bd;
+            color: $hover_cl;
         }
     }
     ul.dropdown-menu {
