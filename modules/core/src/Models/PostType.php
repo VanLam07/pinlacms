@@ -492,11 +492,15 @@ class PostType extends BaseModel
         }
         $catNames = explode(',', $this->cat_names);
         $html = '';
-        foreach ($catNames as $index => $name) {
+        foreach ($catNames as $index => $strName) {
+            $arrName = explode('|', $strName);
+            if (count($arrName) != 3) {
+                continue;
+            }
             if ($index > 1) {
                 break;
             }
-            $html .= '<strong>'. e($name) .'</strong>';
+            $html .= '<a href="'. route('front::cat.view', ['id' => $arrName[0], 'slug' => $arrName[1]]) .'"><strong>'. e($arrName[2]) .'</strong></a>';
         }
         return $html;
     }

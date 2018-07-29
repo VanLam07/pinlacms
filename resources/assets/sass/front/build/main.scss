@@ -330,6 +330,11 @@ button {
         margin-bottom: 3px;
     }
     display: inline-block;
+    a:hover {
+        strong {
+            background: $hover_cl;
+        }
+    }
 }
 .post-meta {
     display: inline-block;
