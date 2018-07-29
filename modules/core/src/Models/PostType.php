@@ -138,7 +138,7 @@ class PostType extends BaseModel
             }
         }
         if($src = $this->getImageSrc($size)) {
-            return '<img '. $attrsText .' class="img-responsive '.$class.'" src="'.$src.'" alt="'. $this->file_name .'">';
+            return '<img '. $attrsText .' class="img-responsive '.$class.'" src="'.$src.'" alt="'. $this->file_name .'" onerror="errorImage(this)">';
         }
         return '<img '. $attrsText .' class="img-responsive '.$class.'" src="/images/default.png" alt="No image">';
     }
@@ -147,22 +147,24 @@ class PostType extends BaseModel
      */
 
     public static function rules($update = false) {
+        $rules = [
+            'created_at' => 'date_format:Y-m-d H:i:s'
+        ];
         if (!$update) {
             $code = currentLocale();
-            return [
-                $code . '.title' => 'required'
-            ];
+            $rules[$code . '.title'] = 'required';
+            return $rules;
         }
-        return [
-            'locale.title' => 'required',
-            'lang' => 'required'
-        ];
+        $rules['locale.title'] = 'required';
+        $rules['lang'] = 'required';
+        return $rules;
     }
 
     public static function getData($type = 'post', $args = []) {
         $opts = [
             'fields' => ['posts.*', 'pd.*', 'file.id as file_id', 'file.url as file_url', 'file.title as file_name'],
             'status' => [AdConst::STT_PUBLISH],
+            'search' => null,
             'orderby' => 'posts.created_at',
             'order' => 'desc',
             'limit' => null,
@@ -213,7 +215,9 @@ class PostType extends BaseModel
         if ($opts['post_format']) {
             $result->where('post_format', $opts['post_format']);
         }
-        
+        if ($opts['search']) {
+            $result->where('pd.title', 'like', '%' . $opts['search'] . '%');
+        }
         if ($opts['status']) {
             if (!is_array($opts['status'])) {
                 $opts['status'] = [$opts['status']];
@@ -228,7 +232,7 @@ class PostType extends BaseModel
             $result->where('is_auth', $opts['is_auth']);
         }
         if ($opts['is_feature']) {
-            $result->where('is_feature', $opts['is_feature']);
+            $result->where('posts.is_feature', $opts['is_feature']);
         }
         if ($opts['exclude']) {
             $result->whereNotIn('posts.id', $opts['exclude']);
@@ -242,6 +246,15 @@ class PostType extends BaseModel
 
         if ($opts['with_cats']) {
             $result->with('cats');
+            $result->leftJoin('post_tax', 'post_tax.post_id', '=', 'posts.id')
+                    ->leftJoin(Tax::getTableName() . ' as cat', function ($join) {
+                        $join->on('post_tax.tax_id', '=', 'cat.id')
+                                ->where('cat.type', '=', 'cat');
+                    })
+                    ->leftJoin('tax_desc as cat_desc', function ($join) {
+                        $join->on('cat.id', '=', 'cat_desc.tax_id')
+                                ->where('cat_desc.lang_code', '=', currentLocale());
+                    });
         }
         if ($opts['with_tags']) {
             $result->with('tags');
@@ -277,10 +290,6 @@ class PostType extends BaseModel
         self::validator($data, self::rules());
 
         $data['author_id'] = auth()->id();
-        if (isset($data['time'])) {
-            $time = $data['time'];
-            $data['created_at'] = date('Y-m-d H:i:s', strtotime($time['year'] . '-' . $time['month'] . '-' . $time['day'] . ' ' . date('H:i:s')));
-        }
         if (isset($data['file_ids']) && $data['file_ids']) {
             $data['thumb_id'] = $data['file_ids'][0];
         }
@@ -351,10 +360,6 @@ class PostType extends BaseModel
         }
         if (isset($data['gallery_ids']) && $data['gallery_ids']) {
             $data['thumb_ids'] = json_encode($data['gallery_ids']);
-        }
-        if (isset($data['time'])) {
-            $time = $data['time'];
-            $data['created_at'] = date('Y-m-d H:i:s', strtotime($time['year'] . '-' . $time['month'] . '-' . $time['day'] . ' ' . date('H:i:s')));
         }
         $hasDel = false;
         if (isset($data['status']) && $data['status'] == AdConst::STT_TRASH) {
@@ -478,5 +483,21 @@ class PostType extends BaseModel
             Session::put($postSessionKey, 1);
             $this->increment('views');
         }
+    }
+
+    public function renderCatNames()
+    {
+        if (!$this->cat_names) {
+            return null;
+        }
+        $catNames = explode(',', $this->cat_names);
+        $html = '';
+        foreach ($catNames as $index => $name) {
+            if ($index > 1) {
+                break;
+            }
+            $html .= '<strong>'. e($name) .'</strong>';
+        }
+        return $html;
     }
 }

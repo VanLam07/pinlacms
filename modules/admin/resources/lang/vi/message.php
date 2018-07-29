@@ -20,7 +20,7 @@ return [
     'login_failed' =>       'Sai email hoặc mật khẩu',
     'na_error' =>           'Có lỗi xảy ra, vui lòng thử lại sau!',
     'no_chat' =>            'Không có cuộc hội thoại nào',
-    'no_item' =>            'Không có mục nào',
+    'no_items' =>            'Không có mục nào',
     'no_notify' =>          'Không có thông báo nào',
     'no_item' =>            'Không có dữ liệu!',
     'not_found_items' =>    'Không tìm thấy mục nào!',

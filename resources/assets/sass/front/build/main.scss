@@ -263,6 +263,9 @@ button {
     margin-bottom: 20px;
     border-bottom: 1px solid #eee;
     padding-bottom: 20px;
+    .post-title {
+        margin-bottom: 3px;
+    }
 }
 .post-title, .post-title a {
     color: $main_cl;
@@ -315,7 +318,21 @@ button {
         margin-bottom: 3px;
     }
 }
+.post-cats {
+    strong {
+        font-size: 0.9rem;
+        margin-right: 5px;
+        display: inline-block;
+        font-weight: 500;
+        padding: 3px 5px;
+        background: $cat_bg;
+        color: #fff;
+    }
+    margin-bottom: 3px;
+    display: inline-block;
+}
 .post-meta {
+    display: inline-block;
     margin-bottom: 5px;
     font-size: 11/$fontz + rem;
     color: $meta_cl;

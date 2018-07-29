@@ -25,6 +25,14 @@ $assetVer = 2.1;
         <link rel="stylesheet" href="/css/font-awesome.min.css">
         <link rel="stylesheet" href="/css/main.css?v={{ $assetVer }}">
         <link rel="stylesheet" href="/css/screen.css?v={{ $assetVer }}">
+
+        <script>
+            function errorImage(image) {
+                image.onerror = '';
+                image.src ='/public/images/default.png';
+                return true;
+            }
+        </script>
         
         @include('front::meta.facebook')
 

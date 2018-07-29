@@ -21,6 +21,9 @@
         
         <div class="media-body">
             <h3 class="post-title"><a href="{{ $postLink }}" title="{{ $post->title }}">{{ $post->title }}</a></h3>
+            <div class="post-cats">
+                {!! $post->renderCatNames() !!}
+            </div>
             <div class="post-meta">
                 @if (isset($postDate))
                     <span class="date"><i class="fa fa-calendar"> {{ $post->created_at->format('Y') }}</i></span>

@@ -20,7 +20,7 @@ class PostController extends BaseController {
 
     public function __construct() {
         parent::__construct();
-        Breadcrumb::add(trans('admin::view.posts'), route('admin::post.index'));
+        Breadcrumb::add(trans('admin::view.posts'), route('admin::post.index', ['status' => AdConst::STT_PUBLISH]));
         $this->model = PostType::class;
     }
 

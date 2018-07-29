@@ -64,35 +64,10 @@ use Admin\Facades\AdConst;
         <div class="row">
             <div class="col-sm-6 form-group">
                 <label>{{trans('admin::view.created_at')}}</label>
-                <div class="time_group">
-                    <div class="t_field">
-                        <span>{{trans('admin::view.day')}}</span>
-                        <select name="time[day]" class="form-control">
-                            {!! rangeOptions(1, 31, date('d')) !!}
-                        </select>
-                    </div>
-                    <div class="t_field">
-                        <span>{{trans('admin::view.month')}}</span>
-                        <select name="time[month]" class="form-control">
-                            {!! rangeOptions(1, 12, date('m')) !!}
-                        </select>
-                    </div>
-                    <div class="t_field">
-                        <span>{{trans('admin::view.year')}}</span>
-                        <select name="time[year]" class="form-control">
-                            {!! rangeOptions(2010, 2030, date('Y')) !!}
-                        </select>
-                    </div>
-                </div>
+                <input type="text" name="created_at" class="form-control date_time_picker">
             </div>
             
             <div class="col-sm-6">
-                <div class="form-group">
-                    <label>
-                        {!! Form::checkbox('is_feature', 1) !!}
-                        {{ trans('admin::view.is_feature') }}
-                    </label>
-                </div>
                 <div class="form-group">
                     <label>{{ trans('admin::view.post_format') }}</label>
                     {!! Form::select('post_format', $listFormats, null, ['class' => 'form-control']) !!}
@@ -103,6 +78,12 @@ use Admin\Facades\AdConst;
     </div>
 
     <div class="col-sm-3">
+        <div class="form-group">
+            <label>
+                {!! Form::checkbox('is_feature', 1) !!}
+                {{ trans('admin::view.is_feature') }}
+            </label>
+        </div>
         
         <div class="form-group thumb_box" >
             <label>{{trans('admin::view.thumbnail')}}</label>

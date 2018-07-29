@@ -12,6 +12,8 @@
         <link rel="stylesheet" href="/css/font-awesome.min.css">
         <link rel="stylesheet" href="/plugins/adminlte/css/AdminLTE.css">
         <link rel="stylesheet" href="/plugins/adminlte/css/skins/_all-skins.css">
+        <link rel="stylesheet" href="/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
+        <link rel="stylesheet" href="/plugins/prism/prism.css">
         
         <link rel="stylesheet" href="/css/filemanager.css">
         <link rel="stylesheet" href="/modules/admin/css/main.css">
@@ -28,6 +30,11 @@
         
         <script>
             var _token = '{{ csrf_token() }}';
+            function errorImage(image) {
+                image.onerror = '';
+                image.src ='/public/images/default.png';
+                return true;
+            }
         </script>
 
         <!-- Google Font -->
@@ -80,6 +87,9 @@
         <script src="/js/bootstrap.min.js"></script>
         <script src="/plugins/adminlte/js/adminlte.min.js"></script>
         <script src="/js/bootbox.min.js"></script>
+        <script src="/js/moment.min.js"></script>
+        <script src="/plugins/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="/plugins/prism/prism.js"></script>
         
         <script src="/modules/admin/js/script.js"></script>
         

@@ -81,9 +81,9 @@
         <!-- search form -->
         <form action="{{ route('admin::search') }}" method="get" class="sidebar-form">
             <div class="input-group">
-                <input type="text" name="key" class="form-control" placeholder="Search...">
+                <input type="text" name="search" class="form-control" value="{{ request()->get('search') }}" placeholder="Search...">
                 <span class="input-group-btn">
-                    <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                    <button type="submit" id="search-btn" class="btn btn-flat">
                         <i class="fa fa-search"></i>
                     </button>
                 </span>

@@ -50,27 +50,11 @@
         <div class="row">
         
             <div class="col-sm-6">
-                <label>{{trans('admin::view.created_at')}}</label>
-                <div class="time_group form-group">
-                    <div class="t_field">
-                        <span>{{trans('admin::view.day')}}</span>
-                        <select name="time[day]" class="form-control">
-                            {!! rangeOptions(1, 31, $item->created_at->format('d')) !!}
-                        </select>
-                    </div>
-                    <div class="t_field">
-                        <span>{{trans('admin::view.month')}}</span>
-                        <select name="time[month]" class="form-control">
-                            {!! rangeOptions(1, 12, $item->created_at->format('m')) !!}
-                        </select>
-                    </div>
-                    <div class="t_field">
-                        <span>{{trans('admin::view.year')}}</span>
-                        <select name="time[year]" class="form-control">
-                            {!! rangeOptions(2010, 2030, $item->created_at->format('Y')) !!}
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label>{{trans('admin::view.created_at')}}</label>
+                    <input type="text" name="created_at" class="form-control date_time_picker" value="{{ $item->created_at }}">
                 </div>
+                
                 <div class="form-group">
                     <label>{{trans('admin::view.author')}}</label>
                     {!! Form::select('author_id', $users, $item->author_id, ['class' => 'form-control']) !!}
@@ -78,12 +62,6 @@
             </div>
 
             <div class="form-group col-sm-6">
-                <div class="form-group">
-                    <label>
-                        {!! Form::checkbox('is_feature', 1, $item->is_feature) !!}
-                        {{ trans('admin::view.is_feature') }}
-                    </label>
-                </div>
                 <div class="form-group">
                     <label>{{ trans('admin::view.post_format') }}</label>
                     {!! Form::select('post_format', $listFormats, $item->post_format, ['class' => 'form-control']) !!}
@@ -94,6 +72,13 @@
 
     </div>
     <div class="col-sm-3">
+        
+        <div class="form-group">
+            <label>
+                {!! Form::checkbox('is_feature', 1, $item->is_feature) !!}
+                {{ trans('admin::view.is_feature') }}
+            </label>
+        </div>
 
         <div class="form-group thumb_box" >
             <label>{{trans('admin::view.thumbnail')}}</label>

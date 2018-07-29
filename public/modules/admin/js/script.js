@@ -184,6 +184,20 @@
         }
         $('#selected_files').html(html);
     });
+
+    $('.date_picker').datetimepicker({
+        viewMode: 'days',
+        format: 'YYYY-MM-DD'
+    });
+
+    $('.time_picker').datetimepicker({
+        format: 'HH:mm'
+    });
+
+    $('.date_time_picker').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm:ss'
+    });
     
 })(jQuery);
+
 

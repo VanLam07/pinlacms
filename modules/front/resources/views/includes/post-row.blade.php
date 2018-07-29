@@ -14,7 +14,11 @@ $postLink = $post->getLink();
 
         <div class="post-content col col-sm-7">
             <h3 class="post-title"><a href="{{ $postLink }}" title="{{ $post->title }}">{{ $post->title }}</a></h3>
-    
+            
+            <div class="post-cats">
+                {!! $post->renderCatNames() !!}
+            </div>
+            
             <div class="post-meta">
                 <span class="date"><i class="fa fa-calendar"></i> {{ $post->created_at->format('d-m-Y') }}</span>
                 <span class="author"><i class="fa fa-user"></i> {{ $post->getAuthorName() }}</span>
@@ -23,7 +27,7 @@ $postLink = $post->getLink();
 
             <div class="post-excerpt">
                 {!! $post->getExcerpt(25) !!}
-            </div> 
+            </div>
             <a href="{{ $postLink }}" title="{{ $post->title }}" class="read-more-btn">{{ trans('front::view.read_more') }}</a>
         </div>
    </div>

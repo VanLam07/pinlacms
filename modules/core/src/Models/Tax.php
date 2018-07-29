@@ -100,6 +100,7 @@ class Tax extends BaseModel
             'orderby' => 'td.name',
             'order' => 'asc',
             'status' => [AdConst::STT_PUBLISH],
+            'search' => null,
             'limit' => null,
             'per_page' => AdConst::PER_PAGE,
             'exclude_key' => 'taxs.id',
@@ -117,6 +118,9 @@ class Tax extends BaseModel
                 ->whereNotNull('td.name');
         if ($opts['exclude']) {
             $result->whereNotIn($opts['exclude_key'], $opts['exclude']);
+        }
+        if ($opts['search']) {
+            $result->where('td.name', 'like', '%' . $opts['search'] . '%');
         }
         if ($opts['status']) {
             if (!is_array($opts['status'])) {
