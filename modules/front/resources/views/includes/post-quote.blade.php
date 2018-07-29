@@ -14,10 +14,10 @@ $postLink = $post->getLink();
     </div>
     <div class="post-foot">
         <div class="row">
-            <div class="col-sm-7">
+            <div class="col-7">
             @include('front::meta.social-share')
             </div>
-            <div class="col-sm-5 text-right">
+            <div class="col text-right">
                 <span><i class="fa fa-eye"></i> {{ $post->views }}</span>
             </div>
         </div>
