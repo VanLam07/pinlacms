@@ -24,6 +24,10 @@ if ($tax->isTag()) {
     <span class="text-uppercase">{{ $pageTitle . $tax->name }}</span>
 </h2>
 
+@if ($tax->description)
+<p class="tax-desc mgb-30">{{ $tax->description }}</p>
+@endif
+
 @if (!$posts->isEmpty())
 <?php
 $firstPost = $posts->first();

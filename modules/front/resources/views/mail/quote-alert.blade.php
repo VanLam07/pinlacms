@@ -3,10 +3,7 @@
 @section('content')
 
 <p>Xin chào <strong>{{ $dearName }}</strong>,</p>
-
-<p>&nbsp;</p>
-
-<p>Câu nói của ngày hôm nay là:</p>
+<p>Câu nói của ngày hôm nay:</p>
 
 <p>&nbsp;</p>
 

@@ -5,6 +5,7 @@ Route::get('/pinlaz1703/clear-cache', function() {
 //    Artisan::call('db:seed');
     Artisan::call('config:cache');
     Artisan::call('cache:clear');
+    return 'Clear successful';
 });
 
 Route::group(['prefix' => 'auth'], function () {
