@@ -1,8 +1,7 @@
 <?php
-use App\Models\Subscribe;
 use Admin\Facades\AdConst;
 
-$subs = Subscribe::where('ip', request()->ip())->orderBy('created_at', 'desc')->first();
+$subs = null;
 ?>
 
 @extends('front::layouts.default')
