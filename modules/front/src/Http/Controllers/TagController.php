@@ -30,7 +30,7 @@ class TagController extends Controller
         }
         $tblPrefix = DB::getTablePrefix();
         $posts = PostType::getData('post', [
-            'fields' => ['posts.id', 'posts.author_id', 'posts.created_at', 'posts.thumb_id',
+            'fields' => ['posts.id', 'posts.author_id', 'posts.created_at', 'posts.thumb_id', 'posts.post_format',
                 'posts.post_type', 'posts.views', 'pd.title', 'pd.slug', 'pd.excerpt', 'pd.content',
                 'file.id as file_id', 'file.url as file_url', 'file.title as file_name',
                 'author.name as author_name',
