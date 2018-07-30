@@ -28,7 +28,10 @@
     });
     
     $('body').on('submit', 'form.form-confirm', function (e) {
-        e.preventDefault();
+        if ($('.check_item:checked').length < 1) {
+            bootbox.alert('None item checked!');
+            return false;
+        }
         var button = $(this).find('button[type="submit"]');
         var orginalForm = this;
         var form = $(this);
@@ -41,10 +44,8 @@
                 if (result) {
                     if (form.find('.checked_ids').length > 0) {
                         var inputHtml = '';
-                        $('.check_item').each(function () {
-                            if ($(this).is(':checked')) {
-                                inputHtml += '<input type="hidden" name="item_ids[]" value="'+ $(this).val() +'">'
-                            }
+                        $('.check_item:checked').each(function () {
+                            inputHtml += '<input type="hidden" name="item_ids[]" value="'+ $(this).val() +'">'
                         });
                         form.find('.checked_ids').html(inputHtml);
                     }
@@ -52,6 +53,7 @@
                }
             });
         }
+        return false;
     });
     
     $('body').on('click', '.check_all', function () {
