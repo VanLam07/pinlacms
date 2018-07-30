@@ -118,6 +118,13 @@ class MenuComposer {
                 'url' => route('admin::contact.index', ['status' => AdConst::STT_PUBLISH]), 
                 'active' => 'contacts',
                 'cap' => 'manage_contacts', 
+                'icon' => 'fa-send'
+            ],
+            [
+                'name' => trans('admin::view.Subscribes'), 
+                'url' => route('admin::subs.index'), 
+                'active' => 'subscribes',
+                'cap' => 'manage_subscribes', 
                 'icon' => 'fa-envelope-o'
             ],
             [

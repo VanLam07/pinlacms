@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Admin\Facades\AdConst;
 use App\Exceptions\PlException;
-use Exception;
 use Validator;
 use PlOption;
 
@@ -183,7 +182,7 @@ class BaseModel extends Model {
 
         $item_ids = $request->input('item_ids');
         if (!$item_ids) {
-            throw new Exception(trans('admin::message.no_item'));
+            throw new PlException(trans('admin::message.no_item'));
         }
         
         $action = $request->input('action');

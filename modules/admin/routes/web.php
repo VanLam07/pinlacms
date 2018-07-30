@@ -99,6 +99,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/contacts/actions', ['as' => 'contact.actions', 'uses' => 'ContactController@multiActions']);
     //visitor
     Route::get('/visitors', ['as' => 'visitor.index', 'uses' => 'VisitorController@index']);
+    //Subscribes
+    Route::get('/subscribes', ['as' => 'subs.index', 'uses' => 'SubscribeController@index']);
 //    
 //    //    API
 //    Route::controller('/api', 'Api\ApiController');

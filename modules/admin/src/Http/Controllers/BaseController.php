@@ -5,7 +5,6 @@ namespace Admin\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Exceptions\PlException;
-use Exception;
 use DB;
 use Breadcrumb;
 

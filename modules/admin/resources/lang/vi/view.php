@@ -243,4 +243,5 @@ return [
     'Date decrement' =>             'Ngày giảm dần',
     'post_format' =>                'Loại bài viết',
     'search_for' =>                 'Tìm kiếm cho ":search"',
+    'Subscribes' =>                 'Subscribes',
 ];
