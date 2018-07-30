@@ -17,9 +17,18 @@ class Subscribe extends BaseModel
     public static function cronSendMail()
     {
         $timeNow = Carbon::now();
+        $partTime = Carbon::now()->subHours(6);
         $collect = self::select('email', 'name')
-                ->where(DB::raw('HOUR(time)'), $timeNow->hour)
-                ->where(DB::raw('MINUTE(time)'), $timeNow->minute)
+                ->where(function ($query) use ($timeNow, $partTime) {
+                    $query->where(function ($query1) use ($timeNow) {
+                            $query1->where(DB::raw('HOUR(time)'), $timeNow->hour)
+                                ->where(DB::raw('MINUTE(time)'), $timeNow->minute);
+                    })
+                    ->orWhere(function ($query2) use ($partTime) {
+                            $query2->where(DB::raw('HOUR(time)'), $partTime->hour)
+                                ->where(DB::raw('MINUTE(time)'), $partTime->minute);
+                    });
+                })
                 ->where('type', AdConst::FORMAT_QUOTE)
                 ->get();
 
