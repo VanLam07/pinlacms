@@ -10,6 +10,7 @@
 
     <?php
     $cats = PlTax::listCategories(1);
+    $currUrl = request()->url();
     ?>
 
     @if (!$cats->isEmpty())
@@ -19,7 +20,8 @@
     <div class="wrap">
         <ul class="list-categories">
             @foreach ($cats as $cat)
-            <li><a href="{{ $cat->getlink() }}" title="{{ $cat->name }}">{{ $cat->name }}</a></li>
+            <?php $catLink = $cat->getlink(); ?>
+            <li {!! $currUrl == $catLink ? 'class="active"' : null !!}><a href="{{ $catLink }}" title="{{ $cat->name }}">{{ $cat->name }}</a></li>
             @endforeach
         </ul>
     </div>
@@ -33,7 +35,8 @@
         <h3 class="sub-title bd-title"><span class="text-uppercase">Tags</span></h3>
         <div class="tags-list">
             @foreach ($listTags as $tag)
-            <a href="{{ $tag->getLink() }}" title="{{ $tag->name }}">{{ $tag->name }}</a>
+            <?php $tagLink = $tag->getLink('tag'); ?>
+            <a {!! $currUrl == $tagLink ? 'class="active"' : null !!} href="{{ $tagLink }}" title="{{ $tag->name }}">{{ $tag->name }}</a>
             @endforeach
         </div>
     </div>

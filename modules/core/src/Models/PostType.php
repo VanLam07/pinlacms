@@ -245,7 +245,6 @@ class PostType extends BaseModel
                 ->orderBy($opts['orderby'], $opts['order']);
 
         if ($opts['with_cats']) {
-            $result->with('cats');
             $result->leftJoin('post_tax', 'post_tax.post_id', '=', 'posts.id')
                     ->leftJoin(Tax::getTableName() . ' as cat', function ($join) {
                         $join->on('post_tax.tax_id', '=', 'cat.id')
@@ -254,6 +253,17 @@ class PostType extends BaseModel
                     ->leftJoin('tax_desc as cat_desc', function ($join) {
                         $join->on('cat.id', '=', 'cat_desc.tax_id')
                                 ->where('cat_desc.lang_code', '=', currentLocale());
+                    });
+        }
+        if ($opts['with_tags']) {
+            $result->leftJoin('post_tax', 'post_tax.post_id', '=', 'posts.id')
+                    ->leftJoin(Tax::getTableName() . ' as tag', function ($join) {
+                        $join->on('post_tax.tax_id', '=', 'tag.id')
+                                ->where('tag.type', '=', 'tag');
+                    })
+                    ->leftJoin('tax_desc as tag_desc', function ($join) {
+                        $join->on('tag.id', '=', 'tag_desc.tax_id')
+                                ->where('tag_desc.lang_code', '=', currentLocale());
                     });
         }
         if ($opts['with_tags']) {
@@ -485,12 +495,12 @@ class PostType extends BaseModel
         }
     }
 
-    public function renderCatNames()
+    public function renderCatNames($field = 'cat_names')
     {
-        if (!$this->cat_names) {
+        if (!$this->{$field}) {
             return null;
         }
-        $catNames = explode(',', $this->cat_names);
+        $catNames = explode(',', $this->{$field});
         $html = '';
         foreach ($catNames as $index => $strName) {
             $arrName = explode('|', $strName);

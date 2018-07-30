@@ -598,10 +598,10 @@ ul.related-posts {
         }
         a {
             color: $main_cl;
-            &:hover {
-                color: $hover_cl;
-            }
         }
+    }
+    li.active a, li a:hover {
+        color: $hover_cl;
     }
 }
 
@@ -653,9 +653,9 @@ ul.related-posts {
         padding: 4px 10px;
         background: $tag_bg;
         color: #fff;
-        &:hover {
-            background: $hover_cl;
-        }
+    }
+    a.active, a:hover {
+        background: $hover_cl;
     }
 }
 
