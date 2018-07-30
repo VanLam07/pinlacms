@@ -266,13 +266,9 @@ class PostType extends BaseModel
                                 ->where('tag_desc.lang_code', '=', currentLocale());
                     });
         }
-        if ($opts['with_tags']) {
-            $result->with('tags');
-        }
         if ($opts['with_thumb']) {
             $result->leftJoin(File::getTableName() . ' as file', 'posts.thumb_id', '=', 'file.id');
         }
-
         if ($opts['limit']) {
             return $result->take($opts['limit'])->get();
         }
@@ -281,7 +277,7 @@ class PostType extends BaseModel
         }
         return $result->get();
     }
-    
+
     public function getRelated($number = 5, $type = 'post')
     {
         $cats = $this->cats->pluck('id')->toArray();
