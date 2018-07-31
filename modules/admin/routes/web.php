@@ -101,7 +101,8 @@ Route::group(['middleware' => 'auth'], function () {
     //visitor
     Route::get('/visitors', ['as' => 'visitor.index', 'uses' => 'VisitorController@index']);
     //Subscribes
-    Route::get('/subscribes', ['as' => 'subs.index', 'uses' => 'SubscribeController@index']);
+    Route::resource('subscribes', 'SubscribeController', rsNames('subs'));
+    Route::post('/subscribes/actions', ['as' => 'subs.actions', 'uses' => 'SubscribeController@multiActions']);
 //    
 //    //    API
 //    Route::controller('/api', 'Api\ApiController');

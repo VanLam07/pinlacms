@@ -7,12 +7,36 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Admin\Facades\AdConst;
 use App\Models\PostType;
+use App\Exceptions\PlException;
 use Mail;
 
 class Subscribe extends BaseModel
 {
     protected $table = 'subscribes';
     protected $fillable = ['email', 'name', 'ip', 'type', 'time'];
+    
+    public static function isUseSoftDelete()
+    {
+        return false;
+    }
+    
+    public static function validator(array $attrs, array $rule = [], array $message = []) {
+        $valid = Validator::make($attrs, 
+                $rule ? $rule : self::rules(), 
+                $message);
+        if ($valid->fails()) {
+            throw new PlException($valid->messages(), 422);
+        }
+        return true;
+    }
+    
+    public static function rules($id = null)
+    {
+        return [
+            'name' => 'required',
+            'email' => 'required|email|unique:' . self::getTableName() . ',email' . ($id ? ',' . $id : '')
+        ];
+    }
 
     public static function cronSendMail()
     {

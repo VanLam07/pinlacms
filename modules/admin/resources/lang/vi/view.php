@@ -244,4 +244,9 @@ return [
     'post_format' =>                'Loại bài viết',
     'search_for' =>                 'Tìm kiếm cho ":search"',
     'Subscribes' =>                 'Subscribes',
+    'fullname' =>                   'Họ tên',
+    'time_receive' =>               'Giờ nhận',
+    'subscribed_at' =>              'Thời gian đăng ký',
+    'subscribe' =>                  'Đăng ký nhận tin',
+    'type_subscribe' =>             'Loại đăng ký',
 ];

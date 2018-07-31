@@ -68,16 +68,27 @@ class PageController extends Controller
     {
         $data = $request->except('_token');
         $valid = Validator::make($data, [
-            'email' => 'required|email|unique:' . Subscribe::getTableName() . ',email',
+            'email' => 'required|email',
             'name' => 'required',
         ]);
         if ($valid->fails()) {
             return redirect()->back()->withErrors($valid->errors());
         }
+        $subs = Subscribe::where('email', $data['email'])->first();
         $data['ip'] = $request->ip();
-        $data['type'] = AdConst::FORMAT_QUOTE;
-        Subscribe::create($data);
-        return redirect()->back()->with('succ_mess', trans('front::message.subscribed_successful'));
+        if (!isset($data['time']) || !$data['time']) {
+            $data['time'] = '08:00:00';
+        }
+        if (!$subs) {
+            $data['type'] = AdConst::FORMAT_QUOTE;
+            $subs = Subscribe::create($data);
+            $message = trans('front::message.subscribed_successful');
+        } else {
+            $subs->update($data);
+            $message = trans('front::message.subscribe_infor_updated');
+        }
+        
+        return redirect()->back()->with('succ_mess', $message);
     }
 
     public function confirmRegister()
