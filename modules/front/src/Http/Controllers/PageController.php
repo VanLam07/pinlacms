@@ -76,6 +76,7 @@ class PageController extends Controller
         }
         $subs = Subscribe::where('email', $data['email'])->first();
         $data['ip'] = $request->ip();
+        $data['status'] = 1;
         if (!isset($data['time']) || !$data['time']) {
             $data['time'] = '08:00:00';
         }
