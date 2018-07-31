@@ -30,6 +30,7 @@ $actionCaps = [];
                 <th>{{ trans('admin::view.fullname') }} {!! linkOrder('name') !!}</th>
                 <th>{{ trans('admin::view.email') }} {!! linkOrder('email') !!}</th>
                 <th>{{ trans('admin::view.time_receive') }} {!! linkOrder('time') !!}</th>
+                <th>{{ trans('admin::view.status') }} {!! linkOrder('status') !!}</th>
                 <th>{{ trans('admin::view.subscribed_at') }} {!! linkOrder('created_at') !!}</th>
                 <th></th>
             </tr>
@@ -49,6 +50,7 @@ $actionCaps = [];
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
             </tr>
             @if (!$items->isEmpty())
                 <?php
@@ -64,6 +66,7 @@ $actionCaps = [];
                     <td>{{ $item->name }}</td>
                     <td>{{ $item->email }}</td>
                     <td>{{ $item->time }}</td>
+                    <td>{{ $item->getStatusLabel() }}</td>
                     <td>{{ $item->created_at }}</td>
                     <td>
                         <a href="{{ route('admin::subs.edit', ['id' => $item->id]) }}"

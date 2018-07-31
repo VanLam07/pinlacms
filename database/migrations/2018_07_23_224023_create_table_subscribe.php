@@ -25,6 +25,8 @@ class CreateTableSubscribe extends Migration
             $table->string('ip');
             $table->tinyInteger('type')->default(1);
             $table->time('time')->nullable();
+            $table->string('code', 64)->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->unique('email');
         });

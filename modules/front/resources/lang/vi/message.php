@@ -13,5 +13,6 @@ return [
     'succ_register' =>              'Đăng ký thành công',
     'update_successful' =>          'Cập nhật thành công!',
     'subscribed_successful' =>      'Đăng ký thành công, hãy chờ đón những câu nói thật hay mỗi ngày nhé!',
-    'subscribe_infor_updated' =>    'Email của bạn đã được đăng ký trước đó, và giờ đã được cập nhật!'
+    'subscribe_infor_updated' =>    'Email của bạn đã được đăng ký trước đó, và giờ đã được cập nhật!',
+    'unsubscribe_successful' =>     'Bạn đã hủy đăng ký nhận bản tin thành công',
 ];

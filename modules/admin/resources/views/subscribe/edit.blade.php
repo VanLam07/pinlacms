@@ -39,6 +39,11 @@ $listTypes = AdConst::listPostFormats();
             {!! Form::select('type', $listTypes, old('type') ? old('type') : $item->type, ['class' => 'form-control']) !!}
         </div>
         
+        <div class="form-group">
+            <label>{{ trans('admin::view.status') }}</label>
+            {!! Form::select('status', [1 => 'Enable', 2 => 'Disable'], old('status') ? old('status') : $item->status, ['class' => 'form-control']) !!}
+        </div>
+        
         <a href="{{ route('admin::subs.index') }}" class="btn btn-warning"><i class="fa fa-long-arrow-left"></i> {{ trans('admin::view.back') }}</a>
         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> {{ trans('admin::view.save') }}</button>
         

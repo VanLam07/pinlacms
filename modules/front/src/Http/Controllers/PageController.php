@@ -95,4 +95,15 @@ class PageController extends Controller
     {
         
     }
+    
+    public function unSubscribe($token, $type = null)
+    {
+        $subs = Subscribe::where('code', $token)
+                ->where('type', $type)
+                ->first();
+        if ($subs) {
+            $subs->update(['status' => 2]);
+        }
+        return view('front::mail.unsubscribe', compact('subs'));
+    }
 }

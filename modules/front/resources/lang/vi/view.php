@@ -51,5 +51,6 @@ return [
     'time_receive' =>           'Khoảng thời gian muốn nhận',
     'Register' =>               'Đăng ký',
     'quote_mail_alert_subject' => 'Mỗi ngày một câu nói tiếng anh ngày :date',
+    'unsubscribe' =>            'Hủy đăng ký',
 ]; 
 
