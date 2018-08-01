@@ -97,14 +97,30 @@ class PageController extends Controller
         
     }
     
-    public function unSubscribe($token, $type = null)
+    public function confirmUnsubscribe($token, $type = null)
     {
         $subs = Subscribe::where('code', $token)
                 ->where('type', $type)
                 ->first();
-        if ($subs) {
-            $subs->update(['status' => 2]);
-        }
         return view('front::mail.unsubscribe', compact('subs'));
+    }
+    
+    public function unSubscribe(Request $request)
+    {
+        $valid = Validator::make($request->all(), [
+            'code' => 'required',
+            'type' => 'required'
+        ]);
+        if ($valid->fails()) {
+            return redirect()->back()->withInput()->with('error_mess', trans('front::message.not_found_unsubscribe'));
+        }
+        $subs = Subscribe::where('code', $request->get('code'))
+                ->where('type', $request->get('type'))
+                ->first();
+        if (!$subs) {
+            return redirect()->back()->withInput()->with('error_mess', trans('front::message.not_found_unsubscribe'));
+        }
+        $subs->update(['status' => 2]);
+        return redirect()->back()->withInput()->with('succ_mess', trans('front::message.unsubscribe_successful'));
     }
 }

@@ -102,7 +102,7 @@ class Subscribe extends BaseModel
                 'dearName' => $item->name,
                 'content' => $quote->content,
                 'detailLink' => route('front::post.view', ['id' => $quote->id, 'slug' => $quote->slug]),
-                'unsubsLink' => route('front::unsubscribe', ['token' => $item->code, 'type' => $item->type])
+                'unsubsLink' => route('front::unsubs.confirm', ['token' => $item->code, 'type' => $item->type])
             ];
             Mail::send('front::mail.quote-alert', $dataMail, function ($mail) use ($item, $timeNow) {
                 $mail->to($item->email)
