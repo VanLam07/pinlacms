@@ -13,6 +13,7 @@ use App\Models\Tax;
 use App\Models\PostType;
 use Illuminate\Support\Facades\DB;
 use Front\Helper\FtConst;
+use Admin\Facades\AdConst;
 
 /**
  * Description of TagController
@@ -25,7 +26,7 @@ class TagController extends Controller
     public function view($slug, $id)
     {
         $tax = Tax::findByLang($id);
-        if (!$tax) {
+        if (!$tax || $tax->status != AdConst::STT_PUBLISH) {
             abort(404);
         }
         $tblPrefix = DB::getTablePrefix();

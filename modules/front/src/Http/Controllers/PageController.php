@@ -28,7 +28,7 @@ class PageController extends Controller
     {
         $page = PostType::findByLang($id);
         
-        if (!$page) {
+        if (!$page || $page->status != AdConst::STT_PUBLISH) {
             abort(404);
         }
         $viewPage = 'front::page';

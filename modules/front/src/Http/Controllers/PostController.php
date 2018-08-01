@@ -6,6 +6,7 @@ use Front\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use App\Models\PostType;
 use App\Models\MailNotify;
+use Admin\Facades\AdConst;
 use Validator;
 use Carbon\Carbon;
 use Breadcrumb;
@@ -15,10 +16,10 @@ class PostController extends BaseController
     public function view($slug, $id)
     {
         $post = PostType::findByLang($id);
-        $post->incrementView();
-        if (!$post) {
+        if (!$post || $post->status != AdConst::STT_PUBLISH) {
             abort(404);
         }
+        $post->incrementView();
         $firstCat = $post->getCats()->first();
         if ($firstCat) {
             Breadcrumb::add($firstCat->name, $firstCat->getLink());

@@ -12,6 +12,7 @@ use Front\Http\Controllers\BaseController;
 use App\Models\Tax;
 use App\Models\PostType;
 use Front\Helper\FtConst;
+use Admin\Facades\AdConst;
 use Breadcrumb;
 
 /**
@@ -25,7 +26,7 @@ class CatController extends BaseController
     public function view($slug, $id)
     {
         $tax = Tax::findByLang($id);
-        if (!$tax) {
+        if (!$tax || $tax->status != AdConst::STT_PUBLISH) {
             abort(404);
         }
         Breadcrumb::add($tax->name, $tax->getLink());
