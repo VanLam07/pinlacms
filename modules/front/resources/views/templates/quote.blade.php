@@ -71,7 +71,7 @@ $subs = null;
     </div>
     
     <?php
-    $posts = PlPost::getQuotes();
+    $posts = PlPost::getQuotes(12);
     ?>
     @if (!$posts->isEmpty())
     <div class="posts">
