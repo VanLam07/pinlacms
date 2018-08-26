@@ -1,5 +1,13 @@
 @extends('front::layouts.mail')
 
+@section('head')
+<style>
+    #mail_content h1 {
+        line-height: 30px!important;
+    }
+</style>
+@stop
+
 @section('content')
 
 <p>Xin chào <strong>{{ $dearName }}</strong>,</p>
@@ -7,7 +15,7 @@
 
 <p>&nbsp;</p>
 
-<div style="margin-bottom: 20px; line-height: 22px;">
+<div style="margin-bottom: 20px; line-height: 22px;" id="mail_content">
     {!! $content !!}
 </div>
 
@@ -18,8 +26,6 @@
 </div>
 
 <p>&nbsp;</p>
-
-<p>Không muốn tiếp tục nhận những email này, vui lòng <a href="{{ $unsubsLink }}">Hủy đăng ký</a></p>
 
 @stop
 
