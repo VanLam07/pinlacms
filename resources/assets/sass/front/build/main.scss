@@ -870,6 +870,19 @@ ul.related-posts {
     border: 1px solid #ddd;
 }
 
+#files-modal {
+    .files-frame {
+        width: 100%;
+        height: 75vh;
+    }
+    .modal-header {
+        display: block;
+    }
+    .modal-dialog.modal-lg {
+        max-width: 100%!important;
+    }
+}
+
 .footer-social {
     .socials-list {
         a {

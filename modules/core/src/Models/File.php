@@ -105,6 +105,18 @@ class File extends BaseModel
         if ($opts['filters']) {
             self::filterData($result, $opts['filters']);
         }
+
+        //permission
+        $currUser = auth()->user();
+        $cap = 'view_file';
+        if ($currUser->isCapOther($cap)) {
+            //get all
+        } elseif ($currUser->isCapSelf($cap)) {
+            $result->where('author_id', $currUser->id);
+        } else {
+            abort(403);
+        }
+
         $result->orderby($opts['orderby'], $opts['order']);
         
         if($opts['per_page'] == -1){

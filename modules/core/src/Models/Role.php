@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\Session;
+use Admin\Facades\AdConst;
 
 class Role extends BaseModel {
 
@@ -77,12 +77,8 @@ class Role extends BaseModel {
                     $roleCaps[$cap->name] = $cap->pivot->level;
                 }
             }
-            $user = auth()->user();
-            if ($user) {
-                $sessionKey = 'user_cap_'. $user->name .'_'.sha1($user->id);
-                Session::forget($sessionKey);
-            }
         }
+        AdConst::forgetAllUserCaps();
         if ($roleCaps) {
             $this->list_caps = serialize($roleCaps);
         } else {

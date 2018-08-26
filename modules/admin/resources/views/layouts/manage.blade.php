@@ -91,6 +91,7 @@
         <script src="/plugins/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
         <script src="/plugins/prism/prism.js"></script>
         
+        <script src="/modules/admin/js/file_script.js"></script>
         <script src="/modules/admin/js/script.js"></script>
         
         @yield('foot')

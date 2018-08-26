@@ -103,7 +103,19 @@ Route::group(['middleware' => 'auth'], function () {
     //Subscribes
     Route::resource('subscribes', 'SubscribeController', rsNames('subs'));
     Route::post('/subscribes/actions', ['as' => 'subs.actions', 'uses' => 'SubscribeController@multiActions']);
-//    
-//    //    API
-//    Route::controller('/api', 'Api\ApiController');
+    
+    //API
+    Route::group([
+        'prefix' => 'api',
+        'as' => 'api.',
+        'namespace' => 'Api'
+    ], function () {
+        Route::any('/ajax-action', ['as' => 'ajax_action', 'uses' => 'AjaxController@action']);
+
+        Route::get('/posts', 'ApiController@getPosts')->name('get_posts');
+        Route::get('/pages', 'ApiController@getPages')->name('get_pages');
+        Route::get('/cats', 'ApiController@getCats')->name('get_cats');
+        Route::get('/albums', 'ApiController@getAlbums')->name('get_albums');
+        Route::get('/files', 'ApiController@getFiles')->name('get_files');
+    });
 });

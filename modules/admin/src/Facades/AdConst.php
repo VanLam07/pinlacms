@@ -3,6 +3,7 @@
 namespace Admin\Facades;
 
 use Storage;
+use Session;
 
 class AdConst {
     
@@ -19,6 +20,7 @@ class AdConst {
     const CAP_NONE = 0;
     const CAP_SELF = 1;
     const CAP_OTHER = 2;
+    const KEY_USER_CAPS = 'user_caps';
     /*
      * status
      */
@@ -93,5 +95,43 @@ class AdConst {
     {
         $idx = array_rand(self::BG_COLOURS);
         return self::BG_COLOURS[$idx];
+    }
+
+    public static function putUserCaps($user = null)
+    {
+        if (!$user) {
+            $user = auth()->user();
+        }
+        $listUserCaps = Session::get(self::KEY_USER_CAPS);
+        if (!$listUserCaps) {
+            $listUserCaps = [];
+        }
+        if (!isset($listUserCaps[$user->id])) {
+            $listUserCaps[$user->id] = [];
+        }
+        $listUserCaps[$user->id] = $user->getDBCaps();
+        Session::put(self::KEY_USER_CAPS, $listUserCaps);
+    }
+    
+    public static function getUserCaps($user = null)
+    {
+        if (!$user) {
+            $user = auth()->user();
+        }
+        $listUserCaps = Session::get(self::KEY_USER_CAPS);
+        if (!$listUserCaps) {
+            $listUserCaps = [];
+        }
+        if (isset($listUserCaps[$user->id])) {
+            return $listUserCaps[$user->id];
+        }
+        $listUserCaps[$user->id] = $user->getDBCaps();
+        Session::put(self::KEY_USER_CAPS, $listUserCaps);
+        return $listUserCaps[$user->id];
+    }
+    
+    public static function forgetAllUserCaps()
+    {
+        Session::forget(self::KEY_USER_CAPS);
     }
 }

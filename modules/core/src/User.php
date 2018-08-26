@@ -35,7 +35,7 @@ class User extends Authenticatable
     }
 
     public function getSessionKey() {
-        return 'user_cap_'.$this->name.'_'.sha1($this->id);
+        return 'user_cap_'.$this->slug.'_'.sha1($this->id);
     }
     
     public static function rules($id = null) {
@@ -58,12 +58,11 @@ class User extends Authenticatable
     }
     
     public function caps(){
-        $userKey = $this->getSessionKey();
-        
-        if (Session::has($userKey) && $caps = Session::get($userKey)) {
-            return unserialize($caps);
-        }
-        
+        return AdConst::getUserCaps($this);
+    }
+    
+    public function getDBCaps()
+    {
         $roles = $this->roles;
         $caps = [];
         if ($roles->isEmpty()) {
@@ -84,8 +83,6 @@ class User extends Authenticatable
                 }
             }
         }
-        Session::put($userKey, serialize($caps));
-        
         return $caps;
     }
     
@@ -289,4 +286,22 @@ class User extends Authenticatable
 //        }
 //        $this->attributes['slug'] = $slug;
 //    }
+    
+    public function isCapSelf($cap)
+    {
+        $caps = $this->caps();
+        if (!isset($caps[$cap])) {
+            return false;
+        }
+        return in_array($caps[$cap], [AdConst::CAP_OTHER, AdConst::CAP_SELF]);
+    }
+
+    public function isCapOther($cap)
+    {
+        $caps = $this->caps();
+        if (!isset($caps[$cap])) {
+            return false;
+        }
+        return $caps[$cap] == AdConst::CAP_OTHER;
+    }
 }

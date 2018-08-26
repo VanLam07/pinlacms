@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\PostType;
 use App\Models\Tax;
-use App\Models\File;
+use App\Models\File as FileModel;
 
 class ApiController extends Controller {
 

@@ -2,6 +2,10 @@
 
 @section('title', trans('admin::view.account_info'))
 
+@section('head')
+<link rel="stylesheet" href="/css/filemanager.css">
+@stop
+
 @section('content_full')
 
 <?php
@@ -60,7 +64,7 @@ $genderList = [
                     </div>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-default btn-files-modal">
+                    <button type="button" class="btn btn-default btn-files-modal" data-href="{{ route('admin::file.dialog', ['thumb_size' => 1]) }}">
                         {{ trans('admin::view.add_image') }}
                     </button>
                 </div>
@@ -109,6 +113,10 @@ $genderList = [
 @stop
 
 @section('foot')
+
+@include('admin::file.manager')
+
+<script src="/modules/admin/js/file_script.js"></script>
 
 @stop
 
