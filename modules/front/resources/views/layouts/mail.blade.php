@@ -14,10 +14,12 @@ and open the template in the editor.
     <body>
         @yield('content')
         
+        @if (isset($unsubsLink))
         <hr />
         
         <p style="font-size: 13px;">
             Thực sự không muốn như thế này đâu, nhưng nễu lỡ không thích rồi thì đừng vui lòng mà hãy một chút do dự bấn nút này nhé! <a href="{{ $unsubsLink }}">Hủy đăng ký</a>
         </p>
+        @endif
     </body>
 </html>
