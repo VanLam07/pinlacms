@@ -89,7 +89,7 @@ if (!isset($word)) {
     
     <h3 class="page-title center-title mgb-20"><span>{{ trans('dict::view.list_sentences') }}</span></h3>
     
-    @if (!$sentences->isEmpty())
+    @if (isset($sentences) && !$sentences->isEmpty())
     <div class="comment-body mgb-30">
         <ul class="comment-lists">
         @foreach($sentences as $sentence)
