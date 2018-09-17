@@ -17,4 +17,5 @@ return [
     'unsubscribe_successful' =>     'Bạn đã hủy đăng ký nhận bản tin thành công',
     'confirm_unsubscribe' =>        'Bạn chắc chắn muốn hủy đăng ký?',
     'not_found_unsubscribe' =>      'Không tìm thấy thông tin đăng ký hoặc bạn chưa đăng ký nhận bản tin!',
+    'subscribed_dict_successful' => 'Đăng ký thành công, tôi sẽ không quên nhắc nhở bạn đâu!',
 ];

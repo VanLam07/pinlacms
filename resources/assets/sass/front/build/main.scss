@@ -229,6 +229,27 @@ button {
     max-width: 100%;
     height: auto;
 }
+.text-desc {
+    font-size: 0.9rem;
+    color: #8c8c8c;
+}
+
+.word-box {
+    margin-bottom: 20px;
+    .main-word {
+        font-size: 2.5rem;
+        font-weight: 600;
+    }
+    .word-desc {
+        span, a {
+            display: inline-block;
+            padding: 1px 8px;
+            background: $top_head_cl;
+            color: #fff;
+            @include border-radius(5px);
+        }
+    }
+}
 
 #body_content {
     min-height: 84vh;
@@ -740,6 +761,11 @@ ul.related-posts {
             margin-left: 8px;
             font-size: 0.8rem;
             font-weight: 400;
+        }
+    }
+    .comment-avatar {
+        img {
+            width: 52px;
         }
     }
 }

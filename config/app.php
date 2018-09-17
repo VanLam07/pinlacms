@@ -184,6 +184,7 @@ return [
         Front\FrontServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
         Admin\Providers\GoogleDriveServiceProvider::class,
+        Dict\DictServiceProvider::class,
 
     ],
 

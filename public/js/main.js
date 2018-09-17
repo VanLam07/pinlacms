@@ -282,5 +282,62 @@
         $el.width(newWidth).height(newWidth * $el.data('aspectRatio'));
       });
     }).resize();
+    
+    $('#form_make_rand_word').submit(function () {
+        var form = $(this);
+        var btn = form.find('button[type="submit"]');
+        var loading = btn.find('.loading');
+        var wordBox = form.find('.word-box');
+        if (btn.is(':disabled')) {
+            return false;
+        }
+        loading.removeClass('hidden');
+        btn.prop('disabled', true);
+        $.ajax({
+            url: form.attr('action'),
+            type: form.attr('method'),
+            data: form.serialize(),
+            success: function (word) {
+                wordBox.find('.main-word').text(word.word);
+                var wordDesc = wordBox.find('.word-desc');
+                var type = wordBox.find('.type');
+                if (type.length < 1) {
+                    wordDesc.prepend('<span class="type">'+ word.type +'</span>');
+                } else {
+                    type.text(word.type);
+                }
+                var pronun = wordBox.find('.pronun');
+                if (pronun.length < 1) {
+                    wordDesc.prepend('<span class="pronun">'+ word.pronun +'</span>');
+                } else {
+                    pronun.text(word.pronun);
+                }
+                $('#mean_box .card-body').html(word.mean);
+                $('#input_word_id').val(word.id);
+            },
+            error: function (error) {
+                bootbox.alert({
+                    className: 'modal-danger',
+                    message: 'Something was wrong!'
+                });
+            },
+            complete: function () {
+                btn.prop('disabled', false);
+                loading.addClass('hidden');
+            }
+        });
+        return false;
+    });
+    
+    $('a[href="#mean_box"]').click(function () {
+        var _this = $(this);
+        setTimeout(function () {
+            if (!_this.hasClass('collapsed')) {
+                _this.text(_this.attr('text-hide'));
+            } else {
+                _this.text(_this.attr('text-show'));
+            }
+        }, 100);
+    });
 
 })(jQuery);

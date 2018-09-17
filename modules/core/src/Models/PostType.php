@@ -7,6 +7,7 @@ use App\Models\BaseModel;
 use Admin\Facades\AdConst;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cache;
 
 class PostType extends BaseModel
 {
@@ -357,6 +358,14 @@ class PostType extends BaseModel
         }
         return self::findOrFail($id);
     }
+    
+    public static function findByTemplate($template, $fields = ['posts.*', 'pd.*'], $lang = null)
+    {
+        return self::joinLang($lang)
+                ->where('posts.template', $template)
+                ->select($fields)
+                ->first();
+    }
 
     public static function updateData($id, $data) {
         self::validator($data, self::rules(true));
@@ -429,6 +438,9 @@ class PostType extends BaseModel
         
         if ($hasDel) {
             $item->delete();
+        }
+        if (isset($data['template'])) {
+            Cache::forget($data['template']);
         }
         return $item;
     }

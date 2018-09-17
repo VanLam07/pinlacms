@@ -7,6 +7,15 @@
         {{ trans('front::view.one_day_one_proverb') }}
     </a>
     @endif
+    
+    <?php
+    $genWordPage = PlPost::getTemplatePage('generate-word');
+    ?>
+    @if ($genWordPage)
+    <a href="{{ route('front::page.view', ['id' => $genWordPage->id, 'slug' => $genWordPage->slug]) }}" class="btn-reg btn-reg-primary mgb-20">
+        {{ trans('front::view.make_english_sentence') }}
+    </a>
+    @endif
 
     <?php
     $cats = PlTax::listCategories(1);

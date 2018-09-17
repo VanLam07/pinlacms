@@ -4,9 +4,9 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableSubscribe extends Migration
+class CreateTableDictSentences extends Migration
 {
-    protected $tbl = 'subscribes';
+    protected $tbl = 'dict_sentences';
 
     /**
      * Run the migrations.
@@ -19,16 +19,15 @@ class CreateTableSubscribe extends Migration
             return;
         }
         Schema::create($this->tbl, function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('email');
-            $table->string('name');
-            $table->string('ip');
-            $table->tinyInteger('type')->default(1);
-            $table->string('time')->nullable();
-            $table->string('code', 64)->nullable();
-            $table->tinyInteger('status')->default(1);
+            $table->increments('id');
+            $table->unsignedInteger('word_id');
+            $table->unsignedInteger('user_id');
+            $table->text('sentence');
             $table->timestamps();
-            $table->unique(['email', 'type']);
+            $table->foreign('word_id')->references('id')->on('dict_en_vn')
+                    ->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')
+                    ->onDelete('cascade');
         });
     }
 

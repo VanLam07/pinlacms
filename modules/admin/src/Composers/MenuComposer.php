@@ -128,6 +128,13 @@ class MenuComposer {
                 'icon' => 'fa-envelope-o'
             ],
             [
+                'name' => trans('dict::view.dictionary'),
+                'url' => route('dict::admin.index'),
+                'active' => 'dictionary',
+                'cap' => 'manage_dictionaries',
+                'icon' => 'fa-book'
+            ],
+            [
                 'name' => trans('admin::view.users'), 
                 'url' => route('admin::user.index', ['status' => AdConst::STT_PUBLISH]),
                 'active' => 'users',

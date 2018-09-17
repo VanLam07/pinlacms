@@ -29,7 +29,8 @@
         "psr-4": {
             "App\\": "modules/core/src",
             "Admin\\": "modules/admin/src/",
-            "Front\\": "modules/front/src/"
+            "Front\\": "modules/front/src/",
+            "Dict\\": "modules/dict/src"
         },
         "files": [
             "modules/core/src/Helper/HelperFunc.php",

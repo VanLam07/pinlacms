@@ -25,6 +25,7 @@ return [
     'login' =>                  'Đăng nhập',
     'login_to_comment' =>       'Đăng nhập để bình luận',
     'logout' =>                 'Đăng xuất',
+    'make_english_sentence' =>  'Đặt câu với từ vựng Tiếng Anh',
     'manage_page' =>            'Trang quản trị',
     'most_view' =>              'Xem nhiều nhất',
     'notify_calendar' =>        'Lịch nhắc nhở',
@@ -36,6 +37,7 @@ return [
     'related_post' =>           'Bài liên quan',
     're_password' =>            'Nhập lại mật khẩu',
     'register' =>               'Đăng ký',
+    'register_reminder_make_sentence_everyday' => 'Đăng ký nhắc nhở đặt câu hằng ngày',
     'remember_login' =>         'Nhớ đăng nhập',
     'reply' =>                  'Trả lời',
     're_password' =>            'Nhập lại mật khẩu',
@@ -52,5 +54,7 @@ return [
     'Register' =>               'Đăng ký',
     'quote_mail_alert_subject' => 'Mỗi ngày một câu nói tiếng anh ngày :date',
     'unsubscribe' =>            'Hủy đăng ký',
+    'you_can_fill_multi_time' => 'Bạn có thể điền nhiều thời gian cách nhau bởi dấu phẩy (,), ví dụ 08:00, 14:00',
+    'generate_random_word' =>   'Tạo ngẫu nhiên từ vựng',
 ]; 
 

@@ -32,6 +32,7 @@ class AdConst {
     const FORMAT_POST = 1;
     const FORMAT_NOTIFY = 2;
     const FORMAT_QUOTE = 3;
+    const FORMAT_DICT = 4;
     const FORMAT_DIARY = 10;
     
     const PER_PAGE = 20;
@@ -55,6 +56,12 @@ class AdConst {
     const MENU_TYPE_CUSTOM = 0;
     
     const BG_COLOURS = ['#74a8fc', '#ffa75b', '#f7d86a', '#63c159', '#75d5d8', '#ad143d', '#037267', '#18ba3d', '#1a2499'];
+    
+    /*
+     * custom page
+     */
+    const QUOTE_PAGE = 'quote';
+    const GEN_WORD_PAGE = 'generate-word';
     
     public static function getFileSrc($fileUrl, $size = 'thumbnail')
     {
@@ -80,6 +87,7 @@ class AdConst {
             self::FORMAT_NOTIFY => 'Notify',
             self::FORMAT_QUOTE => 'Quote',
             self::FORMAT_DIARY => 'Diary',
+            self::FORMAT_DICT => 'Word sentence'
         ];
     }
 

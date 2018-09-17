@@ -4,9 +4,9 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableSubscribe extends Migration
+class CreateTableDictVnEn extends Migration
 {
-    protected $tbl = 'subscribes';
+    protected $tbl = 'dict_en_vn';
 
     /**
      * Run the migrations.
@@ -19,16 +19,14 @@ class CreateTableSubscribe extends Migration
             return;
         }
         Schema::create($this->tbl, function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('email');
-            $table->string('name');
-            $table->string('ip');
-            $table->tinyInteger('type')->default(1);
-            $table->string('time')->nullable();
-            $table->string('code', 64)->nullable();
-            $table->tinyInteger('status')->default(1);
-            $table->timestamps();
-            $table->unique(['email', 'type']);
+            $table->increments('id');
+            $table->string('word');
+            $table->string('origin');
+            $table->string('pronun')->nullable();
+            $table->string('mean')->nullable();
+            $table->text('detail')->nullable();
+            $table->text('detail_origin')->nullable();
+            $table->index('origin');
         });
     }
 

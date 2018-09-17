@@ -5,6 +5,7 @@ namespace App\Facades\Classes;
 use App\Models\PostType;
 use Admin\Facades\AdConst;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class Post {
     
@@ -78,6 +79,20 @@ class Post {
             'per_page' => $number,
             'post_format' => AdConst::FORMAT_QUOTE
         ]);
+    }
+    
+    public function getTemplatePage($template)
+    {
+        $key = 'template_page_' . $template;
+        if ($page = Cache::get($key)) {
+            return $page;
+        }
+        $page = PostType::findByTemplate($template, ['posts.id', 'pd.title', 'pd.slug', 'pd.meta_keyword', 'pd.meta_desc']);
+        if (!$page) {
+            return null;
+        }
+        Cache::put($key, $page);
+        return $page;
     }
 }
 

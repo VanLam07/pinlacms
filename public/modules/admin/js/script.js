@@ -125,7 +125,7 @@
     $('.date_time_picker').datetimepicker({
         format: 'YYYY-MM-DD HH:mm:ss'
     });
-    
+
 })(jQuery);
 
 

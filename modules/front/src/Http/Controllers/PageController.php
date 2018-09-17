@@ -74,16 +74,20 @@ class PageController extends Controller
         if ($valid->fails()) {
             return redirect()->back()->withErrors($valid->errors());
         }
-        $subs = Subscribe::where('email', $data['email'])->first();
+        $type = isset($data['type']) ? $data['type'] : AdConst::FORMAT_QUOTE;
+        $subs = Subscribe::where('email', $data['email'])->where('type', $type)->first();
         $data['ip'] = $request->ip();
         $data['status'] = 1;
         if (!isset($data['time']) || !$data['time']) {
             $data['time'] = '08:00:00';
         }
         if (!$subs) {
-            $data['type'] = AdConst::FORMAT_QUOTE;
             $subs = Subscribe::create($data);
-            $message = trans('front::message.subscribed_successful');
+            if ($type == AdConst::FORMAT_QUOTE) {
+                $message = trans('front::message.subscribed_successful');
+            } else {
+                $message = trans('front::message.subscribed_dict_successful');
+            }
         } else {
             $subs->update($data);
             $message = trans('front::message.subscribe_infor_updated');
