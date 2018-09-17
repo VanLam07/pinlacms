@@ -3,6 +3,7 @@
 namespace Dict\Models;
 
 use App\Models\BaseModel;
+use Admin\Facades\AdConst;
 use App\User;
 use PlOption;
 
