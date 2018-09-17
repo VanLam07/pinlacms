@@ -99,9 +99,9 @@ if (!isset($word)) {
                     {!! $sentence->author ? $sentence->author->getAvatar(42) : getDefaultAvatar(42) !!}
                 </div>
                 <div class="media-body">
-                    <h4 class="comment-author-name">Editor<span class="comment-date">01:47 15-12-2017</span></h4>
+                    <h4 class="comment-author-name">{{ $sentence->user_name }}<span class="comment-date">{{ $sentence->created_at->format('H:i d-m-Y') }}</span></h4>
                     <div class="comment-item-content">
-                        <div class="comment-item-show">how are you</div>
+                        <div class="comment-item-show">{{ $sentence->sentence }}</div>
                     </div>
                 </div>
             </div>
