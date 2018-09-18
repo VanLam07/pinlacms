@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Socialite;
 use Validator;
 use Auth;
+use Session;
 
 class AuthController extends Controller
 {
@@ -62,6 +63,7 @@ class AuthController extends Controller
     
     public function getLogin()
     {
+        Session::put('temp_current_url', url()->previous());
         if (Auth::check()) {
             return redirect()->back();
         }
@@ -70,7 +72,7 @@ class AuthController extends Controller
 
     public function postLogin(Request $request) {
         if (Auth::check()) {
-            return redirect()->route('fron:home');
+            return redirect()->route('front::home');
         }
         $valid = Validator::make($request->all(), [
                     'email' => 'required|email',
@@ -103,8 +105,21 @@ class AuthController extends Controller
         //end
     }
     
+    public function redirectTo()
+    {
+        $tempUrl = Session::get('temp_current_url');
+        if ($tempUrl) {
+            return redirect()->to($tempUrl);
+        }
+        return redirect()->route('front::home');
+    }
+    
     public function redirectPath() 
     {
+        $tempUrl = Session::get('temp_current_url');
+        if ($tempUrl) {
+            return $tempUrl;
+        }
         return route('front::home');
     }
     

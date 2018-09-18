@@ -314,6 +314,8 @@
                 }
                 $('#mean_box .card-body').html(word.mean);
                 $('#input_word_id').val(word.id);
+                var hrefCheck = $('#check_sentence_link').data('href');
+                $('#check_sentence_link').attr('href', hrefCheck + '/' + word.word + '?direct_search_result=yes');
             },
             error: function (error) {
                 bootbox.alert({

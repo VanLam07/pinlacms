@@ -49,4 +49,14 @@ class DictController extends BaseController
         return view('front::templates.generate-word', compact('word', 'page', 'sentences'));
     }
 
+    public function deleteWord($id)
+    {
+        $word = DictEnVn::find($id);
+        if (!$word) {
+            return response()->json('Not found item', 404);
+        }
+        $word->delete();
+        return response()->json('Delete successful!');
+    }
+
 }

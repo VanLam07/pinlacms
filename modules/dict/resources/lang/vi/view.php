@@ -22,4 +22,5 @@ return [
     'hide_mean' =>          'ẩn nghĩa',
     'make_sentence' =>      'Đặt câu',
     'make_a_sentence_with_this_word' => 'Đặt câu với từ này',
+    'login_to_make_sentence' => 'Đăng nhập để đặt câu',
 ];

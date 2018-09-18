@@ -8,6 +8,14 @@ Route::group([
     Route::get('/{word}_w{id}.html', 'DictController@viewWord')->name('view_word');
     Route::post('/make-sentence', 'DictController@makeSentence')->name('make_sentence');
     Route::post('/make-word', 'DictController@makeWord')->name('make_word');
+
+    Route::group([
+        'middleware' => 'auth'
+    ], function () {
+        Route::delete('/words/{id}/delete', 'DictController@deleteWord')->name('delete');
+        Route::get('/words/{id}/edit', 'DictController@editWord')->name('edit');
+        Route::put('/words/{id}/update', 'DictController@updateWord')->name('update');
+    });
 });
 
 $manage = config('admin.prefix');
