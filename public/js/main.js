@@ -298,6 +298,10 @@
             type: form.attr('method'),
             data: form.serialize(),
             success: function (word) {
+                if (!word) {
+                    alert('Something went wrong!');
+                    return;
+                }
                 wordBox.find('.main-word').text(word.word);
                 var wordDesc = wordBox.find('.word-desc');
                 var type = wordBox.find('.type');
@@ -316,6 +320,7 @@
                 $('#input_word_id').val(word.id);
                 var hrefCheck = $('#check_sentence_link').data('href');
                 $('#check_sentence_link').attr('href', hrefCheck + '/' + word.word + '?direct_search_result=yes');
+                $('#view_word_link').attr('href', word.link);
             },
             error: function (error) {
                 bootbox.alert({

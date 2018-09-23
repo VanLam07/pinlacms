@@ -56,9 +56,9 @@ if (!isset($word)) {
         </div>
         @endif
         
-        <div class="text-center">
+        <div class="text-center form-group">
             <button type="submit" class="btn btn-success btn-lg">
-                <i class="fa fa-send"></i> {{ trans('front::view.generate_random_word') }} 
+                {{ trans('front::view.generate_random_word') }} 
                 <i class="fa fa-spin fa-refresh loading hidden"></i>
             </button>
         </div>
@@ -67,124 +67,12 @@ if (!isset($word)) {
         
     </div>
     
-    @if (auth()->check())
-    <div class="wrap">
-        {!! Form::open([
-            'method' => 'post',
-            'route' => 'dict::word.make_sentence'
-        ]) !!}
-        
-        <h3 class="sub-title text-center mgb-20">{{ trans('dict::view.make_a_sentence_with_this_word') }}</h3>
-        <div class="form-group">
-            <textarea class="no-resize form-control" name="sentence"></textarea>
-            {!! errorField('sentence') !!}
-        </div>
-        <p class="text-center">
-            <a id="check_sentence_link" target="_blank" data-href="http://sentence.yourdictionary.com" href="http://sentence.yourdictionary.com/{{ $word->word }}?direct_search_result=yes"><i>{{ trans('dict::view.check_your_sentence') }}</i></a>
-        </p>
-        <div class="text-center">
-            <input type="hidden" name="word_id" id="input_word_id" value="{{ $word ? $word->id : null }}">
-            <button type="submit" class="btn btn-primary btn-lg">{{ trans('dict::view.make_sentence') }}</button>
-        </div>
-        
-        {!! Form::close() !!}
+    <div class="text-center mgb-30">
+        <a href="{{ route('dict::word.view_word', ['id' => $word->id, 'slug' => str_slug($word->word)]) }}" id="view_word_link"
+           target="_blank" class="btn btn-info btn-lg">{{ trans('front::view.make_sentence_for_this_word') }}</a>
     </div>
-    @else
-    <p class="text-center">
-        <a href="{{ route('front::account.login') }}">{{ trans('dict::view.login_to_make_sentence') }}</a>
-    </p>
-    @endif
-    
-    <h3 class="page-title center-title mgb-20"><span>{{ trans('dict::view.list_sentences') }}</span></h3>
-    
-    @if (isset($sentences) && !$sentences->isEmpty())
-    <div class="comment-body mgb-30">
-        <ul class="comment-lists">
-        @foreach($sentences as $sentence)
-        <li class="comment-item" data-id="44">
-            <div class="inner media">
-                <div class="media-left comment-avatar mr-3">
-                    {!! $sentence->author ? $sentence->author->getAvatar(42) : getDefaultAvatar(42) !!}
-                </div>
-                <div class="media-body">
-                    <h4 class="comment-author-name">
-                        {{ $sentence->user_name }}
-                        <span class="comment-date">{{ $sentence->created_at->format('H:i d-m-Y') }}</span>
-                        <div class="comment-actions">
-                            @if (auth()->id() == $sentence->user_id)
-<!--                            <button type="button" class="edit-comment-btn btn btn-info btn-sm" title="{{ trans('front::view.edit') }}"
-                                    data-url="{{ route('dict::word.edit', ['id' => $sentence->id]) }}">
-                                <i class="fa fa-edit"></i>
-                            </button>-->
-                            <button type="button" class="del-comment-btn btn btn-danger btn-sm" title="{{ trans('front::view.delete') }}"
-                                    data-url="{{ route('dict::word.delete', ['id' => $sentence->id]) }}">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                            @endif
-                        </div>
-                    </h4>
-                    <div class="comment-item-content">
-                        <div class="comment-item-show">{{ $sentence->sentence }}</div>
-                    </div>
-                </div>
-            </div>
-        </li>
-        @endforeach
-        </ul>
-    </div>
-    @else
-    <p class="text-center mgb-30">{{ trans('dict::view.none_sentence') }}</p>
-    @endif
-    
-    <div class="wrap pdt-30">
-        <h3 class="text-center sub-title">{{ trans('front::view.register_reminder_make_sentence_everyday') }}</h3>
 
-        <div class="mgb-30"></div>
-
-        <div class="post-content">
-            {!! $page->content !!}
-        </div>
-
-        {!! Form::open([
-            'method' => 'post',
-            'route' => 'front::quote.register',
-        ]) !!}
-
-        <div class="row">
-            <div class="col-sm-6 mr-auto ml-auto">
-
-                <div class="form-group">
-                    <label>{{ trans('front::view.email') }} (*)</label>
-                    <input type="email" name="email" class="form-control" placeholder="example@mail.com"
-                           value="{{ old('email') ? old('email') : null }}">
-                    {!! errorField('email') !!}
-                </div>
-
-                <div class="form-group">
-                    <label>{{ trans('front::view.full_name') }} (*)</label>
-                    <input type="text" name="name" class="form-control" placeholder="{{ trans('front::view.full_name') }}"
-                           value="{{ old('name') ? old('name') : null }}">
-                    {!! errorField('name') !!}
-                </div>
-
-                <div class="form-group mgb-30">
-                    <label>{{ trans('front::view.time_receive') }}</label>
-                    <input type="text" name="time" class="form-control time_picker" placeholder="08:00"
-                           value="{{ old('time') ? old('time') : null }}">
-                    <span class="text-desc">{{ trans('front::view.you_can_fill_multi_time') }}</span>
-                </div>
-
-                <div class="form-group text-center">
-                    <input type="hidden" name="type" value="{{ AdConst::FORMAT_DICT }}">
-                    <button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-send"></i> {{ trans('front::view.Register') }}</button>
-                </div>
-
-            </div>
-        </div>
-
-        {!! Form::close() !!}
-    
-    </div>
+    @include('dict::includes.form-subscribe')
     
 </div>
 

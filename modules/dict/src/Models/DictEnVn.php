@@ -102,12 +102,16 @@ class DictEnVn extends BaseModel {
     
     public static function getRandWord()
     {
-        return self::select(
+        $item = self::select(
                 'id', 'word', 'type', 'pronun', 'mean',
                 DB::raw('IFNULL(detail, detail_origin) as detail')
             )
             ->orderBy(DB::raw('RAND()'))
             ->first();
+        if ($item) {
+            $item->link = route('dict::word.view_word', ['id' => $item->id, 'slug' => str_slug($item->word)]);
+        }
+        return $item;
     }
     
     public static function saveTempWord($word, $sessionId = null)

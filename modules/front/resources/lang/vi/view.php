@@ -56,5 +56,6 @@ return [
     'unsubscribe' =>            'Hủy đăng ký',
     'you_can_fill_multi_time' => 'Bạn có thể điền nhiều thời gian cách nhau bởi dấu phẩy (,), ví dụ 08:00, 14:00',
     'generate_random_word' =>   'Tạo ngẫu nhiên từ vựng',
+    'make_sentence_for_this_word' => 'Đặt câu với từ này',
 ]; 
 

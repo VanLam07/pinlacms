@@ -5,7 +5,7 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <?php
-$assetVer = 1.6;
+$assetVer = 1.7;
 ?>
 <html>
     <head>

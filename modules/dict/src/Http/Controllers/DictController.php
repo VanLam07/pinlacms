@@ -46,7 +46,7 @@ class DictController extends BaseController
         $word = DictEnVn::findOrFail($id);
         $page = PlPost::getTemplatePage('generate-word');
         $sentences = DictSentence::getData(['word_id' => $id]);
-        return view('front::templates.generate-word', compact('word', 'page', 'sentences'));
+        return view('dict::view-word', compact('word', 'page', 'sentences'));
     }
 
     public function deleteWord($id)

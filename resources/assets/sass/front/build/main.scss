@@ -246,6 +246,7 @@ button {
             padding: 1px 8px;
             background: $top_head_cl;
             color: #fff;
+            margin-right: 5px;
             @include border-radius(5px);
         }
     }
