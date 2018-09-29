@@ -52,10 +52,11 @@ return [
     'full_name' =>              'Tên',
     'time_receive' =>           'Khoảng thời gian muốn nhận',
     'Register' =>               'Đăng ký',
-    'quote_mail_alert_subject' => 'Mỗi ngày một câu nói tiếng anh ngày :date',
+    'quote_mail_alert_subject' => '[Pinlaz] Mỗi ngày một câu nói tiếng Anh ngày :date',
     'unsubscribe' =>            'Hủy đăng ký',
     'you_can_fill_multi_time' => 'Bạn có thể điền nhiều thời gian cách nhau bởi dấu phẩy (,), ví dụ 08:00, 14:00',
     'generate_random_word' =>   'Tạo ngẫu nhiên từ vựng',
     'make_sentence_for_this_word' => 'Đặt câu với từ này',
+    'make_sentence_alert_mail_subject' => '[Pinlaz] Mỗi ngày đặt một vài câu tiếng Anh ngày :date',
 ]; 
 

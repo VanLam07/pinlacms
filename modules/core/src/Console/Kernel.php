@@ -31,6 +31,8 @@ class Kernel extends ConsoleKernel
             \App\Models\MailNotify::cronAlert();
             //qoute notify
             \App\Models\Subscribe::cronSendMail();
+            //sentence notify
+            \App\Models\Subscribe::cronSendSentenceMail();
         })->everyMinute();
     }
 

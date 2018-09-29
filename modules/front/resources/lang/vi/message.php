@@ -18,4 +18,5 @@ return [
     'confirm_unsubscribe' =>        'Bạn chắc chắn muốn hủy đăng ký?',
     'not_found_unsubscribe' =>      'Không tìm thấy thông tin đăng ký hoặc bạn chưa đăng ký nhận bản tin!',
     'subscribed_dict_successful' => 'Đăng ký thành công, tôi sẽ không quên nhắc nhở bạn đâu!',
+    'invalid_time_input' =>         'Thời gian nhập vào không hợp lệ',
 ];

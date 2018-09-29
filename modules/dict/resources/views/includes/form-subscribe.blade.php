@@ -35,7 +35,7 @@ use Admin\Facades\AdConst;
 
             <div class="form-group mgb-30">
                 <label>{{ trans('front::view.time_receive') }}</label>
-                <input type="text" name="time" class="form-control time_picker" placeholder="08:00"
+                <input type="text" name="time" class="form-control" placeholder="08:00"
                        value="{{ old('time') ? old('time') : null }}">
                 <span class="text-desc">{{ trans('front::view.you_can_fill_multi_time') }}</span>
             </div>

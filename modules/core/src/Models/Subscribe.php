@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Admin\Facades\AdConst;
 use App\Models\PostType;
 use App\Exceptions\PlException;
+use Dict\Models\DictEnVn;
+use PlPost;
 use Mail;
 
 class Subscribe extends BaseModel
@@ -66,18 +68,8 @@ class Subscribe extends BaseModel
     public static function cronSendMail()
     {
         $timeNow = Carbon::now();
-        $partTime = Carbon::now()->subHours(6);
         $collect = self::select('email', 'name', 'code', 'type')
-                ->where(function ($query) use ($timeNow, $partTime) {
-                    $query->where(function ($query1) use ($timeNow) {
-                            $query1->where(DB::raw('HOUR(time)'), $timeNow->hour)
-                                ->where(DB::raw('MINUTE(time)'), $timeNow->minute);
-                    })
-                    ->orWhere(function ($query2) use ($partTime) {
-                            $query2->where(DB::raw('HOUR(time)'), $partTime->hour)
-                                ->where(DB::raw('MINUTE(time)'), $partTime->minute);
-                    });
-                })
+                ->where('time', 'like', '%'. $timeNow->format('H:i') .'%')
                 ->where('type', AdConst::FORMAT_QUOTE)
                 ->where('status', 1)
                 ->get();
@@ -107,6 +99,37 @@ class Subscribe extends BaseModel
             Mail::send('front::mail.quote-alert', $dataMail, function ($mail) use ($item, $timeNow) {
                 $mail->to($item->email)
                         ->subject(trans('front::view.quote_mail_alert_subject', ['date' => $timeNow->format('d-m-Y')]));
+            });
+        }
+    }
+
+    public static function cronSendSentenceMail()
+    {
+        $timeNow = Carbon::now();
+        $collect = self::select('email', 'name', 'code', 'type')
+                ->where('time', 'like', '%'. $timeNow->format('H:i') .'%')
+                ->where('type', AdConst::FORMAT_DICT)
+                ->where('status', 1)
+                ->get();
+
+        if ($collect->isEmpty()) {
+            return;
+        }
+        $genWordPage = PlPost::getTemplatePage('generate-word');
+        if (!$genWordPage) {
+            return;
+        }
+
+        foreach ($collect as $item) {
+            $dataMail = [
+                'dearName' => $item->name,
+                'randWord' => DictEnVn::getRandWord(),
+                'detailLink' => route('front::page.view', ['id' => $genWordPage->id, 'slug' => $genWordPage->slug]),
+                'unsubsLink' => route('front::unsubs.confirm', ['token' => $item->code, 'type' => $item->type])
+            ];
+            Mail::send('front::mail.sentence-alert', $dataMail, function ($mail) use ($item, $timeNow) {
+                $mail->to($item->email)
+                        ->subject(trans('front::view.make_sentence_alert_mail_subject', ['date' => $timeNow->format('d-m-Y')]));
             });
         }
     }

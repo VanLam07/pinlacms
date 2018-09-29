@@ -72,14 +72,23 @@ class PageController extends Controller
             'name' => 'required',
         ]);
         if ($valid->fails()) {
-            return redirect()->back()->withErrors($valid->errors());
+            return redirect()->back()->withInput()->withErrors($valid->errors());
         }
         $type = isset($data['type']) ? $data['type'] : AdConst::FORMAT_QUOTE;
+        $data['type'] = $type;
         $subs = Subscribe::where('email', $data['email'])->where('type', $type)->first();
         $data['ip'] = $request->ip();
         $data['status'] = 1;
         if (!isset($data['time']) || !$data['time']) {
-            $data['time'] = '08:00:00';
+            $data['time'] = '08:00';
+        } else {
+            $arrTime = array_map(function ($arrItem) {
+                return trim($arrItem);
+            }, explode(',', $data['time']));
+            $validFormat = Validator::make(['times' => $arrTime], ['times.*' => 'date_format:H:i']);
+            if ($validFormat->fails()) {
+                return redirect()->back()->withInput()->with('error_mess', trans('front::message.invalid_time_input'));
+            }
         }
         if (!$subs) {
             $subs = Subscribe::create($data);
