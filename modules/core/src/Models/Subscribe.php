@@ -67,70 +67,96 @@ class Subscribe extends BaseModel
 
     public static function cronSendMail()
     {
-        $timeNow = Carbon::now();
-        $collect = self::select('email', 'name', 'code', 'type')
-                ->where('time', 'like', '%'. $timeNow->format('H:i') .'%')
-                ->where('type', AdConst::FORMAT_QUOTE)
-                ->where('status', 1)
-                ->get();
-
-        if ($collect->isEmpty()) {
+        $keyRunning = 'running_email_queue';
+        if (Cache::get($keyRunning)) {
             return;
         }
-        $tblPrefix = DB::getTablePrefix();
-        $quote = PostType::joinLang()
-                ->select('posts.id', 'pd.content', 'pd.slug')
-                ->where(DB::raw('DATE('. $tblPrefix . 'posts.created_at)'), $timeNow->toDateString())
-                ->where('posts.post_format', AdConst::FORMAT_QUOTE)
-                ->orderBy('posts.created_at', 'desc')
-                ->first();
+        try {
+            Cache::put($keyRunning);
+            $timeNow = Carbon::now();
+            $collect = self::select('email', 'name', 'code', 'type')
+                    ->where('time', 'like', '%'. $timeNow->format('H:i') .'%')
+                    ->where('type', AdConst::FORMAT_QUOTE)
+                    ->where('status', 1)
+                    ->get();
 
-        if (!$quote) {
-            return;
-        }
+            if ($collect->isEmpty()) {
+                Cache::forget($keyRunning);
+                return;
+            }
+            $tblPrefix = DB::getTablePrefix();
+            $quote = PostType::joinLang()
+                    ->select('posts.id', 'pd.content', 'pd.slug')
+                    ->where(DB::raw('DATE('. $tblPrefix . 'posts.created_at)'), $timeNow->toDateString())
+                    ->where('posts.post_format', AdConst::FORMAT_QUOTE)
+                    ->orderBy('posts.created_at', 'desc')
+                    ->first();
 
-        foreach ($collect as $item) {
-            $dataMail = [
-                'dearName' => $item->name,
-                'content' => $quote->content,
-                'detailLink' => route('front::post.view', ['id' => $quote->id, 'slug' => $quote->slug]),
-                'unsubsLink' => route('front::unsubs.confirm', ['token' => $item->code, 'type' => $item->type])
-            ];
-            Mail::send('front::mail.quote-alert', $dataMail, function ($mail) use ($item, $timeNow) {
-                $mail->to($item->email)
-                        ->subject(trans('front::view.quote_mail_alert_subject', ['date' => $timeNow->format('d-m-Y')]));
-            });
+            if (!$quote) {
+                Cache::forget($keyRunning);
+                return;
+            }
+
+            foreach ($collect as $item) {
+                $dataMail = [
+                    'dearName' => $item->name,
+                    'content' => $quote->content,
+                    'detailLink' => route('front::post.view', ['id' => $quote->id, 'slug' => $quote->slug]),
+                    'unsubsLink' => route('front::unsubs.confirm', ['token' => $item->code, 'type' => $item->type])
+                ];
+                Mail::send('front::mail.quote-alert', $dataMail, function ($mail) use ($item, $timeNow) {
+                    $mail->to($item->email)
+                            ->subject(trans('front::view.quote_mail_alert_subject', ['date' => $timeNow->format('d-m-Y')]));
+                });
+            }
+            Cache::forget($keyRunning);
+        } catch (\Exception $ex) {
+            \Log::info($ex);
+            Cache::forget($keyRunning);
         }
     }
 
     public static function cronSendSentenceMail()
     {
-        $timeNow = Carbon::now();
-        $collect = self::select('email', 'name', 'code', 'type')
-                ->where('time', 'like', '%'. $timeNow->format('H:i') .'%')
-                ->where('type', AdConst::FORMAT_DICT)
-                ->where('status', 1)
-                ->get();
-
-        if ($collect->isEmpty()) {
+        $keyRunning = 'running_email_queue';
+        if (Cache::get($keyRunning)) {
             return;
         }
-        $genWordPage = PlPost::getTemplatePage('generate-word');
-        if (!$genWordPage) {
-            return;
-        }
+        try {
+            Cache::put($keyRunning);
+            $timeNow = Carbon::now();
+            $collect = self::select('email', 'name', 'code', 'type')
+                    ->where('time', 'like', '%'. $timeNow->format('H:i') .'%')
+                    ->where('type', AdConst::FORMAT_DICT)
+                    ->where('status', 1)
+                    ->get();
 
-        foreach ($collect as $item) {
-            $dataMail = [
-                'dearName' => $item->name,
-                'randWord' => DictEnVn::getRandWord(),
-                'detailLink' => route('front::page.view', ['id' => $genWordPage->id, 'slug' => $genWordPage->slug]),
-                'unsubsLink' => route('front::unsubs.confirm', ['token' => $item->code, 'type' => $item->type])
-            ];
-            Mail::send('front::mail.sentence-alert', $dataMail, function ($mail) use ($item, $timeNow) {
-                $mail->to($item->email)
-                        ->subject(trans('front::view.make_sentence_alert_mail_subject', ['date' => $timeNow->format('d-m-Y')]));
-            });
+            if ($collect->isEmpty()) {
+                Cache::forget($keyRunning);
+                return;
+            }
+            $genWordPage = PlPost::getTemplatePage('generate-word');
+            if (!$genWordPage) {
+                Cache::forget($keyRunning);
+                return;
+            }
+
+            foreach ($collect as $item) {
+                $dataMail = [
+                    'dearName' => $item->name,
+                    'randWord' => DictEnVn::getRandWord(),
+                    'detailLink' => route('front::page.view', ['id' => $genWordPage->id, 'slug' => $genWordPage->slug]),
+                    'unsubsLink' => route('front::unsubs.confirm', ['token' => $item->code, 'type' => $item->type])
+                ];
+                Mail::send('front::mail.sentence-alert', $dataMail, function ($mail) use ($item, $timeNow) {
+                    $mail->to($item->email)
+                            ->subject(trans('front::view.make_sentence_alert_mail_subject', ['date' => $timeNow->format('d-m-Y')]));
+                });
+            }
+            Cache::forget($keyRunning);
+        } catch (\Exception $ex) {
+            \Log::info($ex);
+            Cache::forget($keyRunning);
         }
     }
 }

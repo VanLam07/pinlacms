@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\BaseModel;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Mail;
 
 class MailNotify extends BaseModel
@@ -89,41 +90,53 @@ class MailNotify extends BaseModel
     
     public static function cronAlert()
     {
-        $timeNow = Carbon::now();
-        $timeFox = Carbon::now()->endOfDay();
-        $postData = self::select('pnt.from_date', 'pnt.to_date', 'pnt.from_hour', 'pnt.to_hour', 'pnt.number_alert',
-                'pnt.array_time', 'pnt.email', 'pd.title', 'pd.content', 'pd.slug', 'pd.post_id')
-                ->from(self::getTableName() . ' as pnt')
-                ->join('post_desc as pd', 'pnt.post_id', '=', 'pd.post_id')
-                ->where('pd.lang_code', currentLocale())
-                ->where('pnt.from_date', '<=', $timeFox->toDateString())
-                ->where('pnt.to_date', '>=', $timeFox->startOfDay()->toDateString())
-                ->groupBy('pnt.id')
-                ->get();
-        
-        if ($postData->isEmpty()) {
+        $keyRunning = 'running_email_queue';
+        if (Cache::get($keyRunning)) {
             return;
         }
-        foreach ($postData as $item) {
-            if (!$item->array_time) {
-                continue;
+        try {
+            Cache::put($keyRunning, 1);
+            $timeNow = Carbon::now();
+            $timeFox = Carbon::now()->endOfDay();
+            $postData = self::select('pnt.from_date', 'pnt.to_date', 'pnt.from_hour', 'pnt.to_hour', 'pnt.number_alert',
+                    'pnt.array_time', 'pnt.email', 'pd.title', 'pd.content', 'pd.slug', 'pd.post_id')
+                    ->from(self::getTableName() . ' as pnt')
+                    ->join('post_desc as pd', 'pnt.post_id', '=', 'pd.post_id')
+                    ->where('pd.lang_code', currentLocale())
+                    ->where('pnt.from_date', '<=', $timeFox->toDateString())
+                    ->where('pnt.to_date', '>=', $timeFox->startOfDay()->toDateString())
+                    ->groupBy('pnt.id')
+                    ->get();
+
+            if ($postData->isEmpty()) {
+                Cache::forget($keyRunning);
+                return;
             }
-            $arrayTime = json_decode($item->array_time, true);
-            foreach ($arrayTime as $time) {
-                $itemTime = Carbon::createFromFormat('H:i', $time);
-                if ($timeNow->hour === $itemTime->hour && $timeNow->minute === $itemTime->minute) {
-                    $dataPost = [
-                        'postTitle' => $item->title,
-                        'postContent' => $item->content,
-                        'postLink' => route('front::post.view', ['id' => $item->post_id, 'slug' => $item->slug])
-                    ];
-                    Mail::send('front::mail.post-alert', $dataPost, function ($mail) use ($item) {
-                        $mail->to($item->email)
-                                ->subject(trans('front::view.post_mail_alert_subject') . ' ' . $item->title);
-                    });
-                    break;
+            foreach ($postData as $item) {
+                if (!$item->array_time) {
+                    continue;
+                }
+                $arrayTime = json_decode($item->array_time, true);
+                foreach ($arrayTime as $time) {
+                    $itemTime = Carbon::createFromFormat('H:i', $time);
+                    if ($timeNow->hour === $itemTime->hour && $timeNow->minute === $itemTime->minute) {
+                        $dataPost = [
+                            'postTitle' => $item->title,
+                            'postContent' => $item->content,
+                            'postLink' => route('front::post.view', ['id' => $item->post_id, 'slug' => $item->slug])
+                        ];
+                        Mail::send('front::mail.post-alert', $dataPost, function ($mail) use ($item) {
+                            $mail->to($item->email)
+                                    ->subject(trans('front::view.post_mail_alert_subject') . ' ' . $item->title);
+                        });
+                        break;
+                    }
                 }
             }
+            Cache::forget($keyRunning);
+        } catch (\Exception $ex) {
+            \Log::info($ex);
+            Cache::forget($keyRunning);
         }
     }
 }
