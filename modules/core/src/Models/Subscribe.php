@@ -73,7 +73,7 @@ class Subscribe extends BaseModel
             return;
         }
         try {
-            Cache::put($keyRunning);
+            Cache::put($keyRunning, 1);
             $timeNow = Carbon::now();
             $collect = self::select('email', 'name', 'code', 'type')
                     ->where('time', 'like', '%'. $timeNow->format('H:i') .'%')
@@ -124,7 +124,7 @@ class Subscribe extends BaseModel
             return;
         }
         try {
-            Cache::put($keyRunning);
+            Cache::put($keyRunning, 1);
             $timeNow = Carbon::now();
             $collect = self::select('email', 'name', 'code', 'type')
                     ->where('time', 'like', '%'. $timeNow->format('H:i') .'%')
