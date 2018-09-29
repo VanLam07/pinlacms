@@ -10,6 +10,7 @@ use App\Models\PostType;
 use App\Exceptions\PlException;
 use Dict\Models\DictEnVn;
 use PlPost;
+use Illuminate\Support\Facades\Cache;
 use Mail;
 
 class Subscribe extends BaseModel
