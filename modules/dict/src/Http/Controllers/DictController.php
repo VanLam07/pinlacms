@@ -41,6 +41,15 @@ class DictController extends BaseController
         return redirect()->to(route('dict::word.view_word', ['word' => str_slug($word->word), 'id' => $word->id]));
     }
     
+    public function editSentence(Request $request)
+    {
+        $sentence = DictSentence::find($id, ['id', 'sentence']);
+        if (!$sentence) {
+            return response()->json(trans('front::message.not_found_item'), 404);
+        }
+        return $sentence;
+    }
+    
     public function viewWord($slug, $id)
     {
         $word = DictEnVn::findOrFail($id);
@@ -56,6 +65,16 @@ class DictController extends BaseController
             return response()->json('Not found item', 404);
         }
         $word->delete();
+        return response()->json('Delete successful!');
+    }
+    
+     public function deleteSentence($id)
+    {
+        $sentence = DictSentence::find($id);
+        if (!$sentence) {
+            return response()->json('Not found item', 404);
+        }
+        $sentence->delete();
         return response()->json('Delete successful!');
     }
 

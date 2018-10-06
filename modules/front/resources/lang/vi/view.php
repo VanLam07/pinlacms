@@ -58,5 +58,7 @@ return [
     'generate_random_word' =>   'Tạo ngẫu nhiên từ vựng',
     'make_sentence_for_this_word' => 'Đặt câu với từ này',
     'make_sentence_alert_mail_subject' => '[Pinlaz] Mỗi ngày đặt một vài câu tiếng Anh ngày :date',
+    'your_comment' =>           'Bình luận của bạn',
+    'update' =>                 'Cập nhật',
 ]; 
 

@@ -33,7 +33,7 @@
            <div class="comment-box" id="comment_template">
                {!! Form::open(['method' => 'post', 'route' => 'front::comment.add', 'class' => 'form-add-comment']) !!}
                    <p class="form-error hidden text-red"></p>
-                   <textarea class="form-control comment-content" name="content" rows="2">{{ old('content') }}</textarea>
+                   <textarea class="form-control comment-content" name="content" rows="2" placeholder="{{ trans('front::view.your_comment') }}">{{ old('content') }}</textarea>
                    <div class="comment-foot">
                        <div class="row">
                            <div class="col-6 comment-auhor">
@@ -43,6 +43,7 @@
                            <div class="col-6 text-right">
                                <input type="hidden" name="post_id" value="{{ $post->id }}">
                                <input type="hidden" name="parent_id" value="">
+                               <button type="button" class="cancel-edit-comment-btn btn btn-secondary">{{ trans('front::view.cancel') }}</button>
                                <button type="submit" class="btn btn-primary">{{ trans('front::view.comment') }}</button>
                            </div>
                        </div>
@@ -63,7 +64,7 @@
                            <div class="col-6 text-right">
                                <input type="hidden" name="comment_id" value="">
                                <button type="button" class="cancel-edit-comment-btn btn btn-secondary">{{ trans('front::view.cancel') }}</button>
-                               <button type="submit" class="btn btn-primary">{{ trans('front::view.edit') }}</button>
+                               <button type="submit" class="btn btn-primary">{{ trans('front::view.update') }}</button>
                            </div>
                        </div>
                    </div>

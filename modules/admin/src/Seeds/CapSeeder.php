@@ -42,6 +42,8 @@ class CapSeeder extends BaseSeeder
             'edit_file' => [1 => $capOther, 2 => $capOther, 3 => $capSelf],
             'remove_file' => [1 => $capOther, 2 => $capOther, 3 => $capSelf],
             
+            'edit_sentence' => [1 => $capOther, 2 => $capOther, 3 => $capSelf],
+            
             'manage_roles' => [1 => $capOther],
             'manage_cap' => [1 => $capOther],
             'accept_manage' => [1 => $capOther, 2 => $capOther],
@@ -53,6 +55,7 @@ class CapSeeder extends BaseSeeder
             'manage_contacts' => [1 => $capOther],
             'view_visitors' => [1 => $capOther],
             'manage_subscribes' => [1 => $capOther],
+            'manage_dictionaries' => [1 => $capOther],
         ];
         
         foreach ($caps as $cap => $arrLevel) {

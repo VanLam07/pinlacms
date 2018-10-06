@@ -195,6 +195,7 @@
     $('body').on('click', '.cancel-edit-comment-btn', function (e) {
         e.preventDefault();
         $(this).closest('.media-body').find('.edit-comment-btn').removeClass('loaded');
+        $(this).closest('.comment-item').removeClass('comment-editting');
         $(this).closest('.comment-box').remove();
     });
     

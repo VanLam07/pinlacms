@@ -789,6 +789,11 @@ ul.related-posts {
         display: block;
     }
 }
+#cm_pinlaz>.comment-box{
+    .cancel-edit-comment-btn {
+        display: none;
+    }
+}
 .icon {
     display: inline-block;
     background-size: 100% 100% !important;
