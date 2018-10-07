@@ -7,6 +7,9 @@
     $('.comment-body').each(function () {
         var _this = $(this);
         var url = _this.data('url');
+        if (!url) {
+            return;
+        }
         var commentList = $('.comment-lists');
         var iconLoading = $('.icon-load-comment');
         var btnLoadBox = $('#more_comment_parent');
@@ -172,6 +175,7 @@
                 var formEdit = $('#comment_edit_template').clone().removeAttr('id');
                 formEdit.find('.comment-content').text(comment.content);
                 formEdit.find('input[name="comment_id"]').val(comment.id);
+                formEdit.find('input[name="id"]').val(comment.id);
                 commentEdit.html(formEdit[0].outerHTML);
                 setTimeout(function () {
                     commentEdit.find('.comment-box').removeClass('hidden');

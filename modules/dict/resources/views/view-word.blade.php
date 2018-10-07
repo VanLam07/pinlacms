@@ -11,7 +11,7 @@ if (!isset($word)) {
 
 @section('title', $page->title)
 
-@section('keywords', $page->meta_keyword)
+@section('keywords', $page->meta_keyword . ', ' . $word->word)
 @section('description', $page->meta_desc)
 
 @section('content_full')

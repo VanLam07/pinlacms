@@ -16,6 +16,7 @@ Route::group([
         Route::put('/words/{id}/update', 'DictController@updateWord')->name('update');
         Route::post('sentence/make', 'DictController@makeSentence')->name('make_sentence');
         Route::get('sentence/{id}/edit', 'DictController@editSentence')->where('id', '[0-9]+')->name('edit_sentence');
+        Route::put('sentence/update', 'DictController@updateSentence')->where('id', '[0-9]+')->name('update_sentence');
         Route::delete('sentence/{id}/delete', 'DictController@deleteSentence')->where('id', '[0-9]+')->name('delete_sentence');
     });
 });

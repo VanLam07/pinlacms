@@ -41,13 +41,31 @@ class DictController extends BaseController
         return redirect()->to(route('dict::word.view_word', ['word' => str_slug($word->word), 'id' => $word->id]));
     }
     
-    public function editSentence(Request $request)
+    public function editSentence($id)
     {
-        $sentence = DictSentence::find($id, ['id', 'sentence']);
+        $sentence = DictSentence::find($id, ['id', 'sentence as content']);
         if (!$sentence) {
             return response()->json(trans('front::message.not_found_item'), 404);
         }
         return $sentence;
+    }
+    
+    public function updateSentence(Request $request)
+    {
+        $id = $request->get('id');
+        $sentence = DictSentence::find($id);
+        if (!$sentence) {
+            return response()->json(trans('front::message.not_found_item'), 404);
+        }
+        if (!canDo('edit_sentence', $sentence->user_id)) {
+            return response()->json(trans('admin::view.authorize'), 403);
+        }
+        $sentence->sentence = $request->get('sentence');
+        $sentence->save();
+        return [
+            'id' => $sentence->id,
+            'content' => $sentence->sentence
+        ];
     }
     
     public function viewWord($slug, $id)
