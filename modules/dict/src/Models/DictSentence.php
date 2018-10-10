@@ -21,7 +21,9 @@ class DictSentence extends BaseModel
         $perPage = PlOption::get('per_page');
         $opts = [
             'word_id' => null,
+            'user_id' => null,
             'with_author' => false,
+            'with_word' => false,
             'fields' => ['st.*', 'user.name as user_name'],
             'orderby' => 'created_at',
             'order' => 'desc',
@@ -39,12 +41,18 @@ class DictSentence extends BaseModel
                 ->from(self::getTableName() . ' as st')
                 ->leftJoin(User::getTableName() . ' as user', 'st.user_id', '=', 'user.id')
                 ->groupBy('st.id');
+        if ($opts['with_word']) {
+            $result->join(DictEnVn::getTableName() . ' as dict', 'st.word_id', '=', 'dict.id');
+        }
         
         if ($opts['with_author']) {
             $result->with('author');
         }
         if ($opts['word_id']) {
             $result->where('word_id', $opts['word_id']);
+        }
+        if ($opts['user_id']) {
+            $result->where('user_id', $opts['user_id']);
         }
         if ($opts['exclude']) {
             $result->whereNotIn($opts['exclude_key'], $opts['exclude']);

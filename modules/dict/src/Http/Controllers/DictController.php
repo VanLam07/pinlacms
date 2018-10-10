@@ -96,4 +96,14 @@ class DictController extends BaseController
         return response()->json('Delete successful!');
     }
 
+    public function mySentences(Request $request)
+    {
+        $data = $request->all();
+        $data['user_id'] = auth()->id();
+        $data['with_word'] = true;
+        $data['fields'] = ['st.*', 'user.name as user_name', 'dict.word'];
+        $collection = DictSentence::getData($data);
+        return view('dict::my-sentences', compact('collection'));
+    }
+
 }

@@ -60,5 +60,6 @@ return [
     'make_sentence_alert_mail_subject' => '[Pinlaz] Mỗi ngày đặt một vài câu tiếng Anh ngày :date',
     'your_comment' =>           'Bình luận của bạn',
     'update' =>                 'Cập nhật',
+    'view_my_sentence_maked' => 'Xem các câu bạn đã đặt',
 ]; 
 
