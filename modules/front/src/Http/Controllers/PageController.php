@@ -16,6 +16,7 @@ class PageController extends Controller
 {
     public function index()
     {
+        dd(Subscribe::cronSendMail());
         return view('front::index');
     }
     

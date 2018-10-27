@@ -94,6 +94,14 @@ class Subscribe extends BaseModel
                     ->first();
 
             if (!$quote) {
+                $quote = PostType::joinLang()
+                    ->select('posts.id', 'pd.content', 'pd.slug')
+                    ->where('posts.post_format', AdConst::FORMAT_QUOTE)
+                    ->orderBy(DB::raw('RAND()'))
+                    ->first();
+            }
+
+            if (!$quote) {
                 Cache::forget($keyRunning);
                 return;
             }
