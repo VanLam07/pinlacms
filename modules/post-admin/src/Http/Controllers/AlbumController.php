@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Admin\Http\Controllers\BaseController;
 use App\Exceptions\PlException;
 use App\Models\Tax;
-use Exception;
 use PlMenu;
 use Breadcrumb;
 

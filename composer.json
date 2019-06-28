@@ -28,8 +28,8 @@
         ],
         "psr-4": {
             "App\\": "modules/core/src",
-            "Admin\\": "modules/admin/src/",
-            "Front\\": "modules/front/src/",
+            "Admin\\": "modules/post-admin/src/",
+            "Front\\": "modules/post-front/src/",
             "Dict\\": "modules/dict/src"
         },
         "files": [

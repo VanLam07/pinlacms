@@ -125,9 +125,9 @@ $relatedPosts = $post->getRelated();
 <div class="box related-box">
     <h3 class="sub-title bd-title">{{ trans('front::view.view_more') }}</h3>
     <ul class="posts related-posts">
-        @foreach ($relatedPosts as $post)
+        @foreach ($relatedPosts as $rlPost)
         <li>
-            <a href="{{ $post->getLink() }}">{{ $post->title }}</a>
+            <a href="{{ $rlPost->getLink() }}">{{ $rlPost->title }}</a>
         </li>
         @endforeach
     </ul>
