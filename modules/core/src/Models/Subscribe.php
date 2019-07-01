@@ -150,10 +150,11 @@ class Subscribe extends BaseModel
                 return;
             }
 
+            $randWord = DictEnVn::getRandWord();
             foreach ($collect as $item) {
                 $dataMail = [
                     'dearName' => $item->name,
-                    'randWord' => DictEnVn::getRandWord(),
+                    'randWord' => $randWord,
                     'detailLink' => route('front::page.view', ['id' => $genWordPage->id, 'slug' => $genWordPage->slug]),
                     'unsubsLink' => route('front::unsubs.confirm', ['token' => $item->code, 'type' => $item->type])
                 ];

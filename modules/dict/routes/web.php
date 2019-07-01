@@ -7,6 +7,7 @@ Route::group([
     Route::get('/', 'DictController@index')->name('index');
     Route::get('/{word}_w{id}.html', 'DictController@viewWord')->name('view_word');
     Route::post('/make-word', 'DictController@makeWord')->name('make_word');
+    Route::post('sentence/make', 'DictController@makeSentence')->name('make_sentence');
 
     Route::group([
         'middleware' => 'auth'
@@ -14,7 +15,6 @@ Route::group([
         Route::delete('/words/{id}/delete', 'DictController@deleteWord')->name('delete');
         Route::get('/words/{id}/edit', 'DictController@editWord')->name('edit');
         Route::put('/words/{id}/update', 'DictController@updateWord')->name('update');
-        Route::post('sentence/make', 'DictController@makeSentence')->name('make_sentence');
         Route::get('sentence/{id}/edit', 'DictController@editSentence')->where('id', '[0-9]+')->name('edit_sentence');
         Route::put('sentence/update', 'DictController@updateSentence')->where('id', '[0-9]+')->name('update_sentence');
         Route::delete('sentence/{id}/delete', 'DictController@deleteSentence')->where('id', '[0-9]+')->name('delete_sentence');

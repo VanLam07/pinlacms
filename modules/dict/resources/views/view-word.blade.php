@@ -52,7 +52,6 @@ if (!isset($word)) {
         
     </div>
 
-    @if (auth()->check())
     <div class="wrap">
         {!! Form::open([
             'method' => 'post',
@@ -74,11 +73,6 @@ if (!isset($word)) {
         
         {!! Form::close() !!}
     </div>
-    @else
-    <p class="text-center">
-        <a href="{{ route('front::account.login') }}">{{ trans('dict::view.login_to_make_sentence') }}</a>
-    </p>
-    @endif
 
     <h3 class="page-title center-title mgb-20"><span>{{ trans('dict::view.list_sentences') }}</span></h3>    
     <div class="mgb-30">

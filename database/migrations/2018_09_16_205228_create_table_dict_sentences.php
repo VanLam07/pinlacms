@@ -21,7 +21,7 @@ class CreateTableDictSentences extends Migration
         Schema::create($this->tbl, function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('word_id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('user_id')->nullable();
             $table->text('sentence');
             $table->timestamps();
             $table->foreign('word_id')->references('id')->on('dict_en_vn')

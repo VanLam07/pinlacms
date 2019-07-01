@@ -11,12 +11,7 @@ use Validator;
 
 class DictController extends BaseController
 {
-    
-    public function index()
-    {
-        
-    }
-    
+
     public function makeWord()
     {
         return DictEnVn::makeRandWord();
@@ -24,9 +19,9 @@ class DictController extends BaseController
     
     public function makeSentence(Request $request)
     {
-        if (!auth()->check()) {
+        /*if (!auth()->check()) {
             return redirect()->back()->withInput();
-        }
+        }*/
         $data = $request->all();
         $valid = Validator::make($data, [
             'sentence' => 'required',
@@ -36,7 +31,7 @@ class DictController extends BaseController
         if ($valid->fails()) {
             return redirect()->back()->withInput()->withErrors($valid->errors());
         }
-        $data['user_id'] = auth()->id();
+        $data['user_id'] = auth()->check() ? auth()->id() : null;
         DictSentence::create($data);
         return redirect()->to(route('dict::word.view_word', ['word' => str_slug($word->word), 'id' => $word->id]));
     }

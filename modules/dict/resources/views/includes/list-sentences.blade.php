@@ -12,7 +12,7 @@
             </div>
             <div class="media-body">
                 <h4 class="comment-author-name">
-                    {{ $sentence->user_name }}
+                    {{ $sentence->user_name ? $sentence->user_name : 'Anonymous' }}
                     <span class="comment-date">{{ $sentence->created_at->format('H:i d-m-Y') }}</span>
                     <div class="comment-actions">
                         @if ($canEditSentence)

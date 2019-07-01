@@ -71,7 +71,9 @@ if (!isset($word)) {
         <a href="{{ route('dict::word.view_word', ['id' => $word->id, 'slug' => str_slug($word->word)]) }}" id="view_word_link"
            target="_blank" class="btn btn-info btn-lg">{{ trans('front::view.make_sentence_for_this_word') }}</a>
         <div class="mgb-15"></div>
+        @if (auth()->check())
         <a href="{{ route('dict::word.my_sentences') }}">{{ trans('front::view.view_my_sentence_maked') }}</a>
+        @endif
     </div>
 
     @include('dict::includes.form-subscribe')
